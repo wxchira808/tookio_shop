@@ -1,0 +1,35 @@
+{
+ "chart_name": "Highest Selling Products",
+ "chart_type": "Report",
+ "creation": "2025-08-13 19:51:03.813827",
+ "currency": "KES",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart",
+ "dynamic_filters_json": "{}",
+ "filters_json": "{}",
+ "group_by_type": "Count",
+ "idx": 0,
+ "is_public": 0,
+ "is_standard": 1,
+ "modified": "2025-08-13 20:16:29.936618",
+ "modified_by": "Administrator",
+ "module": "Tookio Shop",
+ "name": "Highest Selling Products",
+ "number_of_groups": 0,
+ "owner": "Administrator",
+ "report_name": "Item Wise Sales",
+ "roles": [],
+ "show_values_over_chart": 1,
+ "time_interval": "Yearly",
+ "timeseries": 0,
+ "timespan": "Last Year",
+ "type": "Bar",
+ "use_report_chart": 0,
+ "x_field": "item_name",
+ "y_axis": [
+  {
+   "color": "#449CF0",
+   "y_field": "total_amount"
+  }
+ ]
+}

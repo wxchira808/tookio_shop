@@ -1,13 +1,24 @@
 {
  "cards": [
   {
-   "card": "Today's Sales"
+   "card": "No. Of Products"
+  },
+  {
+   "card": "Sales in Draft"
   }
  ],
  "charts": [
   {
    "chart": "Daily Sales",
-   "width": "Half"
+   "width": "Full"
+  },
+  {
+   "chart": "Highest Selling Products",
+   "width": "Full"
+  },
+  {
+   "chart": "Monthly Profit",
+   "width": "Full"
   }
  ],
  "creation": "2025-08-09 21:46:16.937699",
@@ -17,7 +28,7 @@
  "idx": 0,
  "is_default": 1,
  "is_standard": 1,
- "modified": "2025-08-13 13:44:17.955190",
+ "modified": "2025-08-13 20:29:19.495377",
  "modified_by": "Administrator",
  "module": "Tookio Shop",
  "name": "Tookio Shop Dashboard",
