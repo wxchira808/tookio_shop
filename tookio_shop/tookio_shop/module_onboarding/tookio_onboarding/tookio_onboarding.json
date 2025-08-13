@@ -1,0 +1,38 @@
+{
+ "allow_roles": [
+  {
+   "role": "Tookio Seller"
+  }
+ ],
+ "creation": "2025-08-13 13:49:27.518797",
+ "docstatus": 0,
+ "doctype": "Module Onboarding",
+ "documentation_url": "N/A",
+ "idx": 0,
+ "is_complete": 0,
+ "modified": "2025-08-13 14:05:13.466041",
+ "modified_by": "Administrator",
+ "module": "Tookio Shop",
+ "name": "Tookio Onboarding",
+ "owner": "Administrator",
+ "steps": [
+  {
+   "step": "Create Shop"
+  },
+  {
+   "step": "Add Tookio Products"
+  },
+  {
+   "step": "Tookio Stock"
+  },
+  {
+   "step": "Tookio Sale"
+  },
+  {
+   "step": "Tookio stock report"
+  }
+ ],
+ "subtitle": "Welcome to Tookio Shop",
+ "success_message": "Success!",
+ "title": "Tookio Shop"
+}

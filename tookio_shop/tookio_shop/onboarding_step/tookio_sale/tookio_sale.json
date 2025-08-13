@@ -1,0 +1,21 @@
+{
+ "action": "Create Entry",
+ "action_label": "Make a sale",
+ "creation": "2025-08-13 13:58:54.130653",
+ "description": "Here you can create a sale through a sale invoice. The sale will deduct stock for the specific products sold and generate a sales invoice that you can print.",
+ "docstatus": 0,
+ "doctype": "Onboarding Step",
+ "idx": 0,
+ "is_complete": 0,
+ "is_single": 0,
+ "is_skipped": 0,
+ "modified": "2025-08-13 14:00:34.758569",
+ "modified_by": "Administrator",
+ "name": "Tookio Sale",
+ "owner": "Administrator",
+ "reference_document": "Sale Invoice",
+ "show_form_tour": 0,
+ "show_full_form": 1,
+ "title": "Make a sale",
+ "validate_action": 1
+}

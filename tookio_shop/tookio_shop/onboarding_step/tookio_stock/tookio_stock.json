@@ -1,0 +1,21 @@
+{
+ "action": "Create Entry",
+ "action_label": "Enter Stock",
+ "creation": "2025-08-13 14:00:26.768561",
+ "description": "Add stock for all your new items. This will allow you to be able to create sales in the system. You can add or deduct stock for any product here.",
+ "docstatus": 0,
+ "doctype": "Onboarding Step",
+ "idx": 0,
+ "is_complete": 0,
+ "is_single": 0,
+ "is_skipped": 0,
+ "modified": "2025-08-13 14:00:26.768561",
+ "modified_by": "Administrator",
+ "name": "Tookio Stock",
+ "owner": "Administrator",
+ "reference_document": "Product Stock",
+ "show_form_tour": 0,
+ "show_full_form": 0,
+ "title": "Add stock for products",
+ "validate_action": 1
+}

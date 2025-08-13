@@ -1,0 +1,35 @@
+{
+    "add_total_row": 1,
+    "creation": "2025-08-13 13:00:00.000000",
+    "disable_prepared_report": 1,
+    "disabled": 0,
+    "docstatus": 0,
+    "doctype": "Report",
+    "filters": [],
+    "has_dynamic_links": 0,
+    "hide_toolbar": 1,
+    "no_toolbar": 1,
+    "idx": 0,
+    "is_standard": "No",
+    "javascript": "/assets/tookio_shop/tookio_shop/report/stock_balance/stock_balance.js",
+    "json": "{}",
+    "module": "Tookio Shop",
+    "name": "Stock Balance",
+    "owner": "Administrator",
+    "ref_doctype": "Product",
+    "report_name": "Stock Balance",
+    "report_type": "Script Report",
+    "roles": [
+        {
+            "role": "System Manager"
+        },
+        {
+            "role": "Tookio Seller"
+        }
+    ],
+    "disable_export": 1,
+    "menu_items": [],
+    "no_menu": 1,
+    "disable_download": 1,
+    "disable_printing": 1
+}

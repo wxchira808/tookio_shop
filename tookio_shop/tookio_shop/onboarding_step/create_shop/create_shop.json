@@ -1,0 +1,21 @@
+{
+ "action": "Create Entry",
+ "action_label": "Create Shop",
+ "creation": "2025-08-13 13:48:44.782859",
+ "description": "Add your shop/business. You can add as many shops as your subscription plan allows. Every shop will have its own products such that products belong to their specific shop.",
+ "docstatus": 0,
+ "doctype": "Onboarding Step",
+ "idx": 0,
+ "is_complete": 0,
+ "is_single": 0,
+ "is_skipped": 0,
+ "modified": "2025-08-13 13:56:03.554435",
+ "modified_by": "Administrator",
+ "name": "Create Shop",
+ "owner": "Administrator",
+ "reference_document": "Shop",
+ "show_form_tour": 0,
+ "show_full_form": 0,
+ "title": "Add your Shop/ Business",
+ "validate_action": 1
+}

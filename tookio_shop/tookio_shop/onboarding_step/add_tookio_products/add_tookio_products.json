@@ -1,0 +1,21 @@
+{
+ "action": "Create Entry",
+ "action_label": "Add product",
+ "creation": "2025-08-13 13:54:39.929300",
+ "description": "Add the products that you sell at your shop or business. This will allow you to create sales and view stock for the products in the system",
+ "docstatus": 0,
+ "doctype": "Onboarding Step",
+ "idx": 0,
+ "is_complete": 0,
+ "is_single": 0,
+ "is_skipped": 0,
+ "modified": "2025-08-13 13:54:39.929300",
+ "modified_by": "Administrator",
+ "name": "Add Tookio Products",
+ "owner": "Administrator",
+ "reference_document": "Product",
+ "show_form_tour": 0,
+ "show_full_form": 0,
+ "title": "Add your products",
+ "validate_action": 1
+}

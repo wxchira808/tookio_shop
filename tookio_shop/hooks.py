@@ -5,6 +5,26 @@ app_description = "A simple system for whatsapp and instagram based online selle
 app_email = "bwkinyua01@gmail.com"
 app_license = "mit"
 
+
+
+
+doc_events = {
+      "User": {
+        "after_insert": "tookio_shop.utils.setup_new_user"
+    },
+    "Product": {
+        "before_insert": "tookio_shop.utils.check_item_limit"
+    },
+    "Shop": {
+        "before_insert": "tookio_shop.utils.check_shop_limit"
+    },
+    "Sale Invoice": {
+        "validate": "tookio_shop.utils.prevent_negative_stock"
+    },
+    # Removed Product Stock after_insert hook to fix AttributeError
+}
+
+
 # Apps
 # ------------------
 
