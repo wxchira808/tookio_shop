@@ -24,6 +24,12 @@ doc_events = {
     # Removed Product Stock after_insert hook to fix AttributeError
 }
 
+fixtures = [
+    {
+        "dt": "Custom DocPerm"
+    }
+]
+
 
 # Apps
 # ------------------
