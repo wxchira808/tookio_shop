@@ -4,6 +4,13 @@ import frappe
 
 
 def setup_new_user(doc, method):
+    # Add at start of function
+    frappe.log_error(
+        f"Debug - Current Module Profile: {doc.module_profile}\n"
+        f"Current Roles: {doc.roles}\n"
+        f"Boot Info: {frappe.session.boot.allowed_modules if frappe.session.boot else 'No Boot'}", 
+        "Module Debug"
+    )
     """Setup Tookio Seller role and module access for new users"""
     # 1. Set role profile and module profile first
     frappe.db.set_value('User', doc.name, {
