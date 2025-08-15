@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:TSK-{DD}-{MM}-{YY}{####}",
+ "autoname": "format:STOCK-{DD}-{MM}-{YY}{####}",
  "creation": "2025-08-09 11:04:22.469854",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -70,7 +70,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-08-13 10:59:18.722031",
+ "modified": "2025-08-15 09:17:16.658311",
  "modified_by": "Administrator",
  "module": "Tookio Shop",
  "name": "Product Stock",

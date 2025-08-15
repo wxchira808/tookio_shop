@@ -1,8 +1,13 @@
 {
  "charts": [],
- "content": "[{\"id\":\"ejtZInFocD\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">TOOKIO</span>\",\"col\":12}},{\"id\":\"xsvfJISboT\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"ASMLwjLRH4\",\"type\":\"onboarding\",\"data\":{\"onboarding_name\":\"Tookio Onboarding\",\"col\":12}},{\"id\":\"jedmvYMNz3\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"V7wHwab8vz\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>SHORTCUTS</b></span>\",\"col\":12}},{\"id\":\"Pt-vTfCTb-\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"My Shop \ud83c\udfea\",\"col\":3}},{\"id\":\"NdCGJ_DTqg\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dashboards \ud83d\udcca\",\"col\":3}},{\"id\":\"RB725020Rl\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Products/Items \ud83d\udecd\ufe0f\",\"col\":3}},{\"id\":\"oKaM5ADhJH\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales \ud83d\udcb0\",\"col\":3}},{\"id\":\"WQuY3xVFTJ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Stock \ud83d\udce6\",\"col\":3}},{\"id\":\"2cN-mu8lho\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Stock Balance Report \ud83d\udcc3\",\"col\":3}},{\"id\":\"XLP_PkVkJ5\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customer\",\"col\":3}},{\"id\":\"qtP3lq8pfa\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Subscription Plan \ud83d\udcb2\",\"col\":3}}]",
+ "content": "[{\"id\":\"ASMLwjLRH4\",\"type\":\"onboarding\",\"data\":{\"onboarding_name\":\"Tookio Onboarding\",\"col\":12}},{\"id\":\"m8CpYTdR7q\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"Tookio Minimal\",\"col\":12}}]",
  "creation": "2025-08-09 11:38:51.306371",
- "custom_blocks": [],
+ "custom_blocks": [
+  {
+   "custom_block_name": "Tookio Minimal",
+   "label": "Tookio Minimal"
+  }
+ ],
  "docstatus": 0,
  "doctype": "Workspace",
  "for_user": "",
@@ -24,7 +29,7 @@
    "type": "Link"
   }
  ],
- "modified": "2025-08-13 14:11:24.373913",
+ "modified": "2025-08-15 17:04:17.503823",
  "modified_by": "Administrator",
  "module": "Tookio Shop",
  "name": "Tookio",
@@ -39,71 +44,6 @@
   }
  ],
  "sequence_id": 1.0,
- "shortcuts": [
-  {
-   "color": "Grey",
-   "doc_view": "List",
-   "label": "My Shop \ud83c\udfea",
-   "link_to": "Shop",
-   "stats_filter": "[]",
-   "type": "DocType"
-  },
-  {
-   "color": "Grey",
-   "doc_view": "List",
-   "label": "Subscription Plan \ud83d\udcb2",
-   "link_to": "Subscription Plan",
-   "stats_filter": "[]",
-   "type": "DocType"
-  },
-  {
-   "color": "Grey",
-   "doc_view": "List",
-   "label": "Sales \ud83d\udcb0",
-   "link_to": "Sale Invoice",
-   "stats_filter": "[]",
-   "type": "DocType"
-  },
-  {
-   "color": "Grey",
-   "doc_view": "List",
-   "label": "Dashboards \ud83d\udcca",
-   "link_to": "Tookio Shop Dashboard",
-   "type": "Dashboard"
-  },
-  {
-   "color": "Grey",
-   "doc_view": "List",
-   "label": "Customer",
-   "link_to": "Customer",
-   "stats_filter": "[]",
-   "type": "DocType"
-  },
-  {
-   "color": "Grey",
-   "doc_view": "List",
-   "label": "Products/Items \ud83d\udecd\ufe0f",
-   "link_to": "Product",
-   "stats_filter": "[]",
-   "type": "DocType"
-  },
-  {
-   "color": "Grey",
-   "doc_view": "List",
-   "label": "Stock Balance Report \ud83d\udcc3",
-   "link_to": "Stock Balance",
-   "report_ref_doctype": "Product",
-   "stats_filter": "[]",
-   "type": "Report"
-  },
-  {
-   "color": "Grey",
-   "doc_view": "List",
-   "label": "Stock \ud83d\udce6",
-   "link_to": "Product Stock",
-   "stats_filter": "[]",
-   "type": "DocType"
-  }
- ],
+ "shortcuts": [],
  "title": "Tookio"
 }

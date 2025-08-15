@@ -1,0 +1,62 @@
+[
+ {
+  "charts": [],
+  "content": "[{\"id\":\"ASMLwjLRH4\",\"type\":\"onboarding\",\"data\":{\"onboarding_name\":\"Tookio Onboarding\",\"col\":12}},{\"id\":\"m8CpYTdR7q\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"Tookio Minimal\",\"col\":12}}]",
+  "custom_blocks": [
+   {
+    "custom_block_name": "Tookio Minimal",
+    "label": "Tookio Minimal",
+    "parent": "Tookio",
+    "parentfield": "custom_blocks",
+    "parenttype": "Workspace"
+   }
+  ],
+  "docstatus": 0,
+  "doctype": "Workspace",
+  "for_user": "",
+  "hide_custom": 0,
+  "icon": "retail",
+  "indicator_color": "green",
+  "is_hidden": 0,
+  "label": "Tookio",
+  "links": [
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Shop",
+    "link_count": 0,
+    "link_to": "Shop",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "Tookio",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   }
+  ],
+  "modified": "2025-08-15 17:04:17.503823",
+  "module": "Tookio Shop",
+  "name": "Tookio",
+  "number_cards": [],
+  "parent_page": "",
+  "public": 1,
+  "quick_lists": [],
+  "restrict_to_domain": null,
+  "roles": [
+   {
+    "parent": "Tookio",
+    "parentfield": "roles",
+    "parenttype": "Workspace",
+    "role": "Tookio Seller"
+   }
+  ],
+  "sequence_id": 1.0,
+  "shortcuts": [],
+  "title": "Tookio"
+ }
+]

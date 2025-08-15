@@ -27,9 +27,19 @@ doc_events = {
 fixtures = [
     {
         "dt": "Custom DocPerm"
+    },
+     {
+        "dt": "Workspace",
+        "filters": [
+            ["name", "in", [
+                "Tookio"
+
+           ]]
+        ]
     }
 ]
 
+default_module_profile = "Default Restricted Profile"
 
 # Apps
 # ------------------
