@@ -8,8 +8,10 @@
  "field_order": [
   "shop_name",
   "location",
+  "address",
   "mobile_number",
-  "email_address"
+  "email_address",
+  "shop_logo"
  ],
  "fields": [
   {
@@ -38,12 +40,24 @@
    "in_list_view": 1,
    "label": "Email Address",
    "reqd": 1
+  },
+  {
+   "fieldname": "shop_logo",
+   "fieldtype": "Attach Image",
+   "hidden": 1,
+   "label": "Shop Logo"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Data",
+   "label": "Address"
   }
  ],
  "grid_page_length": 50,
+ "image_field": "shop_logo",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-13 08:48:38.473512",
+ "modified": "2025-08-16 22:01:38.792626",
  "modified_by": "Administrator",
  "module": "Tookio Shop",
  "name": "Shop",
