@@ -39,6 +39,17 @@ fixtures = [
     }
 ]
 
+# Override login page
+website_route_rules = [
+    {"from_route": "/login", "to_route": "tookio_shop/templates/login"}
+]
+
+# Add custom JS
+web_include_js = [
+    "/assets/tookio_shop/js/signup.js"
+]
+
+
 default_module_profile = "Default Restricted Profile"
 
 # Apps
