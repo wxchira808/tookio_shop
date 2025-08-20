@@ -18,6 +18,8 @@ app_license = "mit"
 # 	"frappe.core.doctype.user.user.sign_up": "tookio_shop.overrides.user.sign_up"
 # }
 
+
+
 doc_events = {
       "User": {
         "after_insert": "tookio_shop.utils.setup_new_user"

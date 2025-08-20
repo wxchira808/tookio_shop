@@ -10,6 +10,7 @@
   "price",
   "selling_price",
   "shop",
+  "shop_name",
   "uom",
   "column_break_ocan",
   "stock_quantity",
@@ -95,6 +96,14 @@
    "fieldname": "selling_price",
    "fieldtype": "Currency",
    "label": "Selling Price"
+  },
+  {
+   "fetch_from": "shop.shop_name",
+   "fieldname": "shop_name",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Shop Name",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
@@ -106,7 +115,7 @@
    "link_fieldname": "product"
   }
  ],
- "modified": "2025-08-19 16:57:12.419225",
+ "modified": "2025-08-20 15:59:01.939289",
  "modified_by": "Administrator",
  "module": "Tookio Shop",
  "name": "Product",
@@ -147,7 +156,7 @@
  ],
  "quick_entry": 1,
  "row_format": "Dynamic",
- "search_fields": "item_name",
+ "search_fields": "item_name,shop_name",
  "show_preview_popup": 1,
  "show_title_field_in_link": 1,
  "sort_field": "modified",

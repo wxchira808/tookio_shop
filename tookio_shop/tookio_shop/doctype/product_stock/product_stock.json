@@ -52,7 +52,7 @@
    "reqd": 1
   },
   {
-   "depends_on": "eval:doc.purpose!=='' & doc.shop!==''",
+   "depends_on": "eval:doc.purpose && doc.shop\r\n",
    "fieldname": "prodcuts",
    "fieldtype": "Table",
    "label": "Prodcuts",
@@ -70,7 +70,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-08-15 09:17:16.658311",
+ "modified": "2025-08-20 17:04:39.018042",
  "modified_by": "Administrator",
  "module": "Tookio Shop",
  "name": "Product Stock",

@@ -6,12 +6,17 @@
  "engine": "InnoDB",
  "field_order": [
   "posting_date",
+  "column_break_bwaq",
+  "shop",
+  "section_break_qjnk",
   "items",
   "total",
+  "section_break_jwnq",
   "payment_method",
+  "delivery_location",
+  "column_break_tnur",
   "customer_name",
   "customer_phone_number",
-  "shop",
   "amended_from"
  ],
  "fields": [
@@ -67,7 +72,8 @@
    "fieldname": "items",
    "fieldtype": "Table",
    "label": "Items",
-   "options": "Tookio Sales Invoice Item"
+   "options": "Tookio Sales Invoice Item",
+   "reqd": 1
   },
   {
    "default": "Today",
@@ -77,13 +83,36 @@
    "in_standard_filter": 1,
    "label": "Date",
    "reqd": 1
+  },
+  {
+   "fieldname": "delivery_location",
+   "fieldtype": "Data",
+   "label": "Delivery Location"
+  },
+  {
+   "fieldname": "column_break_bwaq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.shop",
+   "fieldname": "section_break_qjnk",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:doc.shop",
+   "fieldname": "section_break_jwnq",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_tnur",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-08-15 09:16:43.574347",
+ "modified": "2025-08-20 17:18:41.692824",
  "modified_by": "Administrator",
  "module": "Tookio Shop",
  "name": "Sale Invoice",
