@@ -7,6 +7,16 @@ app_license = "mit"
 
 
 
+# This tells Frappe to load our custom JS file on all website pages, including login
+# web_include_js = "/assets/tookio_shop/js/signup.js"
+
+# This tells Frappe to use our custom signup form template
+# signup_form_template = "tookio_shop/templates/pages/signup.html"
+
+# This tells Frappe to use our Python function instead of the default one
+# override_whitelisted_methods = {
+# 	"frappe.core.doctype.user.user.sign_up": "tookio_shop.overrides.user.sign_up"
+# }
 
 doc_events = {
       "User": {
@@ -40,14 +50,15 @@ fixtures = [
 ]
 
 # Override login page
-website_route_rules = [
-    {"from_route": "/login", "to_route": "tookio_shop/templates/login"}
-]
+# Note: Frappe serves pages placed in templates/pages/<name>.html automatically at /<name>.
+# The custom route rule previously pointed to a non-page path and caused 404s. We now provide
+# templates/pages/login.html so /login will be served without a custom rule.
+# website_route_rules = [
+#    {"from_route": "/login", "to_route": "tookio_shop/templates/login"}
+# ]
 
 # Add custom JS
-web_include_js = [
-    "/assets/tookio_shop/js/signup.js"
-]
+# signup JS removed; no app-level web_include_js so default Frappe pages remain unchanged
 
 
 default_module_profile = "Default Restricted Profile"
