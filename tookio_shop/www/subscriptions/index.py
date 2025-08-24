@@ -16,24 +16,24 @@ def get_context(context):
     try:
         # Get the customer linked to the current user
         customer_name = frappe.db.get_value("Portal User", {"user": frappe.session.user}, "parent")
-        print(f"DEBUG: Customer name for user {frappe.session.user}: {customer_name}")
+        frappe.logger().info(f"DEBUG: Customer name for user {frappe.session.user}: {customer_name}")
         
         if not customer_name:
             # Handle cases where user might not be linked to a customer
             context.current_plan = None
             context.current_subscription = None
-            print(f"DEBUG: No customer found for user {frappe.session.user}")
+            frappe.logger().info(f"DEBUG: No customer found for user {frappe.session.user}")
         else:
             # Fetch the user's current subscription plan name from the Customer doc
             current_plan_name = frappe.db.get_value("Customer", customer_name, "custom_tookio_subscription_plan")
-            print(f"DEBUG: Current plan name for customer {customer_name}: {current_plan_name}")
+            frappe.logger().info(f"DEBUG: Current plan name for customer {customer_name}: {current_plan_name}")
             
             if current_plan_name:
                 try:
                     context.current_plan = frappe.get_doc("Subscription Plan", current_plan_name, ignore_permissions=True)
-                    print(f"DEBUG: Successfully loaded plan: {current_plan_name}")
+                    frappe.logger().info(f"DEBUG: Successfully loaded plan: {current_plan_name}")
                 except Exception as plan_error:
-                    print(f"DEBUG: Error loading plan {current_plan_name}: {plan_error}")
+                    frappe.logger().error(f"DEBUG: Error loading plan {current_plan_name}: {plan_error}")
                     context.current_plan = None
 
                 # Get the active subscription details
@@ -42,14 +42,14 @@ def get_context(context):
                     {"party": customer_name, "status": ["in", ["Active", "Past Due Date"]]},
                     "name"
                 )
-                print(f"DEBUG: Subscription name for customer {customer_name}: {subscription_name}")
+                frappe.logger().info(f"DEBUG: Subscription name for customer {customer_name}: {subscription_name}")
                 
                 if subscription_name:
                     try:
                         context.current_subscription = frappe.get_doc("Subscription", subscription_name, ignore_permissions=True)
-                        print(f"DEBUG: Successfully loaded subscription: {subscription_name}")
+                        frappe.logger().info(f"DEBUG: Successfully loaded subscription: {subscription_name}")
                     except Exception as sub_error:
-                        print(f"DEBUG: Error loading subscription {subscription_name}: {sub_error}")
+                        frappe.logger().error(f"DEBUG: Error loading subscription {subscription_name}: {sub_error}")
                         context.current_subscription = None
                 else:
                     context.current_subscription = None
@@ -64,7 +64,7 @@ def get_context(context):
             order_by="cost asc",
             ignore_permissions=True
         )
-        print(f"DEBUG: Found {len(plans)} available plans")
+        frappe.logger().info(f"DEBUG: Found {len(plans)} available plans")
         
         # Get description from linked Item doctype for each plan
         context.available_plans = []
@@ -79,9 +79,9 @@ def get_context(context):
             context.available_plans.append(plan_data)
 
     except Exception as e:
-        print(f"DEBUG: Exception caught: {str(e)}")
-        print(f"DEBUG: Exception type: {type(e)}")
+        frappe.logger().error(f"DEBUG: Exception caught: {str(e)}")
+        frappe.logger().error(f"DEBUG: Exception type: {type(e)}")
         import traceback
-        print(f"DEBUG: Full traceback: {traceback.format_exc()}")
+        frappe.logger().error(f"DEBUG: Full traceback: {traceback.format_exc()}")
         frappe.log_error(f"Error fetching subscription context for {frappe.session.user}: {e}", "Subscription Page Error")
         context.error = _("Could not load your subscription details at the moment. Please try again later.")
