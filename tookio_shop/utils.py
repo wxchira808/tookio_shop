@@ -62,7 +62,7 @@ def setup_new_user(doc, method):
         # 3. Assign Free Plan
         plan_name = "Free Plan"
         if frappe.db.exists("Tookio Subscription Plan", plan_name):
-            customer = frappe.get_doc("Customer", customer_name)
+            customer = frappe.get_doc("Customer", customer_name, ignore_permissions=True)
             customer.db_set("custom_tookio_subscription_plan", plan_name)
 
         # 4. Assign the roles using direct SQL to bypass permissions
@@ -99,15 +99,16 @@ def setup_new_user(doc, method):
 
 def get_user_plan_limits(user):
     # Find Customer via Portal User child table
-    customer_name = frappe.db.get_value("Portal User", {"user": user}, "parent")
+    customer_name = frappe.db.get_value("Portal User", {"user": user}, "parent", ignore_permissions=True)
     if customer_name:
         # Get the linked subscription plan from Customer
-        plan_name = frappe.db.get_value("Customer", customer_name, "custom_tookio_subscription_plan")
+        plan_name = frappe.db.get_value("Customer", customer_name, "custom_tookio_subscription_plan", ignore_permissions=True)
         if plan_name:
             limits = frappe.db.get_value(
                 "Subscription Plan", plan_name,
                 ["custom_item_limits", "custom_shop_limit"],
-                as_dict=True
+                as_dict=True,
+                ignore_permissions=True
             )
             if limits:
                 return limits

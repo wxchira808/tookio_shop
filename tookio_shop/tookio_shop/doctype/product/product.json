@@ -109,13 +109,8 @@
  "grid_page_length": 50,
  "image_field": "photo",
  "index_web_pages_for_search": 1,
- "links": [
-  {
-   "link_doctype": "Product Stock",
-   "link_fieldname": "product"
-  }
- ],
- "modified": "2025-08-20 15:59:01.939289",
+ "links": [],
+ "modified": "2025-08-24 18:41:57.501696",
  "modified_by": "Administrator",
  "module": "Tookio Shop",
  "name": "Product",

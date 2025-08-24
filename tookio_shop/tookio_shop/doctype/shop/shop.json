@@ -29,7 +29,7 @@
   },
   {
    "fieldname": "mobile_number",
-   "fieldtype": "Phone",
+   "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Mobile Number",
    "reqd": 1
@@ -57,7 +57,7 @@
  "image_field": "shop_logo",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-16 22:01:38.792626",
+ "modified": "2025-08-24 18:42:21.139026",
  "modified_by": "Administrator",
  "module": "Tookio Shop",
  "name": "Shop",

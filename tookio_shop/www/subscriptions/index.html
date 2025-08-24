@@ -1,0 +1,226 @@
+{% extends "templates/web.html" %}
+
+{% block style %}
+<style>
+    /* Using a simplified style for the management page, can be extended */
+    body {
+        background-color: #f8f9fa;
+    }
+    .pricing-card {
+        background: #ffffff;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 32px 24px;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+    }
+    .pricing-card:hover {
+        border-color: #007bff;
+        box-shadow: 0 4px 20px rgba(0, 123, 255, 0.1);
+    }
+    .pricing-card.current-plan {
+        border-color: #28a745;
+        box-shadow: 0 4px 20px rgba(40, 167, 69, 0.15);
+    }
+    .plan-name {
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+    .price {
+        font-size: 2.5rem;
+        font-weight: 700;
+    }
+    .price-period {
+        color: #6c757d;
+    }
+    .cta-button {
+        width: 100%;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+    .btn-success {
+        background-color: #28a745;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block page_content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <h1 class="mb-4">Manage Your Subscription</h1>
+
+            {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+            {% endif %}
+
+            <!-- Current Plan Section -->
+            {% if current_plan %}
+                <div class="card mb-4">
+                    <div class="card-header">Your Current Subscription</div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5 class="card-title">{{ current_plan.name }}</h5>
+                                <p class="card-text">
+                                    You are currently subscribed to {{ current_plan.name }}.
+                                </p>
+                                <ul>
+                                    <li>Item Limit: {{ current_plan.custom_item_limits }}</li>
+                                    <li>Shop Limit: {{ current_plan.custom_shop_limit }}</li>
+                                </ul>
+                                
+                                {% if current_subscription %}
+                                <div class="mt-3">
+                                    <h6>Subscription Details:</h6>
+                                    <ul class="list-unstyled">
+                                        <li><strong>Status:</strong> 
+                                            {% if current_subscription.status == "Active" %}
+                                                <span class="badge badge-success">{{ current_subscription.status }}</span>
+                                            {% else %}
+                                                <span class="badge badge-warning">{{ current_subscription.status }}</span>
+                                            {% endif %}
+                                        </li>
+                                        <li><strong>Start Date:</strong> {{ current_subscription.start_date }}</li>
+                                        <li><strong>Expires:</strong> {{ current_subscription.end_date }}</li>
+                                        <li><strong>Subscription ID:</strong> {{ current_subscription.name }}</li>
+                                    </ul>
+                                    
+                                    <!-- Expiry Warning -->
+                                    {% set days_left = (current_subscription.end_date|string|replace('-', '')|int - (frappe.utils.today()|string|replace('-', '')|int)) %}
+                                    {% if current_plan.cost and current_plan.cost > 0 %}
+                                        {% if days_left <= 7 and days_left > 0 %}
+                                            <div class="alert alert-warning mt-3">
+                                                <strong>⚠️ Subscription Expiring Soon!</strong><br>
+                                                Your subscription expires in {{ days_left }} day(s). Renew now to avoid service interruption.
+                                            </div>
+                                        {% elif days_left <= 0 %}
+                                            <div class="alert alert-danger mt-3">
+                                                <strong>🚨 Subscription Expired!</strong><br>
+                                                Your subscription has expired. You've been switched to the free plan. Renew below to restore your features.
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <div class="price-display">KSh {{ current_plan.cost or 0 }}</div>
+                                <small class="text-muted">
+                                    {% if current_plan.cost and current_plan.cost > 0 %}
+                                        per month (manual renewal)
+                                    {% else %}
+                                        free forever
+                                    {% endif %}
+                                </small>
+                                {% if current_subscription and current_plan.cost and current_plan.cost > 0 %}
+                                    <div class="mt-2">
+                                        <small class="text-muted">Auto-renewal: Disabled</small><br>
+                                        <small class="text-success">✓ No surprise charges</small>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert-info">You are not subscribed to any plan. Please choose a plan below.</div>
+            {% endif %}
+
+            <!-- Available Plans Section -->
+            <h3 class="mt-5">Available Plans</h3>
+            <div class="row">
+                {% for plan in available_plans %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="pricing-card {% if current_plan and current_plan.name == plan.name %}current-plan{% endif %}">
+                        <h3 class="plan-name">{{ plan.name }}</h3>
+                        <p class="plan-description">{{ plan.description or 'A great plan for your business.' }}</p>
+                        <div class="price">{{ plan.cost or "FREE" }}</div>
+                        <div class="price-period">per month</div>
+
+                        {% if current_plan and current_plan.name == plan.name %}
+                            <button class="cta-button btn-success" disabled>Current Plan</button>
+                        {% else %}
+                            {% if plan.cost and plan.cost > 0 %}
+                                <!-- Paid plans go to checkout -->
+                                <a href="/checkout?plan={{ plan.name | urlencode }}" class="cta-button btn-primary" style="text-decoration: none; display: block; text-align: center;">
+                                    Subscribe for KSh {{ plan.cost }}
+                                </a>
+                            {% else %}
+                                <!-- Free plans activate directly -->
+                                <button class="cta-button btn-success activate-free-plan-btn" data-plan-name="{{ plan.name }}">
+                                    Activate Free Plan
+                                </button>
+                            {% endif %}
+                        {% endif %}
+
+                        <ul class="features-list list-unstyled mt-3 mb-4">
+                            <li>✓ {{ plan.custom_item_limits }} items</li>
+                            <li>✓ {{ plan.custom_shop_limit }} shop(s)</li>
+                        </ul>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+// Handle free plan activation
+function activateFreePlan(planName) {
+    frappe.confirm(
+        `Are you sure you want to activate the ${planName}? This will replace your current subscription.`,
+        () => {
+            frappe.call({
+                method: 'tookio_shop.api.activate_free_plan',
+                args: {
+                    plan_name: planName
+                },
+                callback: function(r) {
+                    if (r.message && r.message.status === 'success') {
+                        frappe.show_alert({
+                            message: 'Free plan activated successfully!',
+                            indicator: 'green'
+                        });
+                        // Reload page to show updated subscription
+                        setTimeout(() => window.location.reload(), 1500);
+                    } else {
+                        frappe.show_alert({
+                            message: r.message.message || 'Failed to activate free plan',
+                            indicator: 'red'
+                        });
+                    }
+                }
+            });
+        }
+    );
+}
+// Production ready - test buttons removed
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle free plan activation buttons
+    document.querySelectorAll('.activate-free-plan-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const planName = this.getAttribute('data-plan-name');
+            activateFreePlan(planName);
+        });
+    });
+});
+</script>
+{% endblock %}

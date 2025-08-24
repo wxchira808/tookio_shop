@@ -1,7 +1,7 @@
 [
  {
   "charts": [],
-  "content": "[{\"id\":\"ASMLwjLRH4\",\"type\":\"onboarding\",\"data\":{\"onboarding_name\":\"Tookio Onboarding\",\"col\":12}},{\"id\":\"m8CpYTdR7q\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"Tookio Minimal\",\"col\":12}}]",
+  "content": "[{\"id\":\"m8CpYTdR7q\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"Tookio Minimal\",\"col\":12}}]",
   "custom_blocks": [
    {
     "custom_block_name": "Tookio Minimal",
@@ -39,7 +39,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2025-08-15 17:04:17.503823",
+  "modified": "2025-08-25 00:43:22.407223",
   "module": "Tookio Shop",
   "name": "Tookio",
   "number_cards": [],
@@ -57,7 +57,6 @@
   ],
   "sequence_id": 1.0,
   "shortcuts": [],
-  "title": "Tookio",
-  "type": "Workspace"
+  "title": "Tookio"
  }
 ]
