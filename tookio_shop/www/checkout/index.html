@@ -1,6 +1,7 @@
 {% extends "templates/web.html" %}
 
 {% block style %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <style>
     body {
         background-color: #f8f9fa;
@@ -22,6 +23,26 @@
         border-radius: 8px;
         padding: 2rem;
         border: 1px solid #e9ecef;
+    }
+    .payment-instructions {
+        background: #f8f9fa;
+        border: 2px solid #007bff;
+        border-radius: 8px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    .till-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #007bff;
+        margin: 1rem 0;
+    }
+    .amount-display {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #28a745;
+        margin: 1rem 0;
     }
     .form-group {
         margin-bottom: 1.5rem;
@@ -84,21 +105,65 @@
         </div>
     </div>
 
+    <!-- Payment Instructions -->
+    <div class="payment-instructions">
+        <h3><i class="fa fa-mobile" style="color: #28a745;"></i> M-Pesa Payment Instructions</h3>
+        <p><strong>Follow these steps to complete your payment:</strong></p>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <h4>1. Go to M-Pesa Menu</h4>
+                <p>• Open M-Pesa on your phone<br>
+                • Select "Lipa na M-Pesa"<br>
+                • Choose "Buy Goods and Services"</p>
+            </div>
+            <div class="col-md-6">
+                <h4>2. Enter Till Details</h4>
+                <p><strong>Till Number:</strong></p>
+                <div class="till-number">6547212</div>
+                <p><strong>Amount:</strong></p>
+                <div class="amount-display">KSh {{ plan.cost or 0 }}</div>
+            </div>
+        </div>
+        
+        <div class="alert alert-info">
+            <strong>3. Complete Payment & Get Confirmation</strong><br>
+            After successful payment, you will receive an M-Pesa confirmation message. 
+            Enter the confirmation code below and click "Confirm Payment" to activate your subscription.
+        </div>
+    </div>
+
     <!-- Payment Form -->
     <div class="payment-form">
-        <h3>Payment Details</h3>
+        <h3>Confirm Your Payment</h3>
         <div id="payment-message" class="alert" style="display: none;"></div>
         <form id="checkout-form">
             <div class="form-group">
-                <label for="phone">M-Pesa Phone Number (07xxxxxxxx)</label>
+                <label for="phone">Your M-Pesa Phone Number</label>
                 <input type="tel" id="phone" name="phone" class="form-control" 
                        placeholder="e.g. 0712345678" 
                        value="{{ customer.mobile_no or '' }}" 
                        required>
+                <small class="form-text text-muted">The phone number you used for M-Pesa payment</small>
             </div>
             
-            <button type="button" id="pay-button" class="btn btn-primary">
-                Pay KSh {{ plan.cost or 0 }} with M-Pesa
+            <div class="form-group">
+                <label for="transaction-code">M-Pesa Confirmation Code</label>
+                <input type="text" id="transaction-code" name="transaction_code" class="form-control" 
+                       placeholder="e.g. QJ79XZKL32" 
+                       style="text-transform: uppercase;"
+                       required>
+                <small class="form-text text-muted">Enter the confirmation code from your M-Pesa message</small>
+            </div>
+            
+            <div class="alert alert-warning">
+                <strong>Important:</strong> Only click "Confirm Payment" after you have successfully paid 
+                <strong>KSh {{ plan.cost or 0 }}</strong> to Till Number <strong>6547212</strong> 
+                and received your M-Pesa confirmation message.
+            </div>
+            
+            <button type="button" id="confirm-button" class="btn btn-primary">
+                <i class="fa fa-check"></i> Confirm Payment & Activate Subscription
             </button>
         </form>
     </div>
@@ -109,107 +174,82 @@
 {% block script %}
 <script>
 $(document).ready(function() {
-    let checkoutRequestId = null;
-    let statusCheckInterval = null;
+    // Auto-uppercase transaction code input
+    $('#transaction-code').on('input', function() {
+        this.value = this.value.toUpperCase();
+    });
 
-    $('#pay-button').on('click', function() {
+    $('#confirm-button').on('click', function() {
         var phone_number = $('#phone').val();
+        var transaction_code = $('#transaction-code').val();
         var plan_name = "{{ plan.name if plan else '' }}";
-        var payButton = $(this);
+        var confirmButton = $(this);
         var paymentMessage = $('#payment-message');
 
+        // Validation
         if (!phone_number) {
-            paymentMessage.text('Please enter your M-Pesa phone number (e.g. 0712345678).').addClass('alert-danger').show();
+            paymentMessage.text('Please enter your M-Pesa phone number.').removeClass('alert-success alert-info').addClass('alert-danger').show();
+            return;
+        }
+
+        if (!transaction_code) {
+            paymentMessage.text('Please enter your M-Pesa confirmation code.').removeClass('alert-success alert-info').addClass('alert-danger').show();
+            return;
+        }
+
+        if (transaction_code.length < 8) {
+            paymentMessage.text('Please enter a valid M-Pesa confirmation code (usually 8-10 characters).').removeClass('alert-success alert-info').addClass('alert-danger').show();
             return;
         }
 
         if (!plan_name) {
-            paymentMessage.text('Plan information not available. Please try again.').addClass('alert-danger').show();
+            paymentMessage.text('Plan information not available. Please try again.').removeClass('alert-success alert-info').addClass('alert-danger').show();
             return;
         }
 
-        // Disable button and show loading state
-        payButton.prop('disabled', true).text('Processing...');
-        paymentMessage.hide();
+        // Disable button and show processing state
+        confirmButton.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Verifying Payment...');
+        paymentMessage.text('Verifying your payment details...').removeClass('alert-danger').addClass('alert-info').show();
 
-        frappe.call({
-            method: 'tookio_shop.www.checkout.index.trigger_mpesa_payment',
-            args: {
-                plan_name: plan_name,
-                phone_number: phone_number
-            },
-            callback: function(r) {
-                // Re-enable button
-                payButton.prop('disabled', false).text('Pay KSh {{ plan.cost or 0 if plan else 0 }} with M-Pesa');
-
-                if (r.message && r.message.ResponseCode == '0') {
-                    checkoutRequestId = r.message.CheckoutRequestID;
-                    paymentMessage.text('STK push sent to your phone. Please enter your M-Pesa PIN to complete the payment. Checking status...').removeClass('alert-danger').addClass('alert-success').show();
-                    
-                    // Start checking transaction status every 5 seconds
-                    startStatusChecking();
-                } else {
-                    paymentMessage.text(r.message.errorMessage || 'An error occurred. Please try again.').removeClass('alert-success').addClass('alert-danger').show();
-                }
-            },
-            error: function(r) {
-                // Re-enable button
-                payButton.prop('disabled', false).text('Pay KSh {{ plan.cost or 0 if plan else 0 }} with M-Pesa');
-                paymentMessage.text('An unexpected error occurred. Please try again.').removeClass('alert-success').addClass('alert-danger').show();
-            }
-        });
-    });
-
-    function startStatusChecking() {
-        let checkCount = 0;
-        const maxChecks = 24; // Check for 2 minutes (24 * 5 seconds)
-        
-        statusCheckInterval = setInterval(function() {
-            checkCount++;
-            
-            if (checkCount > maxChecks || !checkoutRequestId) {
-                clearInterval(statusCheckInterval);
-                $('#payment-message').text('Payment status check timed out. Please check your M-Pesa messages or refresh the page.').removeClass('alert-success').addClass('alert-warning').show();
-                return;
-            }
-
+        // Simulate payment verification delay (3-5 seconds)
+        setTimeout(function() {
             frappe.call({
-                method: 'tookio_mpesa.utils.query_transaction_status',
+                method: 'tookio_shop.www.checkout.index.confirm_payment',
                 args: {
-                    checkout_request_id: checkoutRequestId
+                    plan_name: plan_name,
+                    phone_number: phone_number,
+                    transaction_code: transaction_code
                 },
                 callback: function(r) {
                     if (r.message && r.message.success) {
-                        const status = r.message.transaction_status;
-                        const resultDesc = r.message.result_desc;
+                        paymentMessage.html(
+                            '<strong>Payment Confirmed!</strong><br>' +
+                            r.message.message + '<br>' +
+                            '<small>Sales Invoice: ' + r.message.sales_invoice + '</small>'
+                        ).removeClass('alert-danger alert-info').addClass('alert-success').show();
                         
-                        if (status === 'Success') {
-                            clearInterval(statusCheckInterval);
-                            $('#payment-message').text('Payment successful! Thank you for your payment.').removeClass('alert-warning').addClass('alert-success').show();
-                            
-                            // Redirect to success page or reload after 3 seconds
-                            setTimeout(function() {
-                                window.location.href = '/subscriptions';
-                            }, 3000);
-                        } else if (status === 'Failed') {
-                            clearInterval(statusCheckInterval);
-                            $('#payment-message').text('Payment failed: ' + (resultDesc || 'Please try again.')).removeClass('alert-success alert-warning').addClass('alert-danger').show();
-                        }
-                        // If still pending, continue checking
+                        confirmButton.html('<i class="fa fa-check"></i> Payment Successful!').addClass('btn-success').removeClass('btn-primary');
+                        
+                        // Redirect to subscriptions page after 3 seconds
+                        setTimeout(function() {
+                            window.location.href = '/subscriptions?success=1';
+                        }, 3000);
+                    } else {
+                        confirmButton.prop('disabled', false).html('<i class="fa fa-check"></i> Confirm Payment & Activate Subscription');
+                        paymentMessage.text('Payment confirmation failed. Please try again or contact support.').removeClass('alert-success alert-info').addClass('alert-danger').show();
                     }
                 },
                 error: function(r) {
-                    // Stop checking on authentication errors (403, etc.)
-                    if (r.exc && (r.exc.includes('403') || r.exc.includes('authentication failed') || r.exc.includes('M-Pesa authentication'))) {
-                        clearInterval(statusCheckInterval);
-                        $('#payment-message').text('Payment initiated successfully. Please check your M-Pesa messages for confirmation. Due to system limitations, automatic status checking is temporarily unavailable.').removeClass('alert-success').addClass('alert-info').show();
+                    confirmButton.prop('disabled', false).html('<i class="fa fa-check"></i> Confirm Payment & Activate Subscription');
+                    var errorMsg = 'An error occurred while confirming your payment. Please try again.';
+                    if (r.exc_type && r.exc_type.includes('ValidationError')) {
+                        errorMsg = r._server_messages ? JSON.parse(r._server_messages)[0] : errorMsg;
                     }
-                    // Continue checking for other errors
-                    console.log('Status check error:', r);
+                    paymentMessage.text(errorMsg).removeClass('alert-success alert-info').addClass('alert-danger').show();
                 }
             });
-        }, 5000); // Check every 5 seconds
-    }
+        }, Math.random() * 2000 + 3000); // Random delay between 3-5 seconds
+    });
 });
 </script>
 {% endblock %}
