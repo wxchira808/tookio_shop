@@ -1,5 +1,6 @@
 import frappe
 from frappe import _
+from tookio_shop.utils import get_user_subscription_status
 
 def get_context(context):
     """
@@ -14,7 +15,7 @@ def get_context(context):
         return
 
     try:
-        # Get the customer linked to the current user
+        # Get the customer linked to the current user and check subscription status
         customer_name = frappe.db.get_value("Portal User", {"user": frappe.session.user}, "parent")
         frappe.logger().info(f"DEBUG: Customer name for user {frappe.session.user}: {customer_name}")
         
@@ -24,6 +25,9 @@ def get_context(context):
             context.current_subscription = None
             frappe.logger().info(f"DEBUG: No customer found for user {frappe.session.user}")
         else:
+            # Use the new function to get current subscription status (handles expiry automatically)
+            current_limits = get_user_subscription_status(frappe.session.user)
+            
             # Fetch the user's current subscription plan name from the Customer doc
             current_plan_name = frappe.db.get_value("Customer", customer_name, "custom_tookio_subscription_plan")
             frappe.logger().info(f"DEBUG: Current plan name for customer {customer_name}: {current_plan_name}")
@@ -36,7 +40,7 @@ def get_context(context):
                     frappe.logger().error(f"DEBUG: Error loading plan {current_plan_name}: {plan_error}")
                     context.current_plan = None
 
-                # Get the active subscription details
+                # Get the active subscription details (refetch after potential expiry handling)
                 subscription_name = frappe.db.get_value(
                     "Subscription",
                     {"party": customer_name, "status": ["in", ["Active", "Past Due Date"]]},

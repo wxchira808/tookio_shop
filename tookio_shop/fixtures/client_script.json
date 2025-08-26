@@ -1,0 +1,57 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Product",
+  "enabled": 1,
+  "modified": "2025-08-26 17:32:31.411454",
+  "module": "Tookio Shop",
+  "name": "Disable Assin to product",
+  "script": "frappe.ui.form.on('Product', {\n    refresh: function(frm) {\n        // Check if current user has System Manager role\n        const hasSystemManagerRole = frappe.user.has_role('System Manager');\n        \n        if (!hasSystemManagerRole) {\n            // Hide assignments section only for non-System Managers\n            $('.form-assignments').hide();\n            \n            // Make assign_to field read-only for non-System Managers\n            frm.set_df_property('assign_to', 'read_only', 1);\n        } else {\n            // Ensure assignments are visible for System Managers\n            $('.form-assignments').show();\n            \n            // Make assign_to field editable for System Managers\n            frm.set_df_property('assign_to', 'read_only', 0);\n        }\n    }\n});",
+  "view": "Form"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Shop",
+  "enabled": 1,
+  "modified": "2025-08-26 17:27:02.470701",
+  "module": "Tookio Shop",
+  "name": "Disable Assign to shop",
+  "script": "frappe.ui.form.on('Shop', {\n    refresh: function(frm) {\n        // Check if current user has System Manager role\n        const hasSystemManagerRole = frappe.user.has_role('System Manager');\n        \n        if (!hasSystemManagerRole) {\n            // Hide assignments section only for non-System Managers\n            $('.form-assignments').hide();\n            \n            // Make assign_to field read-only for non-System Managers\n            frm.set_df_property('assign_to', 'read_only', 1);\n        } else {\n            // Ensure assignments are visible for System Managers\n            $('.form-assignments').show();\n            \n            // Make assign_to field editable for System Managers\n            frm.set_df_property('assign_to', 'read_only', 0);\n        }\n    }\n});",
+  "view": "Form"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Portal Settings",
+  "enabled": 1,
+  "modified": "2025-08-26 14:47:48.242814",
+  "module": "Tookio Shop",
+  "name": "Allow Non-Desk User role",
+  "script": "frappe.ui.form.on(\"Portal Settings\", {\n\tsetup: function (frm) {\n\t\tfrm.fields_dict[\"default_role\"].get_query = function (doc) {\n\t\t\treturn {\n\t\t\t\tfilters: {\n\t\t\t\t\tdesk_access: 1,\n\t\t\t\t\tdisabled: 0,\n\t\t\t\t},\n\t\t\t};\n\t\t};\n\t},\n\tonload: function (frm) {\n\t\tfrm.get_field(\"menu\").grid.only_sortable();\n\t},\n\trefresh: function (frm) {\n\t\tfrm.add_custom_button(__(\"Reset\"), function () {\n\t\t\tfrappe.confirm(__(\"Restore to default settings?\"), function () {\n\t\t\t\tfrm.call(\"reset\");\n\t\t\t});\n\t\t});\n\t},\n});\n",
+  "view": "Form"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Product Stock",
+  "enabled": 1,
+  "modified": "2025-08-26 17:32:10.668014",
+  "module": "Tookio Shop",
+  "name": "Disable Assign to product stock",
+  "script": "frappe.ui.form.on('Product Stock', {\n    refresh: function(frm) {\n        // Check if current user has System Manager role\n        const hasSystemManagerRole = frappe.user.has_role('System Manager');\n        \n        if (!hasSystemManagerRole) {\n            // Hide assignments section only for non-System Managers\n            $('.form-assignments').hide();\n            \n            // Make assign_to field read-only for non-System Managers\n            frm.set_df_property('assign_to', 'read_only', 1);\n        } else {\n            // Ensure assignments are visible for System Managers\n            $('.form-assignments').show();\n            \n            // Make assign_to field editable for System Managers\n            frm.set_df_property('assign_to', 'read_only', 0);\n        }\n    }\n});",
+  "view": "Form"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Sale Invoice",
+  "enabled": 1,
+  "modified": "2025-08-26 17:31:51.349196",
+  "module": "Tookio Shop",
+  "name": "Disable Assign to sale invoice",
+  "script": "frappe.ui.form.on('Sale Invoice', {\n    refresh: function(frm) {\n        // Check if current user has System Manager role\n        const hasSystemManagerRole = frappe.user.has_role('System Manager');\n        \n        if (!hasSystemManagerRole) {\n            // Hide assignments section only for non-System Managers\n            $('.form-assignments').hide();\n            \n            // Make assign_to field read-only for non-System Managers\n            frm.set_df_property('assign_to', 'read_only', 1);\n        } else {\n            // Ensure assignments are visible for System Managers\n            $('.form-assignments').show();\n            \n            // Make assign_to field editable for System Managers\n            frm.set_df_property('assign_to', 'read_only', 0);\n        }\n    }\n});",
+  "view": "Form"
+ }
+]

@@ -101,8 +101,7 @@
                                                 <span class="badge badge-warning">{{ current_subscription.status }}</span>
                                             {% endif %}
                                         </li>
-                                        <li><strong>Start Date:</strong> {{ current_subscription.start_date }}</li>
-                                        <li><strong>Expires:</strong> {{ current_subscription.end_date }}</li>
+                                        <li><strong>Expires:</strong> {{ current_subscription.end_date.strftime('%d/%m/%Y') if current_subscription.end_date else '' }}</li>
                                         <li><strong>Subscription ID:</strong> {{ current_subscription.name }}</li>
                                     </ul>
                                     

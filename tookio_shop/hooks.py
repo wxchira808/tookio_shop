@@ -39,8 +39,10 @@ doc_events = {
 fixtures = [
     {
         "dt": "Custom DocPerm"
+    },{
+        "dt": "Client Script",
     },
-     {
+    {
         "dt": "Workspace",
         "filters": [
             ["name", "in", [
@@ -208,23 +210,11 @@ default_module_profile = "Default Restricted Profile"
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"tookio_shop.tasks.all"
-# 	],
-# 	"daily": [
-# 		"tookio_shop.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"tookio_shop.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"tookio_shop.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"tookio_shop.tasks.monthly"
-# 	],
-# }
+scheduler_events = {
+	"daily": [
+		"tookio_shop.utils.check_and_handle_expired_subscriptions"
+	]
+}
 
 # Testing
 # -------

@@ -91,26 +91,77 @@ def confirm_payment(plan_name, phone_number, transaction_code):
             "name"
         )
         
+        # Get plan billing details
+        plan_billing = frappe.db.get_value(
+            "Subscription Plan", 
+            plan.name, 
+            ["billing_interval", "billing_interval_count"], 
+            as_dict=True
+        )
+        
+        # Calculate proper end date based on plan's billing interval
+        start_date = frappe.utils.today()
+        if plan_billing and plan_billing.billing_interval == "Year":
+            end_date = frappe.utils.add_years(start_date, plan_billing.billing_interval_count or 1)
+        elif plan_billing and plan_billing.billing_interval == "Month":
+            end_date = frappe.utils.add_months(start_date, plan_billing.billing_interval_count or 1)
+        else:
+            # Default to 1 year for any plan
+            end_date = frappe.utils.add_years(start_date, 1)
+        
         if existing_subscription:
-            # Update existing subscription
-            subscription = frappe.get_doc("Subscription", existing_subscription)
-            subscription.plans = []  # Clear existing plans
-            subscription.append("plans", {
-                "plan": plan.name,
-                "qty": 1
-            })
-            subscription.status = "Active"
-            subscription.current_invoice_start = frappe.utils.today()
-            subscription.current_invoice_end = frappe.utils.add_months(frappe.utils.today(), 1)
-            subscription.save(ignore_permissions=True)
+            # Try to update existing subscription first
+            try:
+                subscription = frappe.get_doc("Subscription", existing_subscription)
+                subscription.plans = []  # Clear existing plans
+                subscription.append("plans", {
+                    "plan": plan.name,
+                    "qty": 1
+                })
+                subscription.status = "Active"
+                
+                subscription.save(ignore_permissions=True)
+                
+                # Update dates using db_set to bypass validations
+                subscription.db_set("current_invoice_start", start_date)
+                subscription.db_set("current_invoice_end", end_date)
+                subscription.db_set("end_date", end_date)
+                
+            except Exception as update_error:
+                frappe.logger().error(f"Error updating subscription, trying to create new one: {str(update_error)}")
+                
+                # If update fails, cancel old subscription and create new one
+                try:
+                    old_subscription = frappe.get_doc("Subscription", existing_subscription)
+                    old_subscription.db_set("status", "Cancelled")
+                    frappe.logger().info(f"Cancelled old subscription {existing_subscription}")
+                except:
+                    pass  # If cancelling fails, continue anyway
+                
+                # Create new subscription
+                subscription = frappe.new_doc("Subscription")
+                subscription.party_type = "Customer"
+                subscription.party = customer_name
+                subscription.status = "Active"
+                subscription.start_date = start_date
+                subscription.end_date = end_date
+                subscription.current_invoice_start = start_date
+                subscription.current_invoice_end = end_date
+                subscription.append("plans", {
+                    "plan": plan.name,
+                    "qty": 1
+                })
+                subscription.insert(ignore_permissions=True)
         else:
             # Create new subscription
             subscription = frappe.new_doc("Subscription")
             subscription.party_type = "Customer"
             subscription.party = customer_name
             subscription.status = "Active"
-            subscription.current_invoice_start = frappe.utils.today()
-            subscription.current_invoice_end = frappe.utils.add_months(frappe.utils.today(), 1)
+            subscription.start_date = start_date
+            subscription.end_date = end_date
+            subscription.current_invoice_start = start_date
+            subscription.current_invoice_end = end_date
             subscription.append("plans", {
                 "plan": plan.name,
                 "qty": 1
