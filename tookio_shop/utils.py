@@ -99,16 +99,15 @@ def setup_new_user(doc, method):
 
 def get_user_plan_limits(user):
     # Find Customer via Portal User child table
-    customer_name = frappe.db.get_value("Portal User", {"user": user}, "parent", ignore_permissions=True)
+    customer_name = frappe.db.get_value("Portal User", {"user": user}, "parent")
     if customer_name:
         # Get the linked subscription plan from Customer
-        plan_name = frappe.db.get_value("Customer", customer_name, "custom_tookio_subscription_plan", ignore_permissions=True)
+        plan_name = frappe.db.get_value("Customer", customer_name, "custom_tookio_subscription_plan")
         if plan_name:
             limits = frappe.db.get_value(
                 "Subscription Plan", plan_name,
                 ["custom_item_limits", "custom_shop_limit"],
-                as_dict=True,
-                ignore_permissions=True
+                as_dict=True
             )
             if limits:
                 return limits
