@@ -54,10 +54,11 @@
   }
  ],
  "grid_page_length": 50,
+ "hide_toolbar": 1,
  "image_field": "shop_logo",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-24 18:42:21.139026",
+ "modified": "2025-08-26 12:27:40.234296",
  "modified_by": "Administrator",
  "module": "Tookio Shop",
  "name": "Shop",
