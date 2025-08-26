@@ -12,7 +12,9 @@ frappe.ui.form.on('Product Stock', {
 			frm.refresh_field('purpose');
 		}
 
+		// Force refresh shop field to remove red outline
 		if (frm.doc.shop) {
+			frm.refresh_field('shop');
 			frm.set_query('product', 'prodcuts', function() {
 				return {
 					filters: {
@@ -24,6 +26,17 @@ frappe.ui.form.on('Product Stock', {
 	},
 
 	shop: function(frm) {
+		// Refresh the shop field to remove red outline after selection
+		frm.refresh_field('shop');
+		
+		// Clear any validation messages for the shop field
+		frm.set_df_property('shop', 'reqd', 1);
+		
+		// Trigger validation to clear red outline
+		setTimeout(() => {
+			frm.validate();
+		}, 100);
+		
 		frm.set_query('product', 'prodcuts', function() {
 			return {
 				filters: {
@@ -34,10 +47,13 @@ frappe.ui.form.on('Product Stock', {
 	},
 
 	after_save: function(frm) {
-		// Force refresh after submit
-		if (frm.doc.docstatus === 1) {
-			frm.reload_doc();
-		}
+		// Force refresh after save (for both draft and submitted docs)
+		frm.reload_doc().then(() => {
+			// Additional refresh of shop field to ensure red outline is removed
+			if (frm.doc.shop) {
+				frm.refresh_field('shop');
+			}
+		});
 	},
 
 	fetch_products: function(frm) {
@@ -53,6 +69,9 @@ frappe.ui.form.on('Product Stock', {
 				if (r.message) {
 					frm.refresh_field('prodcuts');
 					frappe.show_alert({message: __('Products fetched!'), indicator: 'green'});
+					
+					// Save the document automatically after fetching products
+					frm.save()
 				}
 			}
 		});
