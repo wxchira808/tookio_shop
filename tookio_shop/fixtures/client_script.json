@@ -53,5 +53,16 @@
   "name": "Disable Assign to sale invoice",
   "script": "frappe.ui.form.on('Sale Invoice', {\n    refresh: function(frm) {\n        // Check if current user has System Manager role\n        const hasSystemManagerRole = frappe.user.has_role('System Manager');\n        \n        if (!hasSystemManagerRole) {\n            // Hide assignments section only for non-System Managers\n            $('.form-assignments').hide();\n            \n            // Make assign_to field read-only for non-System Managers\n            frm.set_df_property('assign_to', 'read_only', 1);\n        } else {\n            // Ensure assignments are visible for System Managers\n            $('.form-assignments').show();\n            \n            // Make assign_to field editable for System Managers\n            frm.set_df_property('assign_to', 'read_only', 0);\n        }\n    }\n});",
   "view": "Form"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Product Stock",
+  "enabled": 0,
+  "modified": "2025-08-26 19:43:38.335392",
+  "module": "Tookio Shop",
+  "name": "Refresh Page after product stock",
+  "script": "frappe.ui.form.on(\"Product Stock\", {\n    after_save: function(frm) {\n        frm.reload_doc();\n    }\n});",
+  "view": "Form"
  }
 ]
