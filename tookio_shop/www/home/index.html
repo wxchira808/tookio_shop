@@ -1,32 +1,6 @@
 {% extends "templates/web.html" %}
 
 {% block style %}
-{% block head %}
-        <title>Tookio Shop - Free Inventory Tracker & Online Seller Manager Kenya</title>
-        <meta name="description" content="Tookio Shop helps Kenya's Online sellers and Online businesses track inventory, manage sales, and analyze performance. Free, mobile-friendly, and easy to use.">
-        <meta name="keywords" content="free inventory tracker, kenya online seller manager, instagram sellers, whatsapp shop, small business, invoice, stock management, business analytics, tookio shop">
-        <meta name="author" content="Tookio Shop">
-        <meta name="robots" content="index, follow">
-        <!-- Open Graph -->
-        <meta property="og:title" content="Tookio Shop - Free Inventory Tracker & Online Seller Manager Kenya">
-        <meta property="og:description" content="Track sales, manage stock, and analyze your business performance. Made for Kenya's online sellers.">
-        <meta property="og:type" content="website">
-        <meta property="og:url" content="https://shop.tookio.co.ke/home">
-        <meta property="og:image" content="https://shop.tookio.co.ke/home/mockup.webp">
-        <!-- Twitter Card -->
-        <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:title" content="Tookio Shop - Free Inventory Tracker & Online Seller Manager Kenya">
-        <meta name="twitter:description" content="Track sales, manage stock, and analyze your business performance. Made for Kenya's online sellers.">
-        <meta name="twitter:image" content="https://shop.tookio.co.ke/home/mockup.webp">
-        <!-- Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-EMMNPY523C"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-EMMNPY523C');
-        </script>
-{% endblock %}
 <style>
         * {
             margin: 0;
@@ -573,5 +547,14 @@
                 this.style.transform = 'translateY(0)';
             });
         });
+    </script>
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EMMNPY523C"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-EMMNPY523C');
     </script>
 {% endblock %}

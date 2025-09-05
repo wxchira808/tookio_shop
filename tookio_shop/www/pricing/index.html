@@ -1,0 +1,506 @@
+{% extends "templates/web.html" %}
+
+{% block style %}
+<style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #525252;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .hero {
+            background: #ffffff;
+            padding: 40px 0 40px;
+            text-align: center;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: #262626;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: #6c757d;
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .hero .subtitle {
+            font-size: 1rem;
+            color: #495057;
+            font-weight: 500;
+        }
+
+        .pricing-section {
+            padding: 60px 0 80px;
+            background: #f8f9fa;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .pricing-card {
+            background: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 32px 24px;
+            position: relative;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .pricing-card:hover {
+            border-color: #2490ef;
+            box-shadow: 0 4px 20px rgba(36, 144, 239, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .pricing-card.featured {
+            border-color: #2490ef;
+            box-shadow: 0 4px 20px rgba(36, 144, 239, 0.1);
+        }
+
+        .pricing-card.featured::before {
+            content: "Most Popular";
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2490ef;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .plan-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #262626;
+        }
+
+        .plan-description {
+            color: #6c757d;
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+        }
+
+        .price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #262626;
+            margin-bottom: 4px;
+        }
+
+        .price.free {
+            color: #28a745;
+        }
+
+        .price-period {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+
+        .cta-button {
+            width: 100%;
+            padding: 12px 24px;
+            background: #2490ef;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .cta-button:hover {
+            background: #1c7cd6;
+            transform: translateY(-1px);
+            text-decoration: none;
+            color: white;
+        }
+
+        .cta-button.secondary {
+            background: #ffffff;
+            color: #2490ef;
+            border: 1px solid #2490ef;
+        }
+
+        .cta-button.secondary:hover {
+            background: #2490ef;
+            color: white;
+        }
+
+        .cta-button.free {
+            background: #28a745;
+        }
+
+        .cta-button.free:hover {
+            background: #218838;
+        }
+
+        .features-list {
+            list-style: none;
+            text-align: left;
+        }
+
+        .features-list li {
+            padding: 8px 0;
+            position: relative;
+            padding-left: 20px;
+            font-size: 0.9rem;
+            color: #495057;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .features-list li:last-child {
+            border-bottom: none;
+        }
+
+        .features-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .features-list li.limited {
+            color: #dc3545;
+        }
+
+        .features-list li.limited::before {
+            content: "⚠";
+            color: #ffc107;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #262626;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #6c757d;
+            margin-bottom: 40px;
+            font-size: 1rem;
+        }
+
+        .features-section {
+            padding: 60px 0;
+            background: #ffffff;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: #e3f2fd;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 1.5rem;
+            color: #2490ef;
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #262626;
+        }
+
+        .feature-description {
+            color: #6c757d;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .faq-section {
+            padding: 60px 0;
+            background: #f8f9fa;
+        }
+
+        .faq-item {
+            margin-bottom: 16px;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #ffffff;
+        }
+
+        .faq-question {
+            background: #ffffff;
+            padding: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+            color: #495057;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .faq-question:hover {
+            background: #f8f9fa;
+        }
+
+        .faq-answer {
+            padding: 20px;
+            color: #6c757d;
+            line-height: 1.6;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .faq-answer.show {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .pricing-card {
+                padding: 24px 20px;
+            }
+
+            .features-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 30px;
+            }
+        }
+</style>
+{% endblock %}
+
+{% block page_content %}
+    <div class="hero">
+        <div class="container">
+            <h1>Choose Your Plan</h1>
+            <p>Pick whichever plan is easy for you and upgrade anytime</p>
+        </div>
+    </div>
+
+    <div class="pricing-section">
+        <div class="container">
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3 class="plan-name">Free Plan</h3>
+                    <p class="plan-description">Perfect for getting started with basic shop functionality</p>
+                    <div class="price free">FREE</div>
+                    <div class="price-period">to use</div>
+                    <a href="/login#signup" class="cta-button free">Get Started Free</a>
+                    <ul class="features-list">
+                        <li class="limited">Limited to 25 items</li>
+                        <li class="limited">Limited to 1 shop</li>
+                        <li class="limited">Limited to 100 sales invoices</li>
+                        <li>Basic shop functionality</li>
+                        <li>Standard support</li>
+                    </ul>
+                </div>
+
+                <div class="pricing-card">
+                    <h3 class="plan-name">Starter Plan</h3>
+                    <p class="plan-description">Great for small businesses looking to grow</p>
+                    <div class="price">300 ksh</div>
+                    <div class="price-period">per month</div>
+                    <a href="/login#signup" class="cta-button">Start Trial</a>
+                    <ul class="features-list">
+                        <li class="limited">Limited to 100 items</li>
+                        <li class="limited">Limited to 1 shop</li>
+                        <li>Unlimited sales invoices</li>
+                        <li>Enhanced shop features</li>
+                        <li>Priority support</li>
+                        <li>Basic analytics</li>
+                    </ul>
+                </div>
+
+                <div class="pricing-card featured">
+                    <h3 class="plan-name">Business Plan</h3>
+                    <p class="plan-description">Ideal for growing businesses with multiple locations</p>
+                    <div class="price">1000 ksh</div>
+                    <div class="price-period">per month</div>
+                    <a href="/login#signup" class="cta-button">Start Trial</a>
+                    <ul class="features-list">
+                        <li>Unlimited items</li>
+                        <li>Up to 10 shops</li>
+                        <li>Unlimited sales invoices</li>
+                        <li>Advanced shop management</li>
+                        <li>Advanced analytics</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="features-section">
+        <div class="container">
+            <h2 class="section-title">Why Choose Tookio Shop</h2>
+            <p class="section-subtitle">Built on ERPNext for reliability, scalability, and ease of use</p>
+            
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">🚀</div>
+                    <h3 class="feature-title">Easy Setup</h3>
+                    <p class="feature-description">Get your shop running in minutes with our intuitive setup process and guided onboarding.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">Powerful Analytics</h3>
+                    <p class="feature-description">Track sales, inventory, and customer behavior with comprehensive reporting and insights.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🔧</div>
+                    <h3 class="feature-title">Fully Customizable</h3>
+                    <p class="feature-description">Tailor your shop to match your business needs with flexible workflows and custom fields.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🛡️</div>
+                    <h3 class="feature-title">Secure & Reliable</h3>
+                    <p class="feature-description">Built on ERPNext framework with enterprise-grade security and 99.9% uptime guarantee.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">📱</div>
+                    <h3 class="feature-title">Mobile Ready</h3>
+                    <p class="feature-description">Manage your shop from anywhere with our responsive design and mobile app support.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🤝</div>
+                    <h3 class="feature-title">Expert Support</h3>
+                    <p class="feature-description">Get help when you need it with our dedicated support team and comprehensive documentation.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="faq-section">
+        <div class="container">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    Can I upgrade my plan at any time?
+                </div>
+                <div class="faq-answer">
+                    Yes, you can upgrade your plan at any time. The changes will be reflected immediately, and you'll only pay the prorated difference for the current billing period.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    What happens if I exceed my plan limits?
+                </div>
+                <div class="faq-answer">
+                    If you approach your plan limits, we'll notify you and suggest upgrading to the next tier. You won't be charged extra, but you may need to upgrade to continue adding items or invoices.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    Is there a free trial available?
+                </div>
+                <div class="faq-answer">
+                    Yes, we offer a 14-day free trial for all paid plans. You can start with any plan and explore all features before committing.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    How does the Enterprise plan work?
+                </div>
+                <div class="faq-answer">
+                    Our Enterprise plan is fully customized based on your specific needs. Contact our sales team to discuss your requirements and get a custom quote.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    Can I cancel my subscription anytime?
+                </div>
+                <div class="faq-answer">
+                    Yes, you can cancel your subscription at any time. Your account will remain active until the end of your current billing period.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleFaq(element) {
+            const answer = element.nextElementSibling;
+            const isVisible = answer.classList.contains('show');
+            
+            // Close all other FAQs
+            document.querySelectorAll('.faq-answer').forEach(item => {
+                item.classList.remove('show');
+            });
+            
+            // Toggle current FAQ
+            if (!isVisible) {
+                answer.classList.add('show');
+            }
+        }
+
+        <!-- Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-EMMNPY523C"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-EMMNPY523C');
+        </script>
+    </script>
+{% endblock %}
