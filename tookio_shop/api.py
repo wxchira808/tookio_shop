@@ -720,3 +720,4 @@ def test_create_invoice(plan_name):
         # Reset the flag
         frappe.flags.ignore_permissions = False
 
+
