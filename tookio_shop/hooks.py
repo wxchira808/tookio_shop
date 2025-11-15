@@ -41,15 +41,6 @@ fixtures = [
         "dt": "Custom DocPerm"
     },{
         "dt": "Client Script",
-    },
-    {
-        "dt": "Workspace",
-        "filters": [
-            ["name", "in", [
-                "Tookio"
-
-           ]]
-        ]
     }
 ]
 
