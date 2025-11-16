@@ -8,6 +8,55 @@ import hashlib
 from urllib.parse import urlencode
 
 @frappe.whitelist()
+def get_user_subscription():
+	"""
+	Get subscription details for the currently logged-in user
+	Returns the subscription plan name and limits
+	"""
+	try:
+		user = frappe.session.user
+
+		# Find Customer via Portal User child table
+		customer_name = frappe.db.get_value("Portal User", {"user": user}, "parent")
+
+		if not customer_name:
+			return {
+				"status": "success",
+				"subscription_plan": "Free Plan",
+				"customer_name": None
+			}
+
+		# Get the subscription plan from Customer
+		plan_name = frappe.db.get_value("Customer", customer_name, "custom_tookio_subscription_plan")
+
+		if not plan_name:
+			plan_name = "Free Plan"
+
+		# Get plan details
+		plan_details = frappe.db.get_value(
+			"Subscription Plan",
+			plan_name,
+			["name", "custom_item_limits", "custom_shop_limit", "cost"],
+			as_dict=True
+		)
+
+		return {
+			"status": "success",
+			"subscription_plan": plan_name,
+			"customer_name": customer_name,
+			"plan_details": plan_details or {}
+		}
+
+	except Exception as e:
+		frappe.log_error(f"Failed to get subscription for {frappe.session.user}: {e}", "Get Subscription Error")
+		return {
+			"status": "error",
+			"message": "Could not fetch subscription details",
+			"subscription_plan": "Free Plan"
+		}
+
+
+@frappe.whitelist()
 def update_subscription_plan(new_plan):
 	""" Update the subscription plan for the currently logged-in user. """
 	frappe.flags.ignore_permissions = True
