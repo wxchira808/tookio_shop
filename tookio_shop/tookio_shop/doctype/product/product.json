@@ -43,8 +43,7 @@
    "label": "Stock Quantity",
    "non_negative": 1,
    "precision": "2",
-   "read_only": 1,
-   "read_only_depends_on": "eval:doc.edit_stock_qty=='0'",
+   "read_only_depends_on": "//eval:doc.edit_stock_qty=='0'",
    "reqd": 1
   },
   {
@@ -112,7 +111,7 @@
  "index_web_pages_for_search": 1,
  "links": [],
  "max_attachments": 1,
- "modified": "2025-08-26 18:35:23.148110",
+ "modified": "2025-11-16 15:36:50.616208",
  "modified_by": "Administrator",
  "module": "Tookio Shop",
  "name": "Product",
