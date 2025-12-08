@@ -1,0 +1,1 @@
+# Pesapal Gateway Setting
