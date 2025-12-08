@@ -12,6 +12,13 @@ from frappe.model.document import Document
 
 class SaleInvoice(Document):
 	def validate(self):
+		# Check that all products are enabled
+		for item in self.items:
+			if item.product:
+				is_enabled = frappe.db.get_value('Product', item.product, 'enabled')
+				if not is_enabled:
+					frappe.throw(f"Product {item.product} is disabled and cannot be added to sales invoices.")
+		
 		total = 0
 		for item in self.items:
 			if item.price and item.quantity:

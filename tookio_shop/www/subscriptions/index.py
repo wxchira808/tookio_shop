@@ -1,52 +1,24 @@
 import frappe
 from frappe import _
-from tookio_shop.utils import get_user_subscription_status
 
 def get_context(context):
     """
-    Fetches the user's current subscription and all available plans
-    and adds them to the context for rendering on the portal page.
+    Tookio Shop is now FREE forever - no subscriptions needed!
     """
     context.no_cache = 1
-    
+    context.title = "Tookio Shop - FREE Forever! | No Subscriptions Needed"
+    context.meta_description = "Tookio Shop is completely FREE with no subscriptions or payments required. Enjoy unlimited inventory management forever!"
+
     # Redirect guests to login page
     if frappe.session.user == "Guest":
         frappe.local.response["location"] = "/login"
         return
 
-    try:
-        # Get the customer linked to the current user and check subscription status
-        customer_name = frappe.db.get_value("Portal User", {"user": frappe.session.user}, "parent")
-        frappe.logger().info(f"DEBUG: Customer name for user {frappe.session.user}: {customer_name}")
-        
-        if not customer_name:
-            # Handle cases where user might not be linked to a customer
-            context.current_plan = None
-            context.current_subscription = None
-            frappe.logger().info(f"DEBUG: No customer found for user {frappe.session.user}")
-        else:
-            # Use the new function to get current subscription status (handles expiry automatically)
-            current_limits = get_user_subscription_status(frappe.session.user)
-            
-            # Fetch the user's current subscription plan name from the Customer doc
-            current_plan_name = frappe.db.get_value("Customer", customer_name, "custom_tookio_subscription_plan")
-            frappe.logger().info(f"DEBUG: Current plan name for customer {customer_name}: {current_plan_name}")
-            
-            if current_plan_name:
-                try:
-                    context.current_plan = frappe.get_doc("Subscription Plan", current_plan_name, ignore_permissions=True)
-                    frappe.logger().info(f"DEBUG: Successfully loaded plan: {current_plan_name}")
-                except Exception as plan_error:
-                    frappe.logger().error(f"DEBUG: Error loading plan {current_plan_name}: {plan_error}")
-                    context.current_plan = None
-
-                # Get the active subscription details (refetch after potential expiry handling)
-                subscription_name = frappe.db.get_value(
-                    "Subscription",
-                    {"party": customer_name, "status": ["in", ["Active", "Past Due Date"]]},
-                    "name"
-                )
-                frappe.logger().info(f"DEBUG: Subscription name for customer {customer_name}: {subscription_name}")
+    # Since app is free, no subscription logic needed
+    context.current_plan = None
+    context.current_subscription = None
+    context.is_free_forever = True
+    context.message = "🎉 Tookio Shop is FREE forever! No subscriptions needed."
                 
                 if subscription_name:
                     try:

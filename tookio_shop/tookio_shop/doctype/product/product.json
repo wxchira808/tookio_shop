@@ -17,7 +17,8 @@
   "stock_quantity",
   "edit_stock_qty",
   "photo",
-  "item_owner"
+  "item_owner",
+  "enabled"
  ],
  "fields": [
   {
@@ -104,6 +105,12 @@
    "hidden": 1,
    "label": "Shop Name",
    "read_only": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled"
   }
  ],
  "grid_page_length": 50,
@@ -111,7 +118,7 @@
  "index_web_pages_for_search": 1,
  "links": [],
  "max_attachments": 1,
- "modified": "2025-11-16 15:36:50.616208",
+ "modified": "2025-12-08 15:00:06.067260",
  "modified_by": "Administrator",
  "module": "Tookio Shop",
  "name": "Product",

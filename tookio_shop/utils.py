@@ -264,4 +264,28 @@ def get_user_subscription_status(user=None):
     return get_user_plan_limits(user)
 
 
+def get_enabled_products_for_user(shop=None):
+	"""Get only enabled products for a specific shop or all enabled products"""
+	filters = {'enabled': 1}
+	if shop:
+		filters['shop'] = shop
+	
+	return frappe.get_list('Product', 
+		filters=filters,
+		fields=['name', 'item_name', 'selling_price', 'stock_quantity', 'shop', 'enabled'],
+		order_by='item_name asc'
+	)
+
+
+def validate_product_is_enabled(product_name):
+	"""Check if a product is enabled, raise error if disabled"""
+	is_enabled = frappe.db.get_value('Product', product_name, 'enabled')
+	if not is_enabled:
+		frappe.throw(f"Product '{product_name}' is disabled and cannot be used in transactions.")
+	return True
+
+
+
+
+
 

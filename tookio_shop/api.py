@@ -11,43 +11,44 @@ import json
 PESAPAL_SANDBOX_URL = "https://cybqa.pesapal.com/pesapalv3"
 PESAPAL_LIVE_URL = "https://pay.pesapal.com/v3"
 
-@frappe.whitelist()
-def initiate_pesapal_payment(phone_number, amount, plan_name):
-    """Initiate Pesapal payment for subscription"""
-    try:
-        # Get Pesapal settings
-        settings = get_pesapal_settings()
-        if not settings:
-            frappe.throw("Pesapal not configured. Please contact support.")
+# COMMENTED OUT - Making app FREE
+# @frappe.whitelist()
+# def initiate_pesapal_payment(phone_number, amount, plan_name):
+#     """Initiate Pesapal payment for subscription"""
+#     try:
+#         # Get Pesapal settings
+#         settings = get_pesapal_settings()
+#         if not settings:
+#             frappe.throw("Pesapal not configured. Please contact support.")
 
-        # Get access token
-        token = get_pesapal_token(settings)
+#         # Get access token
+#         token = get_pesapal_token(settings)
 
-        # Prepare order data
-        order_data = {
-            "id": f"SUB-{frappe.session.user}-{datetime.now().strftime('%Y%m%d%H%M%S')}",
-            "currency": "KES",
-            "amount": float(amount),
-            "description": f"Tookio Shop Subscription - {plan_name}",
-            "callback_url": f"{frappe.utils.get_url()}/api/method/tookio_shop.api.pesapal_callback",
-            "notification_id": settings.notification_id or "",
-            "billing_address": {
-                "phone_number": phone_number,
-                "email_address": frappe.session.user,
-                "country_code": "KE",
-                "first_name": "Tookio",
-                "last_name": "User"
-            }
-        }
+#         # Prepare order data
+#         order_data = {
+#             "id": f"SUB-{frappe.session.user}-{datetime.now().strftime('%Y%m%d%H%M%S')}",
+#             "currency": "KES",
+#             "amount": float(amount),
+#             "description": f"Tookio Shop Subscription - {plan_name}",
+#             "callback_url": f"{frappe.utils.get_url()}/api/method/tookio_shop.api.pesapal_callback",
+#             "notification_id": settings.notification_id or "",
+#             "billing_address": {
+#                 "phone_number": phone_number,
+#                 "email_address": frappe.session.user,
+#                 "country_code": "KE",
+#                 "first_name": "Tookio",
+#                 "last_name": "User"
+#             }
+#         }
 
-        # Submit order request
-        headers = {
-            "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json"
-        }
+#         # Submit order request
+#         headers = {
+#             "Authorization": f"Bearer {token}",
+#             "Content-Type": "application/json"
+#         }
 
-        base_url = PESAPAL_SANDBOX_URL if settings.is_sandbox else PESAPAL_LIVE_URL
-        response = requests.post(
+#         base_url = PESAPAL_SANDBOX_URL if settings.is_sandbox else PESAPAL_LIVE_URL
+#         response = requests.post(
             f"{base_url}/api/Transactions/SubmitOrderRequest",
             headers=headers,
             json=order_data,
@@ -73,8 +74,9 @@ def initiate_pesapal_payment(phone_number, amount, plan_name):
         frappe.log_error(str(e), "Pesapal Payment Initiation")
         frappe.throw("Failed to initiate Pesapal payment. Please try again.")
 
-@frappe.whitelist(allow_guest=True)
-def pesapal_callback():
+# COMMENTED OUT - Making app FREE
+# @frappe.whitelist(allow_guest=True)
+# def pesapal_callback():
     """Handle Pesapal IPN callback"""
     try:
         data = frappe.form_dict
@@ -127,8 +129,9 @@ def pesapal_callback():
         frappe.log_error(str(e), "Pesapal Callback")
         return {"status": "error", "message": str(e)}
 
-@frappe.whitelist()
-def verify_pesapal_payment(order_tracking_id):
+# COMMENTED OUT - Making app FREE
+# @frappe.whitelist()
+# def verify_pesapal_payment(order_tracking_id):
     """Verify Pesapal payment status"""
     try:
         settings = get_pesapal_settings()
@@ -158,8 +161,9 @@ def verify_pesapal_payment(order_tracking_id):
         frappe.log_error(str(e), "Pesapal Payment Verification")
         frappe.throw("Failed to verify payment")
 
-@frappe.whitelist()
-def register_pesapal_ipn():
+# COMMENTED OUT - Making app FREE
+# @frappe.whitelist()
+# def register_pesapal_ipn():
     """Register IPN URL with Pesapal"""
     try:
         settings = get_pesapal_settings()
@@ -227,9 +231,10 @@ def get_pesapal_token(settings):
 def get_pesapal_settings():
 	"""Get Pesapal settings"""
 	try:
-		return frappe.get_doc("Pesapal Gateway Setting", "pesapal")
-	except frappe.DoesNotExistError:
-		return Nonedef log_payment(order_data, response_data, status):
+		return frappe.get_single("Pesapal Gateway Setting")
+	except:
+		return None
+def log_payment(order_data, response_data, status):
     """Log payment transaction"""
     try:
         log = frappe.get_doc({
@@ -261,3 +266,24 @@ def activate_subscription_for_user(customer, transaction_id):
 
     except Exception as e:
         frappe.log_error(str(e), "Subscription Activation")
+
+# FREE APP - Stub functions for mobile app compatibility
+@frappe.whitelist()
+def activate_subscription(plan_name, payment_method, transaction_id):
+    """Stub function - app is now free"""
+    return {"success": True, "message": "Tookio Shop is FREE forever! No subscription needed."}
+
+@frappe.whitelist()
+def cancel_subscription():
+    """Stub function - app is now free"""
+    return {"success": True, "message": "Tookio Shop is FREE forever! No subscription to cancel."}
+
+@frappe.whitelist()
+def get_subscription_details():
+    """Stub function - app is now free"""
+    return {
+        "plan": "FREE Forever",
+        "status": "Active",
+        "features": ["Unlimited items", "Unlimited shops", "All features"],
+        "message": "Tookio Shop is completely FREE with no limits!"
+    }

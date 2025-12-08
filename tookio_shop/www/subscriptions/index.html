@@ -61,18 +61,40 @@
 {% block page_content %}
 <div class="container my-5">
     <div class="row justify-content-center">
-        <div class="col-lg-10">
-            <h1 class="mb-4">Manage Your Subscription</h1>
-
-            <!-- Success Message for New Subscribers -->
-            <div id="success-message" class="alert alert-success" style="display: none;">
-                <h4><i class="fa fa-check-circle"></i> Subscription Activated Successfully!</h4>
-                <p>Welcome to your new subscription plan! Your account has been upgraded and all features are now available.</p>
+        <div class="col-lg-8">
+            <div class="text-center mb-5">
+                <h1 class="mb-4">🎉 Tookio Shop is FREE Forever!</h1>
+                <div style="font-size: 1.2rem; color: #28a745; margin-bottom: 2rem;">
+                    <strong>No subscriptions • No payments • No limits</strong>
+                </div>
+                <p style="font-size: 1.1rem; color: #6c757d; margin-bottom: 2rem;">
+                    Enjoy unlimited inventory management, unlimited shops, and all features completely FREE forever.
+                    No credit card required, no monthly bills, no restrictions.
+                </p>
             </div>
 
-            {% if error %}
-                <div class="alert alert-danger">{{ error }}</div>
-            {% endif %}
+                <div class="card shadow-sm" style="border: 2px solid #28a745;">
+                    <div class="card-body text-center p-5">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">❤️</div>
+                        <h3 class="card-title mb-3" style="color: #28a745;">Love Tookio Shop?</h3>
+                        <p class="card-text mb-4">
+                            While Tookio Shop is completely FREE, you can show your support with a small donation.
+                            Every contribution helps us keep improving the app for Kenyan online sellers!
+                        </p>
+                        <form action="https://www.paypal.com/donate" method="post" target="_top" style="display: inline-block;">
+                            <input type="hidden" name="hosted_button_id" value="642Y6XCHLBJFE" />
+                            <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+                            <img alt="" border="0" src="https://www.paypal.com/en_KE/i/scr/pixel.gif" width="1" height="1" />
+                        </form>
+                    </div>
+                </div>            <div class="text-center mt-4">
+                <p style="color: #6c757d;">
+                    Questions? <a href="mailto:support@tookioshop.com">Contact Support</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
 
             <!-- Current Plan Section -->
             {% if current_plan %}

@@ -3,37 +3,13 @@ from frappe import _
 
 def get_context(context):
     """
-    Checkout page for subscription plans
+    Tookio Shop is now FREE forever - redirecting to subscriptions page
     """
     context.no_cache = 1
-    
-    # Redirect guests to login page
-    if frappe.session.user == "Guest":
-        frappe.local.response["location"] = "/login"
-        return
 
-    # Get the selected plan from URL parameter
-    plan_name = frappe.form_dict.get("plan")
-    if not plan_name:
-        frappe.local.response["location"] = "/subscriptions"
-        return
-
-    try:
-        # Get the subscription plan details
-        plan = frappe.get_doc("Subscription Plan", plan_name)
-        context.plan = plan
-        
-        # Get current user details
-        customer_name = frappe.db.get_value("Portal User", {"user": frappe.session.user}, "parent")
-        if customer_name:
-            customer = frappe.get_doc("Customer", customer_name)
-            context.customer = customer
-        else:
-            context.customer = None
-        
-    except Exception as e:
-        frappe.log_error(f"Error in checkout for plan {plan_name}: {e}", "Checkout Error")
-        context.error = _("Could not load checkout details. Please try again.")
+    # Since app is free, redirect to subscriptions page with free message
+    frappe.local.response["location"] = "/subscriptions?free=true"
+    return
 
 @frappe.whitelist(allow_guest=False)
 def confirm_payment(plan_name, phone_number, transaction_code):

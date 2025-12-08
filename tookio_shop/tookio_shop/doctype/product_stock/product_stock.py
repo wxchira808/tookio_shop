@@ -11,6 +11,14 @@ import frappe
 
 
 class ProductStock(Document):
+	def validate(self):
+		"""Validate that all products in stock transaction are enabled"""
+		for item in self.prodcuts:
+			if item.product:
+				is_enabled = frappe.db.get_value('Product', item.product, 'enabled')
+				if not is_enabled:
+					frappe.throw(f"Product {item.product} is disabled and cannot be used in stock transactions.")
+
 	def on_submit(self):
 		messages = []
 		for item in self.prodcuts:
