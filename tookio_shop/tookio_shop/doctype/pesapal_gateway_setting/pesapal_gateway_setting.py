@@ -33,7 +33,7 @@ class PesapalGatewaySetting(Document):
 def test_pesapal_connection():
 	"""Test connection to Pesapal API"""
 	try:
-		settings = frappe.get_single("Pesapal Gateway Setting")
+		settings = frappe.get_doc("Pesapal Gateway Setting", "pesapal")
 		
 		if not settings.enabled:
 			frappe.throw("Pesapal gateway is not enabled")
@@ -47,5 +47,7 @@ def test_pesapal_connection():
 		
 		return True
 		
+	except frappe.DoesNotExistError:
+		frappe.throw("Pesapal Gateway Setting document 'pesapal' not found. Please create it first.")
 	except Exception as e:
 		frappe.throw(f"Connection test failed: {str(e)}")

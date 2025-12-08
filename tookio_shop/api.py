@@ -225,13 +225,11 @@ def get_pesapal_token(settings):
         raise
 
 def get_pesapal_settings():
-    """Get Pesapal settings"""
-    try:
-        return frappe.get_single("Pesapal Gateway Setting")
-    except:
-        return None
-
-def log_payment(order_data, response_data, status):
+	"""Get Pesapal settings"""
+	try:
+		return frappe.get_doc("Pesapal Gateway Setting", "pesapal")
+	except frappe.DoesNotExistError:
+		return Nonedef log_payment(order_data, response_data, status):
     """Log payment transaction"""
     try:
         log = frappe.get_doc({
