@@ -5,6 +5,7 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "enabled",
   "shop_name",
   "location",
   "address",
@@ -50,13 +51,19 @@
    "fieldname": "address",
    "fieldtype": "Data",
    "label": "Address"
+  },
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled"
   }
  ],
  "grid_page_length": 50,
  "image_field": "shop_logo",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-26 14:13:38.475907",
+ "modified": "2025-12-11 00:21:41.546186",
  "modified_by": "Administrator",
  "module": "Tookio Shop",
  "name": "Shop",
