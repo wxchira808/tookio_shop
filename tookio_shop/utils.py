@@ -59,43 +59,43 @@ def setup_new_user(doc, method):
             customer.insert(ignore_permissions=True)
             customer_name = customer.name
 
-        # 3. Assign Free Plan and create subscription
-        plan_name = "Free Plan"
-        if frappe.db.exists("Subscription Plan", plan_name):
-            customer = frappe.get_doc("Customer", customer_name, ignore_permissions=True)
-            customer.db_set("custom_tookio_subscription_plan", plan_name)
-            
-            # Create a proper subscription for the free plan
-            if not frappe.db.exists("Subscription", {"party": customer_name}):
-                # Get plan billing details
-                plan_billing = frappe.db.get_value(
-                    "Subscription Plan", 
-                    plan_name, 
-                    ["billing_interval", "billing_interval_count"], 
-                    as_dict=True
-                )
-                
-                # Calculate proper end date for free plan
-                start_date = frappe.utils.today()
-                if plan_billing and plan_billing.billing_interval == "Year":
-                    end_date = frappe.utils.add_years(start_date, plan_billing.billing_interval_count or 1)
-                else:
-                    # Default free plan to 1 year
-                    end_date = frappe.utils.add_years(start_date, 1)
-                
-                subscription = frappe.new_doc("Subscription")
-                subscription.party_type = "Customer"
-                subscription.party = customer_name
-                subscription.status = "Active"
-                subscription.start_date = start_date
-                subscription.end_date = end_date
-                subscription.current_invoice_start = start_date
-                subscription.current_invoice_end = end_date
-                subscription.append("plans", {
-                    "plan": plan_name,
-                    "qty": 1
-                })
-                subscription.insert(ignore_permissions=True)
+        # 3. Assign Free Plan and create subscription - COMMENTED OUT FOR FREE APP
+        # plan_name = "Free Plan"
+        # if frappe.db.exists("Subscription Plan", plan_name):
+        #     customer = frappe.get_doc("Customer", customer_name, ignore_permissions=True)
+        #     customer.db_set("custom_tookio_subscription_plan", plan_name)
+        #     
+        #     # Create a proper subscription for the free plan
+        #     if not frappe.db.exists("Subscription", {"party": customer_name}):
+        #         # Get plan billing details
+        #         plan_billing = frappe.db.get_value(
+        #             "Subscription Plan", 
+        #             plan_name, 
+        #             ["billing_interval", "billing_interval_count"], 
+        #             as_dict=True
+        #         )
+        #         
+        #         # Calculate proper end date for free plan
+        #         start_date = frappe.utils.today()
+        #         if plan_billing and plan_billing.billing_interval == "Year":
+        #             end_date = frappe.utils.add_years(start_date, plan_billing.billing_interval_count or 1)
+        #         else:
+        #             # Default free plan to 1 year
+        #         end_date = frappe.utils.add_years(start_date, 1)
+        #         
+        #         subscription = frappe.new_doc("Subscription")
+        #         subscription.party_type = "Customer"
+        #         subscription.party = customer_name
+        #         subscription.status = "Active"
+        #         subscription.start_date = start_date
+        #         subscription.end_date = end_date
+        #         subscription.current_invoice_start = start_date
+        #         subscription.current_invoice_end = end_date
+        #         subscription.append("plans", {
+        #             "plan": plan_name,
+        #             "qty": 1
+        #         })
+        #         subscription.insert(ignore_permissions=True)
 
         # 4. Assign the roles using direct SQL to bypass permissions
         for role in ["Tookio Seller", "Customer"]:
