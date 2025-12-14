@@ -357,14 +357,16 @@ def get_user_subscription():
         }
 
 @frappe.whitelist(allow_guest=False)
-def submit_payment_confirmation(subscription_plan):
+def submit_payment_confirmation(subscription_plan, user_name):
     """User submits that they've made payment (fake payment for now)"""
     user = frappe.session.user
     
     # Create payment confirmation record
     doc = frappe.new_doc("Tookio Payment Confirmation")
     doc.user = user
+    doc.user_name = user_name
     doc.subscription_plan = subscription_plan
+    doc.till_number = "6547212"
     doc.status = "Pending Verification"
     doc.insert(ignore_permissions=True)
     
