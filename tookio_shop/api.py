@@ -370,10 +370,10 @@ def submit_payment_confirmation(subscription_plan, user_name):
     doc.status = "Pending Verification"
     doc.insert(ignore_permissions=True)
     
-    # Auto-verify after 5 seconds simulation
+    # Auto-verify after creation for UX
     # In reality, admin verifies manually, but we'll auto-verify for UX
     doc.status = "Verified"
-    doc.verified_by = "System"
+    doc.verified_by = "Administrator"
     doc.verified_date = frappe.utils.now()
     doc.save(ignore_permissions=True)
     

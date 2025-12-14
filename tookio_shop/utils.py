@@ -69,7 +69,7 @@ def create_free_subscription_for_user(user):
         user_sub.user = user
         user_sub.current_subscription = free_plan
         user_sub.subscription_start_date = getdate()
-        user_sub.subscription_end_date = add_months(getdate(), 12)  # Free plan for 1 year
+        user_sub.subscription_end_date = add_months(getdate(), 600)  # Free plan for 50 years
         user_sub.status = "Active"
         user_sub.insert(ignore_permissions=True)
         
@@ -98,6 +98,25 @@ def get_user_plan_limits(user):
             "custom_item_limits": user_sub.products_limit,
             "sales_invoice_limit": user_sub.sales_invoice_limit
         }
+
+
+def check_subscription_expired(user):
+    """Check if user's subscription has expired"""
+    user_sub = frappe.db.get_value(
+        "Tookio User Subscription",
+        {"user": user},
+        ["subscription_end_date", "status"],
+        as_dict=True
+    )
+    
+    if user_sub and user_sub.subscription_end_date:
+        if getdate(user_sub.subscription_end_date) < getdate():
+            # Subscription expired, deactivate it
+            if user_sub.status == "Active":
+                frappe.db.set_value("Tookio User Subscription", {"user": user}, "status", "Expired")
+                frappe.db.commit()
+            return True
+    return False
     else:
         # Default to free plan limits if no subscription found
         return {
@@ -107,8 +126,13 @@ def get_user_plan_limits(user):
         }
 
 def check_item_limit(doc, method):
-    """Check if user has exceeded their product limit"""
+    """Check if user has exceeded their item limit"""
     user = frappe.session.user
+    
+    # Check if subscription expired
+    if check_subscription_expired(user):
+        frappe.throw("Your subscription has expired. Please renew to continue using Tookio Shop.")
+    
     limits = get_user_plan_limits(user)
     
     # Count existing products for this user
@@ -123,6 +147,11 @@ def check_item_limit(doc, method):
 def check_shop_limit(doc, method):
     """Check if user has exceeded their shop limit"""
     user = frappe.session.user
+    
+    # Check if subscription expired
+    if check_subscription_expired(user):
+        frappe.throw("Your subscription has expired. Please renew to continue using Tookio Shop.")
+    
     limits = get_user_plan_limits(user)
     
     # Count existing shops for this user
@@ -144,6 +173,11 @@ def prevent_negative_stock(doc, method):
 def check_sales_invoice_limit(doc, method):
     """Check if user has exceeded their sales invoice limit"""
     user = frappe.session.user
+    
+    # Check if subscription expired
+    if check_subscription_expired(user):
+        frappe.throw("Your subscription has expired. Please renew to continue using Tookio Shop.")
+    
     limits = get_user_plan_limits(user)
     
     # 0 means unlimited
