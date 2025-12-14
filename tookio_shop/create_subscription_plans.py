@@ -33,11 +33,11 @@ def create_subscription_plans():
         },
         {
             "subscription_name": "Premium Plan",
-            "description": "For serious businesses with multiple shops and unlimited features",
+            "description": "For serious businesses with unlimited everything",
             "price": 1500,
             "currency": "KES",
-            "shop_limit": 5,
-            "products_limit": 400,
+            "shop_limit": 0,  # 0 means unlimited
+            "products_limit": 0,  # 0 means unlimited
             "sales_invoice_limit": 0,  # 0 means unlimited
             "enabled": 1
         }

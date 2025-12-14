@@ -361,20 +361,20 @@ def submit_payment_confirmation(subscription_plan, user_name):
     """User submits that they've made payment (fake payment for now)"""
     user = frappe.session.user
     
-    # Create payment confirmation record with Verified status directly
+    # Create payment confirmation record with Pending status for admin verification
     doc = frappe.new_doc("Tookio Payment Confirmation")
     doc.user = user
     doc.user_name = user_name or ""
     doc.subscription_plan = subscription_plan
     doc.till_number = "6547212"
-    doc.status = "Verified"  # Auto-verify immediately
+    doc.status = "Pending Verification"  # Admin will manually verify
     doc.insert(ignore_permissions=True)
     
     frappe.db.commit()
     
     return {
         "success": True,
-        "message": "Payment confirmed! Your subscription has been activated.",
+        "message": "Payment confirmation submitted! Your subscription will be activated once admin verifies your payment.",
         "confirmation_id": doc.name
     }
 
