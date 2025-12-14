@@ -117,13 +117,7 @@ def check_subscription_expired(user):
                 frappe.db.commit()
             return True
     return False
-    else:
-        # Default to free plan limits if no subscription found
-        return {
-            "custom_shop_limit": 1,
-            "custom_item_limits": 50,
-            "sales_invoice_limit": 200
-        }
+
 
 def check_item_limit(doc, method):
     """Check if user has exceeded their item limit"""
