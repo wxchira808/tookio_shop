@@ -1,0 +1,45 @@
+{
+ "actions": [],
+ "creation": "2025-12-14 10:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "tookio_subscription",
+  "subscription_start_date",
+  "subscription_end_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "tookio_subscription",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Tookio Subscription",
+   "options": "Tookio Subscription"
+  },
+  {
+   "fieldname": "subscription_start_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Subscription Start Date"
+  },
+  {
+   "fieldname": "subscription_end_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Subscription End Date"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-12-14 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Tookio Shop",
+ "name": "Tookio User Subscription History",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

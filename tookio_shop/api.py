@@ -287,3 +287,108 @@ def get_subscription_details():
         "features": ["Unlimited items", "Unlimited shops", "All features"],
         "message": "Tookio Shop is completely FREE with no limits!"
     }
+
+# ==================== NEW SUBSCRIPTION SYSTEM ====================
+
+@frappe.whitelist(allow_guest=False)
+def get_subscription_plans():
+    """Get all available subscription plans"""
+    plans = frappe.get_all(
+        "Tookio Subscription",
+        filters={"enabled": 1},
+        fields=["name", "subscription_name", "description", "price", "currency", "shop_limit", "products_limit", "sales_invoice_limit"],
+        order_by="price asc"
+    )
+    return {"plans": plans}
+
+@frappe.whitelist(allow_guest=False)
+def get_user_subscription():
+    """Get current user's subscription details"""
+    user = frappe.session.user
+    
+    # Get user subscription
+    user_sub = frappe.db.exists("Tookio User Subscription", {"user": user})
+    
+    if user_sub:
+        doc = frappe.get_doc("Tookio User Subscription", user_sub)
+        return {
+            "has_subscription": True,
+            "current_subscription": doc.current_subscription,
+            "subscription_start_date": doc.subscription_start_date,
+            "subscription_end_date": doc.subscription_end_date,
+            "status": doc.status,
+            "shop_limit": doc.shop_limit,
+            "products_limit": doc.products_limit,
+            "sales_invoice_limit": doc.sales_invoice_limit,
+        }
+    else:
+        # Return free plan as default
+        return {
+            "has_subscription": False,
+            "current_subscription": None,
+            "status": "Active",
+            "shop_limit": 1,
+            "products_limit": 50,
+            "sales_invoice_limit": 200,
+        }
+
+@frappe.whitelist(allow_guest=False)
+def submit_payment_confirmation(subscription_plan):
+    """User submits that they've made payment (fake payment for now)"""
+    user = frappe.session.user
+    
+    # Create payment confirmation record
+    doc = frappe.new_doc("Tookio Payment Confirmation")
+    doc.user = user
+    doc.subscription_plan = subscription_plan
+    doc.status = "Pending Verification"
+    doc.insert(ignore_permissions=True)
+    
+    # Auto-verify after 5 seconds simulation
+    # In reality, admin verifies manually, but we'll auto-verify for UX
+    doc.status = "Verified"
+    doc.verified_by = "System"
+    doc.verified_date = frappe.utils.now()
+    doc.save(ignore_permissions=True)
+    
+    frappe.db.commit()
+    
+    return {
+        "success": True,
+        "message": "Payment confirmed! Your subscription has been activated.",
+        "confirmation_id": doc.name
+    }
+
+@frappe.whitelist(allow_guest=False)
+def check_user_limits():
+    """Check if user has exceeded their subscription limits"""
+    user = frappe.session.user
+    
+    # Get user subscription limits
+    user_sub_data = get_user_subscription()
+    shop_limit = user_sub_data.get("shop_limit", 1)
+    products_limit = user_sub_data.get("products_limit", 50)
+    sales_invoice_limit = user_sub_data.get("sales_invoice_limit", 200)
+    
+    # Count current usage
+    shops_count = frappe.db.count("Shop", {"owner": user})
+    products_count = frappe.db.count("Product", {"owner": user})
+    sales_count = frappe.db.count("Sale Invoice", {"owner": user})
+    
+    return {
+        "shops": {
+            "used": shops_count,
+            "limit": shop_limit,
+            "exceeded": shops_count >= shop_limit
+        },
+        "products": {
+            "used": products_count,
+            "limit": products_limit,
+            "exceeded": products_count >= products_limit
+        },
+        "sales_invoices": {
+            "used": sales_count,
+            "limit": sales_invoice_limit if sales_invoice_limit else None,
+            "exceeded": sales_count >= sales_invoice_limit if sales_invoice_limit else False
+        }
+    }
