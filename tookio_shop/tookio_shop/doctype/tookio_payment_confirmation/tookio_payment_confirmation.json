@@ -118,6 +118,7 @@
   {
    "create": 1,
    "read": 1,
+   "write": 1,
    "role": "Tookio Seller"
   }
  ],
