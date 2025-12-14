@@ -99,107 +99,107 @@ PESAPAL_LIVE_URL = "https://pay.pesapal.com/v3"
 #         base_url = PESAPAL_SANDBOX_URL if settings.is_sandbox else PESAPAL_LIVE_URL
 #         headers = {"Authorization": f"Bearer {token}"}
 
-        response = requests.get(
-            f"{base_url}/api/Transactions/GetTransactionStatus?orderTrackingId={order_tracking_id}",
-            headers=headers,
-            timeout=30
-        )
+#         response = requests.get(
+#             f"{base_url}/api/Transactions/GetTransactionStatus?orderTrackingId={order_tracking_id}",
+#             headers=headers,
+#             timeout=30
+#         )
 
-        if response.status_code == 200:
-            status_data = response.json()
+#         if response.status_code == 200:
+#             status_data = response.json()
 
-            # Update payment log
-            payment_log.status = "Completed" if status_data.get("payment_status_description") == "Completed" else "Failed"
-            payment_log.transaction_id = status_data.get("confirmation_code") or ""
-            payment_log.raw_response = json.dumps(status_data)
-            payment_log.save(ignore_permissions=True)
+#             # Update payment log
+#             payment_log.status = "Completed" if status_data.get("payment_status_description") == "Completed" else "Failed"
+#             payment_log.transaction_id = status_data.get("confirmation_code") or ""
+#             payment_log.raw_response = json.dumps(status_data)
+#             payment_log.save(ignore_permissions=True)
 
-            # If completed, activate subscription
-            if payment_log.status == "Completed":
-                activate_subscription_for_user(payment_log.customer, payment_log.transaction_id)
+#             # If completed, activate subscription
+#             if payment_log.status == "Completed":
+#                 activate_subscription_for_user(payment_log.customer, payment_log.transaction_id)
 
-            frappe.logger().info(f"Pesapal payment {payment_log.status} for {order_tracking_id}")
-            return {"status": "success"}
+#             frappe.logger().info(f"Pesapal payment {payment_log.status} for {order_tracking_id}")
+#             return {"status": "success"}
 
-        else:
-            frappe.log_error(f"Failed to get payment status: {response.text}", "Pesapal Callback")
-            return {"status": "error", "message": "Failed to verify payment"}
+#         else:
+#             frappe.log_error(f"Failed to get payment status: {response.text}", "Pesapal Callback")
+#             return {"status": "error", "message": "Failed to verify payment"}
 
-    except Exception as e:
-        frappe.log_error(str(e), "Pesapal Callback")
-        return {"status": "error", "message": str(e)}
+#     except Exception as e:
+#         frappe.log_error(str(e), "Pesapal Callback")
+#         return {"status": "error", "message": str(e)}
 
 # COMMENTED OUT - Making app FREE
 # @frappe.whitelist()
 # def verify_pesapal_payment(order_tracking_id):
-    """Verify Pesapal payment status"""
-    try:
-        settings = get_pesapal_settings()
-        token = get_pesapal_token(settings)
+#     """Verify Pesapal payment status"""
+#     try:
+#         settings = get_pesapal_settings()
+#         token = get_pesapal_token(settings)
 
-        base_url = PESAPAL_SANDBOX_URL if settings.is_sandbox else PESAPAL_LIVE_URL
-        headers = {"Authorization": f"Bearer {token}"}
+#         base_url = PESAPAL_SANDBOX_URL if settings.is_sandbox else PESAPAL_LIVE_URL
+#         headers = {"Authorization": f"Bearer {token}"}
 
-        response = requests.get(
-            f"{base_url}/api/Transactions/GetTransactionStatus?orderTrackingId={order_tracking_id}",
-            headers=headers,
-            timeout=30
-        )
+#         response = requests.get(
+#             f"{base_url}/api/Transactions/GetTransactionStatus?orderTrackingId={order_tracking_id}",
+#             headers=headers,
+#             timeout=30
+#         )
 
-        if response.status_code == 200:
-            status_data = response.json()
-            return {
-                "status": status_data.get("payment_status_description"),
-                "transaction_id": status_data.get("confirmation_code"),
-                "amount": status_data.get("amount"),
-                "currency": status_data.get("currency")
-            }
-        else:
-            frappe.throw("Failed to verify payment status")
+#         if response.status_code == 200:
+#             status_data = response.json()
+#             return {
+#                 "status": status_data.get("payment_status_description"),
+#                 "transaction_id": status_data.get("confirmation_code"),
+#                 "amount": status_data.get("amount"),
+#                 "currency": status_data.get("currency")
+#             }
+#         else:
+#             frappe.throw("Failed to verify payment status")
 
-    except Exception as e:
-        frappe.log_error(str(e), "Pesapal Payment Verification")
-        frappe.throw("Failed to verify payment")
+#     except Exception as e:
+#         frappe.log_error(str(e), "Pesapal Payment Verification")
+#         frappe.throw("Failed to verify payment")
 
 # COMMENTED OUT - Making app FREE
 # @frappe.whitelist()
 # def register_pesapal_ipn():
-    """Register IPN URL with Pesapal"""
-    try:
-        settings = get_pesapal_settings()
-        token = get_pesapal_token(settings)
+#     """Register IPN URL with Pesapal"""
+#     try:
+#         settings = get_pesapal_settings()
+#         token = get_pesapal_token(settings)
 
-        callback_url = f"{frappe.utils.get_url()}/api/method/tookio_shop.api.pesapal_callback"
+#         callback_url = f"{frappe.utils.get_url()}/api/method/tookio_shop.api.pesapal_callback"
 
-        headers = {
-            "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json"
-        }
+#         headers = {
+#             "Authorization": f"Bearer {token}",
+#             "Content-Type": "application/json"
+#         }
 
-        data = {
-            "url": callback_url,
-            "ipn_notification_type": "POST"
-        }
+#         data = {
+#             "url": callback_url,
+#             "ipn_notification_type": "POST"
+#         }
 
-        base_url = PESAPAL_SANDBOX_URL if settings.is_sandbox else PESAPAL_LIVE_URL
-        response = requests.post(
-            f"{base_url}/api/URLSetup/RegisterIPN",
-            headers=headers,
-            json=data,
-            timeout=30
-        )
+#         base_url = PESAPAL_SANDBOX_URL if settings.is_sandbox else PESAPAL_LIVE_URL
+#         response = requests.post(
+#             f"{base_url}/api/URLSetup/RegisterIPN",
+#             headers=headers,
+#             json=data,
+#             timeout=30
+#         )
 
-        if response.status_code == 200:
-            ipn_data = response.json()
-            settings.notification_id = ipn_data.get("ipn_id")
-            settings.save()
-            return {"success": True, "ipn_id": ipn_data.get("ipn_id")}
-        else:
-            frappe.throw(f"Failed to register IPN: {response.text}")
+#         if response.status_code == 200:
+#             ipn_data = response.json()
+#             settings.notification_id = ipn_data.get("ipn_id")
+#             settings.save()
+#             return {"success": True, "ipn_id": ipn_data.get("ipn_id")}
+#         else:
+#             frappe.throw(f"Failed to register IPN: {response.text}")
 
-    except Exception as e:
-        frappe.log_error(str(e), "Pesapal IPN Registration")
-        frappe.throw("Failed to register IPN URL")
+#     except Exception as e:
+#         frappe.log_error(str(e), "Pesapal IPN Registration")
+#         frappe.throw("Failed to register IPN URL")
 
 def get_pesapal_token(settings):
     """Get Pesapal access token"""
