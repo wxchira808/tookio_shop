@@ -16,6 +16,8 @@ class TookioPaymentConfirmation(Document):
 			if user_sub:
 				doc = frappe.get_doc("Tookio User Subscription", user_sub)
 			else:
+				# Set the user as session user to make them owner
+				frappe.set_user(self.user)
 				doc = frappe.new_doc("Tookio User Subscription")
 				doc.user = self.user
 			
@@ -28,4 +30,19 @@ class TookioPaymentConfirmation(Document):
 			# Save to trigger the hooks that populate limits and history
 			doc.save(ignore_permissions=True)
 			
+			# Reset to Administrator
+			frappe.set_user("Administrator")
+			
 			frappe.db.commit()
+
+
+def has_permission(doc, ptype, user):
+	"""Custom permission: Users can only see their own payment confirmations"""
+	if user == "Administrator":
+		return True
+	
+	# Allow users to see their own payment confirmation
+	if doc.user == user:
+		return True
+	
+	return False

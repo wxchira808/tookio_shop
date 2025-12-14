@@ -49,55 +49,55 @@ PESAPAL_LIVE_URL = "https://pay.pesapal.com/v3"
 
 #         base_url = PESAPAL_SANDBOX_URL if settings.is_sandbox else PESAPAL_LIVE_URL
 #         response = requests.post(
-            f"{base_url}/api/Transactions/SubmitOrderRequest",
-            headers=headers,
-            json=order_data,
-            timeout=30
-        )
+#             f"{base_url}/api/Transactions/SubmitOrderRequest",
+#             headers=headers,
+#             json=order_data,
+#             timeout=30
+#         )
 
-        if response.status_code == 200:
-            result = response.json()
+#         if response.status_code == 200:
+#             result = response.json()
 
-            # Log payment
-            log_payment(order_data, result, "initiated")
+#             # Log payment
+#             log_payment(order_data, result, "initiated")
 
-            return {
-                "redirect_url": result.get("redirect_url"),
-                "order_tracking_id": result.get("order_tracking_id")
-            }
-        else:
-            error_msg = f"Pesapal API error: {response.status_code} - {response.text}"
-            frappe.log_error(error_msg, "Pesapal Payment Initiation")
-            frappe.throw("Failed to initiate payment. Please try again.")
+#             return {
+#                 "redirect_url": result.get("redirect_url"),
+#                 "order_tracking_id": result.get("order_tracking_id")
+#             }
+#         else:
+#             error_msg = f"Pesapal API error: {response.status_code} - {response.text}"
+#             frappe.log_error(error_msg, "Pesapal Payment Initiation")
+#             frappe.throw("Failed to initiate payment. Please try again.")
 
-    except Exception as e:
-        frappe.log_error(str(e), "Pesapal Payment Initiation")
-        frappe.throw("Failed to initiate Pesapal payment. Please try again.")
+#     except Exception as e:
+#         frappe.log_error(str(e), "Pesapal Payment Initiation")
+#         frappe.throw("Failed to initiate Pesapal payment. Please try again.")
 
 # COMMENTED OUT - Making app FREE
 # @frappe.whitelist(allow_guest=True)
 # def pesapal_callback():
-    """Handle Pesapal IPN callback"""
-    try:
-        data = frappe.form_dict
+#     """Handle Pesapal IPN callback"""
+#     try:
+#         data = frappe.form_dict
 
-        order_tracking_id = data.get("OrderTrackingId")
-        if not order_tracking_id:
-            frappe.log_error("No OrderTrackingId in callback", "Pesapal Callback")
-            return {"status": "error", "message": "Missing OrderTrackingId"}
+#         order_tracking_id = data.get("OrderTrackingId")
+#         if not order_tracking_id:
+#             frappe.log_error("No OrderTrackingId in callback", "Pesapal Callback")
+#             return {"status": "error", "message": "Missing OrderTrackingId"}
 
-        # Get payment log
-        payment_log = frappe.get_doc("Pesapal Payment Log", {"order_tracking_id": order_tracking_id})
-        if not payment_log:
-            frappe.log_error(f"Payment log not found for {order_tracking_id}", "Pesapal Callback")
-            return {"status": "error", "message": "Payment log not found"}
+#         # Get payment log
+#         payment_log = frappe.get_doc("Pesapal Payment Log", {"order_tracking_id": order_tracking_id})
+#         if not payment_log:
+#             frappe.log_error(f"Payment log not found for {order_tracking_id}", "Pesapal Callback")
+#             return {"status": "error", "message": "Payment log not found"}
 
-        # Get payment status from Pesapal
-        settings = get_pesapal_settings()
-        token = get_pesapal_token(settings)
+#         # Get payment status from Pesapal
+#         settings = get_pesapal_settings()
+#         token = get_pesapal_token(settings)
 
-        base_url = PESAPAL_SANDBOX_URL if settings.is_sandbox else PESAPAL_LIVE_URL
-        headers = {"Authorization": f"Bearer {token}"}
+#         base_url = PESAPAL_SANDBOX_URL if settings.is_sandbox else PESAPAL_LIVE_URL
+#         headers = {"Authorization": f"Bearer {token}"}
 
         response = requests.get(
             f"{base_url}/api/Transactions/GetTransactionStatus?orderTrackingId={order_tracking_id}",
@@ -311,8 +311,21 @@ def get_user_subscription():
     
     if user_sub:
         doc = frappe.get_doc("Tookio User Subscription", user_sub)
+        
+        # Get actual counts for current usage
+        current_shops = frappe.db.count("Shop", {"owner": user})
+        current_products = frappe.db.count("Product", {"owner": user})
+        current_sales_invoices = frappe.db.count("Sale Invoice", {"owner": user})
+        
+        # Get subscription plan name
+        plan_name = "Free Plan"
+        if doc.current_subscription:
+            plan_doc = frappe.get_doc("Tookio Subscription", doc.current_subscription)
+            plan_name = plan_doc.subscription_name
+        
         return {
             "has_subscription": True,
+            "subscription_plan": plan_name,
             "current_subscription": doc.current_subscription,
             "subscription_start_date": doc.subscription_start_date,
             "subscription_end_date": doc.subscription_end_date,
@@ -320,16 +333,27 @@ def get_user_subscription():
             "shop_limit": doc.shop_limit,
             "products_limit": doc.products_limit,
             "sales_invoice_limit": doc.sales_invoice_limit,
+            "current_shops": current_shops,
+            "current_products": current_products,
+            "current_sales_invoices": current_sales_invoices,
         }
     else:
         # Return free plan as default
+        current_shops = frappe.db.count("Shop", {"owner": user})
+        current_products = frappe.db.count("Product", {"owner": user})
+        current_sales_invoices = frappe.db.count("Sale Invoice", {"owner": user})
+        
         return {
             "has_subscription": False,
+            "subscription_plan": "Free Plan",
             "current_subscription": None,
             "status": "Active",
             "shop_limit": 1,
             "products_limit": 50,
             "sales_invoice_limit": 200,
+            "current_shops": current_shops,
+            "current_products": current_products,
+            "current_sales_invoices": current_sales_invoices,
         }
 
 @frappe.whitelist(allow_guest=False)

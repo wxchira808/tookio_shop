@@ -61,6 +61,9 @@ def create_free_subscription_for_user(user):
             frappe.log_error("Free Plan not found", "Auto Subscription Creation")
             return
 
+        # Set the user as the session user temporarily to make them the owner
+        frappe.set_user(user)
+        
         # Create user subscription
         user_sub = frappe.new_doc("Tookio User Subscription")
         user_sub.user = user
@@ -70,9 +73,13 @@ def create_free_subscription_for_user(user):
         user_sub.status = "Active"
         user_sub.insert(ignore_permissions=True)
         
+        # Reset to Administrator
+        frappe.set_user("Administrator")
+        
         frappe.db.commit()
         frappe.logger().info(f"Created free subscription for user {user}")
     except Exception as e:
+        frappe.set_user("Administrator")  # Reset even on error
         frappe.log_error(f"Error creating free subscription for user {user}: {str(e)}", "Auto Subscription Creation Failed")
     
 

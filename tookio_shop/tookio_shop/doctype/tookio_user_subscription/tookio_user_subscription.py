@@ -34,3 +34,15 @@ class TookioUserSubscription(Document):
 					"subscription_end_date": self.subscription_end_date
 				})
 				self.save()
+
+
+def has_permission(doc, ptype, user):
+	"""Custom permission: Users can only see their own subscription"""
+	if user == "Administrator":
+		return True
+	
+	# Allow users to see their own subscription record
+	if doc.user == user:
+		return True
+	
+	return False
