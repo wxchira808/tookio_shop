@@ -38,8 +38,7 @@
   {
    "fieldname": "user_name",
    "fieldtype": "Data",
-   "label": "User Name",
-   "reqd": 1
+   "label": "User Name"
   },
   {
    "fieldname": "subscription_plan",
