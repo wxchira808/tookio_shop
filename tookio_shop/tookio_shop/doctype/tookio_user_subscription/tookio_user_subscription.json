@@ -1,7 +1,7 @@
 {
  "actions": [],
  "autoname": "format:TUSUB-{####}",
- "creation": "2025-12-14 10:00:00.000000",
+ "creation": "2025-12-14 10:00:00",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -68,7 +68,7 @@
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
-   "options": "Active\\nExpired\\nCancelled"
+   "options": "Active\nExpired\nCancelled"
   },
   {
    "fieldname": "section_break_8",
@@ -78,17 +78,20 @@
   {
    "fieldname": "shop_limit",
    "fieldtype": "Int",
-   "label": "Shop Limit"
+   "label": "Shop Limit",
+   "read_only": 1
   },
   {
    "fieldname": "products_limit",
    "fieldtype": "Int",
-   "label": "Products Limit"
+   "label": "Products Limit",
+   "read_only": 1
   },
   {
    "fieldname": "sales_invoice_limit",
    "fieldtype": "Int",
-   "label": "Sales Invoice Limit"
+   "label": "Sales Invoice Limit",
+   "read_only": 1
   },
   {
    "fieldname": "section_break_12",
@@ -104,7 +107,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-12-14 10:00:00.000000",
+ "modified": "2025-12-14 19:30:16.862829",
  "modified_by": "Administrator",
  "module": "Tookio Shop",
  "name": "Tookio User Subscription",
@@ -129,6 +132,7 @@
    "role": "Tookio Seller"
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],

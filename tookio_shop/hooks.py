@@ -31,6 +31,7 @@ doc_events = {
         "before_insert": "tookio_shop.utils.check_shop_limit"
     },
     "Sale Invoice": {
+        "before_insert": "tookio_shop.utils.check_sales_invoice_limit",
         "validate": "tookio_shop.utils.prevent_negative_stock"
     },
     # Removed Product Stock after_insert hook to fix AttributeError
