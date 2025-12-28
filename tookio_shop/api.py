@@ -358,23 +358,55 @@ def get_user_subscription():
 
 @frappe.whitelist(allow_guest=False)
 def submit_payment_confirmation(subscription_plan, user_name):
-    """User submits that they've made payment (fake payment for now)"""
+    """User submits that they've made payment - immediately upgrade them"""
     user = frappe.session.user
     
-    # Create payment confirmation record with Pending status for admin verification
+    # Get the subscription plan details
+    plan = frappe.get_doc("Tookio Subscription", subscription_plan)
+    if not plan:
+        frappe.throw("Invalid subscription plan")
+    
+    # Check if user already has a subscription record
+    user_sub_name = frappe.db.exists("Tookio User Subscription", {"user": user})
+    
+    if user_sub_name:
+        # Update existing subscription
+        user_sub = frappe.get_doc("Tookio User Subscription", user_sub_name)
+        user_sub.current_subscription = subscription_plan
+        user_sub.shop_limit = plan.shop_limit
+        user_sub.products_limit = plan.products_limit
+        user_sub.sales_invoice_limit = plan.sales_invoice_limit
+        user_sub.subscription_start_date = datetime.now().date()
+        user_sub.subscription_end_date = None  # No expiry for now
+        user_sub.status = "Active"
+        user_sub.save(ignore_permissions=True)
+    else:
+        # Create new subscription record
+        user_sub = frappe.new_doc("Tookio User Subscription")
+        user_sub.user = user
+        user_sub.current_subscription = subscription_plan
+        user_sub.shop_limit = plan.shop_limit
+        user_sub.products_limit = plan.products_limit
+        user_sub.sales_invoice_limit = plan.sales_invoice_limit
+        user_sub.subscription_start_date = datetime.now().date()
+        user_sub.subscription_end_date = None  # No expiry for now
+        user_sub.status = "Active"
+        user_sub.insert(ignore_permissions=True)
+    
+    # Create payment confirmation record for admin records
     doc = frappe.new_doc("Tookio Payment Confirmation")
     doc.user = user
     doc.user_name = user_name or ""
     doc.subscription_plan = subscription_plan
     doc.till_number = "6547212"
-    doc.status = "Pending Verification"  # Admin will manually verify
+    doc.status = "Auto-Approved"  # Mark as auto-approved since we upgraded immediately
     doc.insert(ignore_permissions=True)
     
     frappe.db.commit()
     
     return {
         "success": True,
-        "message": "Payment confirmation submitted! Your subscription will be activated once admin verifies your payment.",
+        "message": "Your account has been upgraded successfully! You now have access to premium features.",
         "confirmation_id": doc.name
     }
 
