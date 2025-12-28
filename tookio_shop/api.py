@@ -366,6 +366,12 @@ def submit_payment_confirmation(subscription_plan, user_name):
     if not plan:
         frappe.throw("Invalid subscription plan")
     
+    # Update the User doctype with subscription info
+    user_doc = frappe.get_doc("User", user)
+    user_doc.subscription_tier = plan.subscription_name
+    user_doc.subscription_expiry = None  # No expiry for now
+    user_doc.save(ignore_permissions=True)
+    
     # Check if user already has a subscription record
     user_sub_name = frappe.db.exists("Tookio User Subscription", {"user": user})
     
