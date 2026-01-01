@@ -304,6 +304,8 @@ def get_subscription_plans():
 @frappe.whitelist(allow_guest=False)
 def get_user_subscription():
     """Get current user's subscription details"""
+    from frappe.utils import today
+    
     user = frappe.session.user
     
     # Get user subscription
@@ -312,6 +314,19 @@ def get_user_subscription():
     if user_sub:
         doc = frappe.get_doc("Tookio User Subscription", user_sub)
         
+        # Check if subscription has expired and auto-downgrade
+        if doc.subscription_end_date and today() > doc.subscription_end_date and doc.status != "Expired":
+            frappe.logger().info(f"🔄 Auto-downgrading expired subscription for {user} to Free Plan")
+            doc.status = "Expired"
+            doc.current_subscription = "Free Plan"
+            doc.subscription_start_date = today()
+            doc.subscription_end_date = None  # Free plan never expires
+            doc.shop_limit = 1
+            doc.products_limit = 50
+            doc.sales_invoice_limit = 200
+            doc.save(ignore_permissions=True)
+            frappe.db.commit()
+        
         # Get actual counts for current usage
         current_shops = frappe.db.count("Shop", {"owner": user})
         current_products = frappe.db.count("Product", {"owner": user})
@@ -319,12 +334,15 @@ def get_user_subscription():
         
         # Get subscription plan name
         plan_name = "Free Plan"
-        if doc.current_subscription:
-            plan_doc = frappe.get_doc("Tookio Subscription", doc.current_subscription)
-            plan_name = plan_doc.subscription_name
+        if doc.current_subscription and doc.current_subscription != "Free Plan":
+            try:
+                plan_doc = frappe.get_doc("Tookio Subscription", doc.current_subscription)
+                plan_name = plan_doc.subscription_name
+            except:
+                plan_name = doc.current_subscription
         
         return {
-            "has_subscription": True,
+            "has_subscription": doc.current_subscription and doc.current_subscription != "Free Plan",
             "subscription_plan": plan_name,
             "current_subscription": doc.current_subscription,
             "subscription_start_date": doc.subscription_start_date,
@@ -346,7 +364,9 @@ def get_user_subscription():
         return {
             "has_subscription": False,
             "subscription_plan": "Free Plan",
-            "current_subscription": None,
+            "current_subscription": "Free Plan",
+            "subscription_start_date": today(),
+            "subscription_end_date": None,
             "status": "Active",
             "shop_limit": 1,
             "products_limit": 50,
@@ -360,6 +380,9 @@ def get_user_subscription():
 def submit_payment_confirmation(subscription_plan, user_name):
     """User submits that they've made payment - immediately upgrade them"""
     user = frappe.session.user
+    
+    # Debug logging
+    frappe.logger().info(f"🔔 submit_payment_confirmation called for user: {user}, plan: {subscription_plan}")
 
     # Get the subscription plan details
     plan = frappe.get_doc("Tookio Subscription", subscription_plan)
@@ -367,7 +390,9 @@ def submit_payment_confirmation(subscription_plan, user_name):
         frappe.throw("Invalid subscription plan")
 
     # Immediately upgrade the user (bypass manual verification)
+    frappe.logger().info(f"🚀 Upgrading user {user} to {subscription_plan}")
     upgrade_user_subscription(user, subscription_plan)
+    frappe.logger().info(f"✅ User {user} upgraded successfully")
 
     # Create payment confirmation record for admin records (marked as auto-verified)
     doc = frappe.new_doc("Tookio Payment Confirmation")
@@ -392,19 +417,25 @@ def submit_payment_confirmation(subscription_plan, user_name):
 
 def upgrade_user_subscription(user, subscription_plan):
     """Upgrade user subscription - extracted from TookioPaymentConfirmation.on_update"""
+    frappe.logger().info(f"📝 upgrade_user_subscription called for {user} with plan {subscription_plan}")
+    
     # Get the subscription plan details
     plan = frappe.get_doc("Tookio Subscription", subscription_plan)
 
     # Check if user already has a subscription record
     user_sub_name = frappe.db.exists("Tookio User Subscription", {"user": user})
+    
+    frappe.logger().info(f"💾 Existing subscription found: {user_sub_name}")
 
     if user_sub_name:
         # Update existing subscription
         doc = frappe.get_doc("Tookio User Subscription", user_sub_name)
+        frappe.logger().info(f"📄 Updating existing subscription {user_sub_name}")
     else:
         # Create new subscription record
         doc = frappe.new_doc("Tookio User Subscription")
         doc.user = user
+        frappe.logger().info(f"📄 Creating new subscription for {user}")
 
     # Update subscription details
     doc.current_subscription = subscription_plan
@@ -416,11 +447,17 @@ def upgrade_user_subscription(user, subscription_plan):
     doc.shop_limit = plan.shop_limit
     doc.products_limit = plan.products_limit
     doc.sales_invoice_limit = plan.sales_invoice_limit
+    
+    frappe.logger().info(f"💪 Set limits: shops={plan.shop_limit}, products={plan.products_limit}, invoices={plan.sales_invoice_limit}")
 
     # Save to trigger the hooks that populate limits and history
     doc.save(ignore_permissions=True)
+    
+    frappe.logger().info(f"✅ Subscription saved successfully for {user}")
 
     frappe.db.commit()
+    
+    frappe.logger().info(f"🎉 Database committed - upgrade complete for {user}")
 
 @frappe.whitelist(allow_guest=False)
 def check_user_limits():

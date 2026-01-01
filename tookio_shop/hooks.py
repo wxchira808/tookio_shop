@@ -284,3 +284,10 @@ scheduler_events = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+# Scheduler Events - Run daily task to check for expired subscriptions
+scheduler_events = {
+	"daily": [
+		"tookio_shop.subscription_expiry_task.check_and_process_expired_subscriptions"
+	]
+}
+
