@@ -151,9 +151,21 @@ def check_subscription_expired(user):
     return False
 
 
+def ensure_active_subscription(user=None):
+    """Enforce active subscription status before allowing any transactional insert."""
+    current_user = user or frappe.session.user
+    status = frappe.db.get_value("Tookio User Subscription", {"user": current_user}, "status")
+
+    if status and status.lower() != "active":
+        frappe.throw("Your plan is expired kindly renew or switch to free plan")
+    return True
+
+
 def check_item_limit(doc, method):
     """Check if user has exceeded their item limit"""
     user = frappe.session.user
+
+    ensure_active_subscription(user)
     
     limits = get_user_plan_limits(user)
     
@@ -169,6 +181,8 @@ def check_item_limit(doc, method):
 def check_shop_limit(doc, method):
     """Check if user has exceeded their shop limit"""
     user = frappe.session.user
+
+    ensure_active_subscription(user)
     
     limits = get_user_plan_limits(user)
     
@@ -191,6 +205,8 @@ def prevent_negative_stock(doc, method):
 def check_sales_invoice_limit(doc, method):
     """Check if user has exceeded their sales invoice limit"""
     user = frappe.session.user
+
+    ensure_active_subscription(user)
     
     limits = get_user_plan_limits(user)
     
