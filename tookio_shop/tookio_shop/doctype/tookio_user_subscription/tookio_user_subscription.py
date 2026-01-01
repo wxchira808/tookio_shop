@@ -10,12 +10,19 @@ class TookioUserSubscription(Document):
 	def before_save(self):
 		"""Update current subscription limits from the linked subscription plan"""
 		# Check if subscription has expired and auto-downgrade to free plan
-		if self.subscription_end_date and today() > self.subscription_end_date:
-			frappe.logger().info(f"⏰ Subscription expired for {self.user}, auto-downgrading to Free Plan")
-			self.status = "Expired"
-			self.current_subscription = "Free Plan"  # Auto-switch to free plan on expiry
-			self.subscription_start_date = today()
-			self.subscription_end_date = None  # Free plan never expires
+		if self.subscription_end_date:
+			try:
+				end_date = getdate(self.subscription_end_date)
+				current_date = getdate(today())
+				
+				if current_date > end_date:
+					frappe.logger().info(f"⏰ Subscription expired for {self.user}, auto-downgrading to Free Plan")
+					self.status = "Expired"
+					self.current_subscription = "Free Plan"  # Auto-switch to free plan on expiry
+					self.subscription_start_date = current_date
+					self.subscription_end_date = None  # Free plan never expires
+			except Exception as e:
+				frappe.logger().error(f"Error checking subscription expiry: {str(e)}")
 		
 		# Set free plan limits if on free plan
 		if self.current_subscription == "Free Plan":
