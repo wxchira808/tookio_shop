@@ -304,76 +304,101 @@ def get_subscription_plans():
 @frappe.whitelist(allow_guest=False)
 def get_user_subscription():
     """Get current user's subscription details"""
-    from frappe.utils import today
+    from frappe.utils import today, getdate
     
-    user = frappe.session.user
-    
-    # Get user subscription
-    user_sub = frappe.db.exists("Tookio User Subscription", {"user": user})
-    
-    if user_sub:
-        doc = frappe.get_doc("Tookio User Subscription", user_sub)
+    try:
+        user = frappe.session.user
         
-        # Check if subscription has expired and auto-downgrade
-        if doc.subscription_end_date and today() > doc.subscription_end_date and doc.status != "Expired":
-            frappe.logger().info(f"🔄 Auto-downgrading expired subscription for {user} to Free Plan")
-            doc.status = "Expired"
-            doc.current_subscription = "Free Plan"
-            doc.subscription_start_date = today()
-            doc.subscription_end_date = None  # Free plan never expires
-            doc.shop_limit = 1
-            doc.products_limit = 50
-            doc.sales_invoice_limit = 200
-            doc.save(ignore_permissions=True)
-            frappe.db.commit()
+        # Get user subscription
+        user_sub = frappe.db.exists("Tookio User Subscription", {"user": user})
         
-        # Get actual counts for current usage
-        current_shops = frappe.db.count("Shop", {"owner": user})
-        current_products = frappe.db.count("Product", {"owner": user})
-        current_sales_invoices = frappe.db.count("Sale Invoice", {"owner": user})
-        
-        # Get subscription plan name
-        plan_name = "Free Plan"
-        if doc.current_subscription and doc.current_subscription != "Free Plan":
+        if user_sub:
+            doc = frappe.get_doc("Tookio User Subscription", user_sub)
+            
+            # Check if subscription has expired and auto-downgrade
             try:
-                plan_doc = frappe.get_doc("Tookio Subscription", doc.current_subscription)
-                plan_name = plan_doc.subscription_name
-            except:
-                plan_name = doc.current_subscription
-        
-        return {
-            "has_subscription": doc.current_subscription and doc.current_subscription != "Free Plan",
-            "subscription_plan": plan_name,
-            "current_subscription": doc.current_subscription,
-            "subscription_start_date": doc.subscription_start_date,
-            "subscription_end_date": doc.subscription_end_date,
-            "status": doc.status,
-            "shop_limit": doc.shop_limit,
-            "products_limit": doc.products_limit,
-            "sales_invoice_limit": doc.sales_invoice_limit,
-            "current_shops": current_shops,
-            "current_products": current_products,
-            "current_sales_invoices": current_sales_invoices,
-        }
-    else:
-        # Return free plan as default
-        current_shops = frappe.db.count("Shop", {"owner": user})
-        current_products = frappe.db.count("Product", {"owner": user})
-        current_sales_invoices = frappe.db.count("Sale Invoice", {"owner": user})
-        
+                if doc.subscription_end_date:
+                    end_date = getdate(doc.subscription_end_date)
+                    current_date = getdate(today())
+                    
+                    if current_date > end_date and doc.status != "Expired":
+                        frappe.logger().info(f"🔄 Auto-downgrading expired subscription for {user} to Free Plan")
+                        doc.status = "Expired"
+                        doc.current_subscription = "Free Plan"
+                        doc.subscription_start_date = current_date
+                        doc.subscription_end_date = None  # Free plan never expires
+                        doc.shop_limit = 1
+                        doc.products_limit = 50
+                        doc.sales_invoice_limit = 200
+                        doc.save(ignore_permissions=True)
+                        frappe.db.commit()
+            except Exception as e:
+                frappe.logger().error(f"❌ Error checking subscription expiry: {str(e)}")
+                # Continue anyway, don't break the function
+            
+            # Get actual counts for current usage
+            current_shops = frappe.db.count("Shop", {"owner": user})
+            current_products = frappe.db.count("Product", {"owner": user})
+            current_sales_invoices = frappe.db.count("Sale Invoice", {"owner": user})
+            
+            # Get subscription plan name
+            plan_name = "Free Plan"
+            if doc.current_subscription and doc.current_subscription != "Free Plan":
+                try:
+                    plan_doc = frappe.get_doc("Tookio Subscription", doc.current_subscription)
+                    plan_name = plan_doc.subscription_name
+                except:
+                    plan_name = doc.current_subscription
+            
+            return {
+                "has_subscription": doc.current_subscription and doc.current_subscription != "Free Plan",
+                "subscription_plan": plan_name,
+                "current_subscription": doc.current_subscription,
+                "subscription_start_date": str(doc.subscription_start_date) if doc.subscription_start_date else None,
+                "subscription_end_date": str(doc.subscription_end_date) if doc.subscription_end_date else None,
+                "status": doc.status,
+                "shop_limit": doc.shop_limit,
+                "products_limit": doc.products_limit,
+                "sales_invoice_limit": doc.sales_invoice_limit,
+                "current_shops": current_shops,
+                "current_products": current_products,
+                "current_sales_invoices": current_sales_invoices,
+            }
+        else:
+            # Return free plan as default
+            current_shops = frappe.db.count("Shop", {"owner": user})
+            current_products = frappe.db.count("Product", {"owner": user})
+            current_sales_invoices = frappe.db.count("Sale Invoice", {"owner": user})
+            
+            return {
+                "has_subscription": False,
+                "subscription_plan": "Free Plan",
+                "current_subscription": "Free Plan",
+                "subscription_start_date": str(getdate(today())),
+                "subscription_end_date": None,
+                "status": "Active",
+                "shop_limit": 1,
+                "products_limit": 50,
+                "sales_invoice_limit": 200,
+                "current_shops": current_shops,
+                "current_products": current_products,
+                "current_sales_invoices": current_sales_invoices,
+            }
+    
+    except Exception as e:
+        frappe.logger().error(f"❌ Error in get_user_subscription: {str(e)}")
+        # Return safe default on error
         return {
             "has_subscription": False,
             "subscription_plan": "Free Plan",
             "current_subscription": "Free Plan",
-            "subscription_start_date": today(),
-            "subscription_end_date": None,
             "status": "Active",
             "shop_limit": 1,
             "products_limit": 50,
             "sales_invoice_limit": 200,
-            "current_shops": current_shops,
-            "current_products": current_products,
-            "current_sales_invoices": current_sales_invoices,
+            "current_shops": 0,
+            "current_products": 0,
+            "current_sales_invoices": 0,
         }
 
 @frappe.whitelist(allow_guest=False)
@@ -462,33 +487,43 @@ def upgrade_user_subscription(user, subscription_plan):
 @frappe.whitelist(allow_guest=False)
 def check_user_limits():
     """Check if user has exceeded their subscription limits"""
-    user = frappe.session.user
-    
-    # Get user subscription limits
-    user_sub_data = get_user_subscription()
-    shop_limit = user_sub_data.get("shop_limit", 1)
-    products_limit = user_sub_data.get("products_limit", 50)
-    sales_invoice_limit = user_sub_data.get("sales_invoice_limit", 200)
-    
-    # Count current usage
-    shops_count = frappe.db.count("Shop", {"owner": user})
-    products_count = frappe.db.count("Product", {"owner": user})
-    sales_count = frappe.db.count("Sale Invoice", {"owner": user})
-    
-    return {
-        "shops": {
-            "used": shops_count,
-            "limit": shop_limit,
-            "exceeded": shops_count >= shop_limit
-        },
-        "products": {
-            "used": products_count,
-            "limit": products_limit,
-            "exceeded": products_count >= products_limit
-        },
-        "sales_invoices": {
-            "used": sales_count,
-            "limit": sales_invoice_limit if sales_invoice_limit else None,
-            "exceeded": sales_count >= sales_invoice_limit if sales_invoice_limit else False
+    try:
+        user = frappe.session.user
+        
+        # Get user subscription limits
+        user_sub_data = get_user_subscription()
+        shop_limit = user_sub_data.get("shop_limit", 1)
+        products_limit = user_sub_data.get("products_limit", 50)
+        sales_invoice_limit = user_sub_data.get("sales_invoice_limit", 200)
+        
+        # Count current usage
+        shops_count = frappe.db.count("Shop", {"owner": user})
+        products_count = frappe.db.count("Product", {"owner": user})
+        sales_count = frappe.db.count("Sale Invoice", {"owner": user})
+        
+        return {
+            "shops": {
+                "used": shops_count,
+                "limit": shop_limit,
+                "exceeded": shops_count >= shop_limit
+            },
+            "products": {
+                "used": products_count,
+                "limit": products_limit,
+                "exceeded": products_count >= products_limit
+            },
+            "sales_invoices": {
+                "used": sales_count,
+                "limit": sales_invoice_limit if sales_invoice_limit else None,
+                "exceeded": sales_count >= sales_invoice_limit if sales_invoice_limit else False
+            }
         }
-    }
+    
+    except Exception as e:
+        frappe.logger().error(f"❌ Error in check_user_limits: {str(e)}")
+        # Return safe defaults on error
+        return {
+            "shops": {"used": 0, "limit": 1, "exceeded": False},
+            "products": {"used": 0, "limit": 50, "exceeded": False},
+            "sales_invoices": {"used": 0, "limit": 200, "exceeded": False}
+        }
