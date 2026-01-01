@@ -527,3 +527,54 @@ def check_user_limits():
             "products": {"used": 0, "limit": 50, "exceeded": False},
             "sales_invoices": {"used": 0, "limit": 200, "exceeded": False}
         }
+
+@frappe.whitelist(allow_guest=False)
+def switch_to_free_plan():
+    """Switch user to free plan immediately (no payment required)"""
+    user = frappe.session.user
+    
+    # Get the Free Plan
+    free_plan = frappe.db.get_value("Tookio Subscription", {"subscription_name": "Free Plan"}, "name")
+    if not free_plan:
+        frappe.throw("Free Plan not found")
+    
+    # Check if user already has a subscription record
+    user_sub_name = frappe.db.exists("Tookio User Subscription", {"user": user})
+    
+    if user_sub_name:
+        # Update existing subscription
+        doc = frappe.get_doc("Tookio User Subscription", user_sub_name)
+        frappe.logger().info(f"📄 Updating existing subscription {user_sub_name} to Free Plan")
+    else:
+        # Create new subscription record
+        doc = frappe.new_doc("Tookio User Subscription")
+        doc.user = user
+        frappe.logger().info(f"📄 Creating new subscription for {user} with Free Plan")
+    
+    # Update subscription details to Free Plan
+    doc.current_subscription = free_plan
+    doc.subscription_start_date = frappe.utils.getdate()
+    doc.subscription_end_date = None  # Free plan never expires
+    doc.status = "Active"
+    
+    # Set free plan limits
+    doc.shop_limit = 1
+    doc.products_limit = 50
+    doc.sales_invoice_limit = 200
+    
+    frappe.logger().info(f"💪 Set free plan limits: shops=1, products=50, invoices=200")
+    
+    # Save to trigger the hooks that populate limits and history
+    doc.save(ignore_permissions=True)
+    
+    frappe.logger().info(f"✅ Switched to Free Plan successfully for {user}")
+    
+    frappe.db.commit()
+    
+    frappe.logger().info(f"🎉 Database committed - free plan switch complete for {user}")
+    
+    return {
+        "success": True,
+        "message": "Successfully switched to Free Plan!",
+        "subscription": doc.name
+    }
