@@ -360,55 +360,67 @@ def get_user_subscription():
 def submit_payment_confirmation(subscription_plan, user_name):
     """User submits that they've made payment - immediately upgrade them"""
     user = frappe.session.user
-    
+
     # Get the subscription plan details
     plan = frappe.get_doc("Tookio Subscription", subscription_plan)
     if not plan:
         frappe.throw("Invalid subscription plan")
-    
-    # Check if user already has a subscription record
-    user_sub_name = frappe.db.exists("Tookio User Subscription", {"user": user})
-    
-    if user_sub_name:
-        # Update existing subscription
-        user_sub = frappe.get_doc("Tookio User Subscription", user_sub_name)
-        user_sub.current_subscription = subscription_plan
-        user_sub.shop_limit = plan.shop_limit
-        user_sub.products_limit = plan.products_limit
-        user_sub.sales_invoice_limit = plan.sales_invoice_limit
-        user_sub.subscription_start_date = datetime.now().date()
-        user_sub.subscription_end_date = None  # No expiry for now
-        user_sub.status = "Active"
-        user_sub.save(ignore_permissions=True)
-    else:
-        # Create new subscription record
-        user_sub = frappe.new_doc("Tookio User Subscription")
-        user_sub.user = user
-        user_sub.current_subscription = subscription_plan
-        user_sub.shop_limit = plan.shop_limit
-        user_sub.products_limit = plan.products_limit
-        user_sub.sales_invoice_limit = plan.sales_invoice_limit
-        user_sub.subscription_start_date = datetime.now().date()
-        user_sub.subscription_end_date = None  # No expiry for now
-        user_sub.status = "Active"
-        user_sub.insert(ignore_permissions=True)
-    
-    # Create payment confirmation record for admin records
+
+    # Immediately upgrade the user (bypass manual verification)
+    upgrade_user_subscription(user, subscription_plan)
+
+    # Create payment confirmation record for admin records (marked as auto-verified)
     doc = frappe.new_doc("Tookio Payment Confirmation")
     doc.user = user
     doc.user_name = user_name or ""
     doc.subscription_plan = subscription_plan
     doc.till_number = "6547212"
-    doc.status = "Auto-Approved"  # Mark as auto-approved since we upgraded immediately
+    doc.status = "Verified"  # Auto-verified since we upgraded immediately
+    doc.verified_by = "Administrator"  # Mark as auto-verified
+    doc.verified_date = frappe.utils.now()
+    doc.notes = "Auto-verified upgrade from mobile app"
     doc.insert(ignore_permissions=True)
-    
+
     frappe.db.commit()
-    
+
     return {
         "success": True,
         "message": "Your account has been upgraded successfully! You now have access to premium features.",
         "confirmation_id": doc.name
     }
+
+
+def upgrade_user_subscription(user, subscription_plan):
+    """Upgrade user subscription - extracted from TookioPaymentConfirmation.on_update"""
+    # Get the subscription plan details
+    plan = frappe.get_doc("Tookio Subscription", subscription_plan)
+
+    # Check if user already has a subscription record
+    user_sub_name = frappe.db.exists("Tookio User Subscription", {"user": user})
+
+    if user_sub_name:
+        # Update existing subscription
+        doc = frappe.get_doc("Tookio User Subscription", user_sub_name)
+    else:
+        # Create new subscription record
+        doc = frappe.new_doc("Tookio User Subscription")
+        doc.user = user
+
+    # Update subscription details
+    doc.current_subscription = subscription_plan
+    doc.subscription_start_date = frappe.utils.getdate()
+    doc.subscription_end_date = frappe.utils.add_months(frappe.utils.getdate(), 1)  # 1 month subscription
+    doc.status = "Active"
+
+    # Set limits from the plan
+    doc.shop_limit = plan.shop_limit
+    doc.products_limit = plan.products_limit
+    doc.sales_invoice_limit = plan.sales_invoice_limit
+
+    # Save to trigger the hooks that populate limits and history
+    doc.save(ignore_permissions=True)
+
+    frappe.db.commit()
 
 @frappe.whitelist(allow_guest=False)
 def check_user_limits():
