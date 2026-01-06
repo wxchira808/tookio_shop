@@ -42,6 +42,15 @@ fixtures = [
         "dt": "Custom DocPerm"
     },{
         "dt": "Client Script",
+    },{
+        "dt": "Account Deletion Request",
+    },{
+        "dt": "Web Form",
+        "filters": [
+            {
+                "name": "account_deletion_request"
+            }
+        ]
     }
 ]
 
