@@ -64,5 +64,16 @@
   "name": "Refresh Page after product stock",
   "script": "frappe.ui.form.on(\"Product Stock\", {\n    after_save: function(frm) {\n        frm.reload_doc();\n    }\n});",
   "view": "Form"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "User",
+  "enabled": 1,
+  "modified": "2024-01-15 10:00:00.000000",
+  "module": "Tookio Shop",
+  "name": "Delete Account Button",
+  "script": "frappe.ui.form.on('User', {\n    refresh: function(frm) {\n        // Only show delete account button for the current user or System Managers\n        if (frm.doc.name === frappe.session.user || frappe.user.has_role('System Manager')) {\n            // Don't allow deleting System Manager accounts or Guest accounts\n            if (frm.doc.name !== 'Administrator' && frm.doc.name !== 'Guest') {\n                frm.add_custom_button(__('Delete Account'), function() {\n                    frappe.confirm(\n                        __('Are you sure you want to delete your account? This action cannot be undone. All your data will be permanently removed.'),\n                        function() {\n                            // Call server method to delete account\n                            frappe.call({\n                                method: 'tookio_shop.utils.delete_user_account',\n                                args: {\n                                    user: frm.doc.name\n                                },\n                                callback: function(r) {\n                                    if (r.message && r.message.success) {\n                                        frappe.msgprint(__('Account deleted successfully'));\n                                        // Redirect to login page\n                                        window.location.href = '/login';\n                                    } else {\n                                        frappe.msgprint(__('Failed to delete account: ') + (r.message ? r.message.error : 'Unknown error'));\n                                    }\n                                }\n                            });\n                        },\n                        function() {\n                            // User cancelled\n                        }\n                    );\n                }, __('Actions'));\n            }\n        }\n    }\n});",
+  "view": "Form"
  }
 ]

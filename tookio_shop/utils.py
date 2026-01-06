@@ -253,6 +253,57 @@ def validate_product_is_enabled(product_name):
 	return True
 
 
+@frappe.whitelist()
+def delete_user_account(user=None):
+    """
+    Delete/disable a user account for GDPR compliance
+    """
+    import frappe
+    from frappe import _
+
+    # Get current user
+    current_user = frappe.session.user
+
+    # If no user specified, use current user
+    if not user:
+        user = current_user
+
+    # Check permissions - users can only delete their own account or System Managers can delete any account
+    if user != current_user and not frappe.has_permission('User', 'delete'):
+        frappe.throw(_('You do not have permission to delete this account'))
+
+    # Prevent deletion of system accounts
+    if user in ['Administrator', 'Guest']:
+        frappe.throw(_('Cannot delete system accounts'))
+
+    try:
+        # Get user document
+        user_doc = frappe.get_doc('User', user)
+
+        # Disable the user account instead of deleting (for audit trail)
+        user_doc.enabled = 0
+        user_doc.save(ignore_permissions=True)
+
+        # Log the action
+        frappe.logger().info(f'User account disabled: {user} by {current_user}')
+
+        # If user is deleting their own account, clear session
+        if user == current_user:
+            frappe.local.session_obj = None
+            frappe.local.session = None
+            frappe.session.user = 'Guest'
+
+        # Commit the changes
+        frappe.db.commit()
+
+        return {'success': True, 'message': _('Account disabled successfully')}
+
+    except Exception as e:
+        frappe.log_error(f'Error deleting user account {user}: {str(e)}')
+        frappe.db.rollback()
+        return {'success': False, 'error': str(e)}
+
+
 
 
 
