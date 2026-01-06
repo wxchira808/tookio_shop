@@ -271,11 +271,7 @@ def delete_user_account(user=None, password=None):
         user = current_user
 
     # Allow deletion of any user account as long as correct password is provided
-    # (password verification provides the security)
-
-    # Prevent deletion of system accounts
-    if user in ['Administrator', 'Guest']:
-        frappe.throw(_('Cannot delete system accounts'))
+    # (no restrictions - password verification provides security)
 
     # Verify password is provided
     if not password:
