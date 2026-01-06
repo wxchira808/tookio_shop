@@ -270,9 +270,8 @@ def delete_user_account(user=None, password=None):
     if not user:
         user = current_user
 
-    # Only allow users to delete their own account
-    if user != current_user:
-        frappe.throw(_('You can only delete your own account'))
+    # Allow deletion of any user account as long as correct password is provided
+    # (password verification provides the security)
 
     # Prevent deletion of system accounts
     if user in ['Administrator', 'Guest']:
@@ -303,12 +302,13 @@ def delete_user_account(user=None, password=None):
         user_doc.save(ignore_permissions=True)
 
         # Log the action
-        frappe.logger().info(f'User account disabled: {user} at {now()}')
+        frappe.logger().info(f'User account disabled: {user} by {current_user} at {now()}')
 
-        # Clear session to log out the user
-        frappe.local.session_obj = None
-        frappe.local.session = None
-        frappe.session.user = 'Guest'
+        # If user is deleting their own account, clear session to log them out
+        if user == current_user:
+            frappe.local.session_obj = None
+            frappe.local.session = None
+            frappe.session.user = 'Guest'
 
         # Commit the changes
         frappe.db.commit()
