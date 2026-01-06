@@ -254,12 +254,14 @@ def validate_product_is_enabled(product_name):
 
 
 @frappe.whitelist()
-def delete_user_account(user=None):
+@frappe.whitelist()
+def delete_user_account(user=None, password=None):
     """
     Delete/disable a user account for GDPR compliance
     """
     import frappe
     from frappe import _
+    from frappe.utils import now
 
     # Get current user
     current_user = frappe.session.user
@@ -268,30 +270,45 @@ def delete_user_account(user=None):
     if not user:
         user = current_user
 
-    # Check permissions - users can only delete their own account or System Managers can delete any account
-    if user != current_user and not frappe.has_permission('User', 'delete'):
-        frappe.throw(_('You do not have permission to delete this account'))
+    # Only allow users to delete their own account
+    if user != current_user:
+        frappe.throw(_('You can only delete your own account'))
 
     # Prevent deletion of system accounts
     if user in ['Administrator', 'Guest']:
         frappe.throw(_('Cannot delete system accounts'))
 
-    try:
-        # Get user document
-        user_doc = frappe.get_doc('User', user)
+    # Verify password is provided
+    if not password:
+        frappe.throw(_('Password is required to delete account'))
 
+    # Verify password
+    try:
+        # Get user document to check password
+        user_doc = frappe.get_doc('User', user)
+        
+        # Check if password is correct
+        if not frappe.check_password(user, password):
+            frappe.throw(_('Incorrect password'))
+            
+    except frappe.AuthenticationError:
+        frappe.throw(_('Incorrect password'))
+    except Exception as e:
+        frappe.log_error(f'Password verification failed for user {user}: {str(e)}')
+        frappe.throw(_('Password verification failed'))
+
+    try:
         # Disable the user account instead of deleting (for audit trail)
         user_doc.enabled = 0
         user_doc.save(ignore_permissions=True)
 
         # Log the action
-        frappe.logger().info(f'User account disabled: {user} by {current_user}')
+        frappe.logger().info(f'User account disabled: {user} at {now()}')
 
-        # If user is deleting their own account, clear session
-        if user == current_user:
-            frappe.local.session_obj = None
-            frappe.local.session = None
-            frappe.session.user = 'Guest'
+        # Clear session to log out the user
+        frappe.local.session_obj = None
+        frappe.local.session = None
+        frappe.session.user = 'Guest'
 
         # Commit the changes
         frappe.db.commit()
