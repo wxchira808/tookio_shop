@@ -603,12 +603,18 @@ def user_signup(email, full_name, password):
         user.flags.ignore_permissions = True
         user.insert()
 
+        # Generate API Keys for the user
+        from frappe.core.doctype.user.user import generate_keys
+        api_keys = generate_keys(user.name)
+
         # Commit so the user is in the DB
         frappe.db.commit()
 
         return {
             "success": True,
-            "message": frappe._("User created successfully")
+            "message": frappe._("User created successfully"),
+            "api_key": api_keys.get("api_key"),
+            "api_secret": api_keys.get("api_secret")
         }
     except Exception as e:
         frappe.log_error(f"Signup error for {email}: {str(e)}", "User Signup Error")
