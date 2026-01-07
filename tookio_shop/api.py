@@ -578,3 +578,38 @@ def switch_to_free_plan():
         "message": "Successfully switched to Free Plan!",
         "subscription": doc.name
     }
+
+@frappe.whitelist(allow_guest=True)
+def user_signup(email, full_name, password):
+    """
+    Standard signup for mobile app that allows setting password immediately.
+    """
+    if not email or not full_name or not password:
+        frappe.throw(frappe._("All fields (email, full_name, password) are required"))
+
+    if frappe.db.exists("User", email):
+        frappe.throw(frappe._("User with email {0} already exists").format(email))
+
+    try:
+        # Create user
+        user = frappe.get_doc({
+            "doctype": "User",
+            "email": email,
+            "first_name": full_name,
+            "enabled": 1,
+            "new_password": password,
+            "user_type": "Website User"
+        })
+        user.flags.ignore_permissions = True
+        user.insert()
+
+        # Commit so the user is in the DB
+        frappe.db.commit()
+
+        return {
+            "success": True,
+            "message": frappe._("User created successfully")
+        }
+    except Exception as e:
+        frappe.log_error(f"Signup error for {email}: {str(e)}", "User Signup Error")
+        frappe.throw(str(e))
