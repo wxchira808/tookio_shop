@@ -10,6 +10,7 @@
   "user_email",
   "purpose",
   "column_break_1",
+
   "improvements",
   "section_break_1",
   "status",
@@ -78,6 +79,18 @@
  "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 0,
+   "print": 0,
+   "read": 1,
+   "report": 1,
+   "role": "Guest",
+   "share": 0,
+   "write": 0
+  },
   {
    "create": 1,
    "delete": 0,
