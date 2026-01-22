@@ -1,0 +1,198 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-01-21 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_basic",
+  "enabled",
+  "shop",
+  "environment",
+  "column_break_basic",
+  "shortcode",
+  "business_type",
+  "section_credentials",
+  "consumer_key",
+  "consumer_secret",
+  "column_break_credentials",
+  "passkey",
+  "initiator_name",
+  "section_callback",
+  "callback_url",
+  "validation_url",
+  "column_break_callback",
+  "confirmation_url",
+  "section_advanced",
+  "access_token",
+  "token_expiry",
+  "column_break_advanced",
+  "last_sync"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_basic",
+   "fieldtype": "Section Break",
+   "label": "Basic Settings"
+  },
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Enabled"
+  },
+  {
+   "fieldname": "shop",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Shop",
+   "options": "Shop",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "default": "Sandbox",
+   "fieldname": "environment",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Environment",
+   "options": "Sandbox\nProduction",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_basic",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "shortcode",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Shortcode (Paybill/Till)",
+   "reqd": 1
+  },
+  {
+   "default": "Paybill",
+   "fieldname": "business_type",
+   "fieldtype": "Select",
+   "label": "Business Type",
+   "options": "Paybill\nTill Number (Buy Goods)",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_credentials",
+   "fieldtype": "Section Break",
+   "label": "Daraja API Credentials"
+  },
+  {
+   "fieldname": "consumer_key",
+   "fieldtype": "Password",
+   "label": "Consumer Key",
+   "reqd": 1
+  },
+  {
+   "fieldname": "consumer_secret",
+   "fieldtype": "Password",
+   "label": "Consumer Secret",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_credentials",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Lipa Na M-Pesa Online Passkey from Daraja portal",
+   "fieldname": "passkey",
+   "fieldtype": "Password",
+   "label": "Passkey"
+  },
+  {
+   "description": "For B2C transactions (optional)",
+   "fieldname": "initiator_name",
+   "fieldtype": "Data",
+   "label": "Initiator Name"
+  },
+  {
+   "fieldname": "section_callback",
+   "fieldtype": "Section Break",
+   "label": "Callback URLs"
+  },
+  {
+   "description": "Auto-generated. Share with Safaricom for registration.",
+   "fieldname": "callback_url",
+   "fieldtype": "Data",
+   "label": "STK Push Callback URL",
+   "read_only": 1
+  },
+  {
+   "fieldname": "validation_url",
+   "fieldtype": "Data",
+   "label": "C2B Validation URL",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_callback",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "confirmation_url",
+   "fieldtype": "Data",
+   "label": "C2B Confirmation URL",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_advanced",
+   "fieldtype": "Section Break",
+   "label": "Token Management",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "access_token",
+   "fieldtype": "Password",
+   "label": "Access Token",
+   "read_only": 1
+  },
+  {
+   "fieldname": "token_expiry",
+   "fieldtype": "Datetime",
+   "label": "Token Expiry",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_advanced",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "last_sync",
+   "fieldtype": "Datetime",
+   "label": "Last Sync",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-01-21 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Tookio Shop",
+ "name": "M-Pesa Settings",
+ "naming_rule": "Expression",
+ "autoname": "format:MPESA-{shop}",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "if_owner": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Tookio Seller",
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

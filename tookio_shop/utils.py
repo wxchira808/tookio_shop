@@ -49,13 +49,13 @@ def create_free_subscription_for_user(user):
     """Create a free subscription for the user"""
     try:
         # Check if user already has a subscription
-        existing_sub = frappe.db.exists("Tookio User Subscription", {"user": user})
+        existing_sub = frappe.db.exists("User Subscription", {"user": user})
         if existing_sub:
             frappe.logger().info(f"User {user} already has a subscription")
             return
 
         # Get the Free Plan
-        free_plan = frappe.db.get_value("Tookio Subscription", {"subscription_name": "Free Plan"}, "name")
+        free_plan = frappe.db.get_value("Subscription", {"subscription_name": "Free Plan"}, "name")
         
         if not free_plan:
             frappe.log_error("Free Plan not found", "Auto Subscription Creation")
@@ -65,7 +65,7 @@ def create_free_subscription_for_user(user):
         frappe.set_user(user)
         
         # Create user subscription
-        user_sub = frappe.new_doc("Tookio User Subscription")
+        user_sub = frappe.new_doc("User Subscription")
         user_sub.user = user
         user_sub.current_subscription = free_plan
         user_sub.subscription_start_date = getdate()
@@ -87,7 +87,7 @@ def get_user_plan_limits(user):
     """Get user's subscription plan limits"""
     # First, try to get any subscription (Active or Expired)
     user_sub = frappe.db.get_value(
-        "Tookio User Subscription",
+        "User Subscription",
         {"user": user},
         ["shop_limit", "products_limit", "sales_invoice_limit", "status", "subscription_end_date"],
         as_dict=True
@@ -100,7 +100,7 @@ def get_user_plan_limits(user):
                 from frappe.utils import getdate, today
                 if getdate(user_sub.subscription_end_date) < getdate(today()) and user_sub.status != "Expired":
                     # Auto-downgrade to free plan
-                    frappe.db.set_value("Tookio User Subscription", {"user": user}, {
+                    frappe.db.set_value("User Subscription", {"user": user}, {
                         "status": "Expired",
                         "current_subscription": "Free Plan",
                         "shop_limit": 1,
@@ -135,7 +135,7 @@ def get_user_plan_limits(user):
 def check_subscription_expired(user):
     """Check if user's subscription has expired"""
     user_sub = frappe.db.get_value(
-        "Tookio User Subscription",
+        "User Subscription",
         {"user": user},
         ["subscription_end_date", "status"],
         as_dict=True
@@ -145,7 +145,7 @@ def check_subscription_expired(user):
         if getdate(user_sub.subscription_end_date) < getdate():
             # Subscription expired, deactivate it
             if user_sub.status == "Active":
-                frappe.db.set_value("Tookio User Subscription", {"user": user}, "status", "Expired")
+                frappe.db.set_value("User Subscription", {"user": user}, "status", "Expired")
                 frappe.db.commit()
             return True
     return False
@@ -154,7 +154,7 @@ def check_subscription_expired(user):
 def ensure_active_subscription(user=None):
     """Enforce active subscription status before allowing any transactional insert."""
     current_user = user or frappe.session.user
-    status = frappe.db.get_value("Tookio User Subscription", {"user": current_user}, "status")
+    status = frappe.db.get_value("User Subscription", {"user": current_user}, "status")
 
     if status and status.lower() != "active":
         frappe.throw("Your plan is expired kindly renew or switch to free plan")
@@ -315,6 +315,98 @@ def delete_user_account(user=None, password=None):
         frappe.log_error(f'Error deleting user account {user}: {str(e)}')
         frappe.db.rollback()
         return {'success': False, 'error': str(e)}
+
+
+# ==================== V2 SALES AUTOMATOR UTILITIES ====================
+
+def check_low_stock_on_update(doc, method):
+    """
+    Check for low stock when a Product is updated.
+    Triggers alert if stock drops to 5 or below.
+    """
+    from frappe.utils import flt
+    
+    # Only trigger if stock quantity changed
+    if doc.has_value_changed("stock_quantity"):
+        stock_qty = flt(doc.stock_quantity)
+        
+        if stock_qty <= 5:
+            from tookio_shop.services.notification_service import send_low_stock_alert
+            send_low_stock_alert(doc.name, stock_qty, doc.shop)
+
+
+def handle_order_status_change(doc, method):
+    """
+    Handle Sales Order status changes.
+    - Deduct stock when order is confirmed
+    - Send notifications on status changes
+    """
+    if doc.has_value_changed("order_status"):
+        # Deduct stock when order is confirmed
+        if doc.order_status == "Confirmed":
+            try:
+                doc.deduct_stock()
+            except Exception as e:
+                frappe.log_error(f"Stock deduction error: {str(e)}", "Order Stock Deduction")
+
+
+def handle_mpesa_transaction_update(doc, method):
+    """
+    Handle M-Pesa transaction updates.
+    Triggers payment notification when transaction completes.
+    """
+    if doc.has_value_changed("status") and doc.status == "Completed":
+        from tookio_shop.services.notification_service import send_payment_received_notification
+        
+        if doc.linked_order:
+            send_payment_received_notification(
+                order_name=doc.linked_order,
+                mpesa_receipt=doc.mpesa_receipt_number,
+                amount=doc.amount,
+                shop=doc.shop
+            )
+
+
+def check_expired_subscriptions():
+    """
+    Scheduled task to check and expire subscriptions.
+    Runs hourly to catch any expired subscriptions.
+    """
+    from frappe.utils import getdate, today
+    
+    expired_subs = frappe.get_all(
+        "User Subscription",
+        filters={
+            "status": "Active",
+            "subscription_end_date": ["<", today()]
+        },
+        fields=["name", "user", "current_subscription"]
+    )
+    
+    for sub in expired_subs:
+        try:
+            frappe.db.set_value("User Subscription", sub.name, {
+                "status": "Expired",
+                "current_subscription": "Free Plan",
+                "shop_limit": 1,
+                "products_limit": 50,
+                "sales_invoice_limit": 200
+            })
+            frappe.logger().info(f"Subscription expired for user {sub.user}")
+        except Exception as e:
+            frappe.log_error(f"Error expiring subscription {sub.name}: {str(e)}", "Subscription Expiry")
+    
+    if expired_subs:
+        frappe.db.commit()
+
+
+def get_storefront_url(shop):
+    """
+    Get the public storefront URL for a shop.
+    """
+    base_url = frappe.utils.get_url()
+    return f"{base_url}/store?shop={shop}"
+
 
 
 

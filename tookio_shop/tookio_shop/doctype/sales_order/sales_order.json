@@ -1,0 +1,372 @@
+{
+ "actions": [],
+ "autoname": "format:ORD-{shop_name}-{####}",
+ "creation": "2026-01-21 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_header",
+  "order_date",
+  "shop",
+  "shop_name",
+  "order_source",
+  "column_break_header",
+  "order_status",
+  "payment_status",
+  "fulfillment_status",
+  "section_customer",
+  "customer_name",
+  "customer_phone",
+  "column_break_customer",
+  "delivery_location",
+  "delivery_notes",
+  "section_items",
+  "items",
+  "section_totals",
+  "subtotal",
+  "delivery_fee",
+  "column_break_totals",
+  "discount",
+  "total",
+  "section_payment",
+  "payment_method",
+  "mpesa_receipt",
+  "column_break_payment",
+  "paid_amount",
+  "payment_date",
+  "section_dm_source",
+  "dm_source_platform",
+  "original_dm_text",
+  "column_break_dm",
+  "ai_parsed",
+  "ai_confidence",
+  "section_fulfillment",
+  "shipped_date",
+  "tracking_number",
+  "column_break_fulfillment",
+  "delivery_date",
+  "delivery_confirmation",
+  "section_notes",
+  "internal_notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_header",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "order_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Order Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "shop",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Shop",
+   "options": "Shop",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "shop.shop_name",
+   "fieldname": "shop_name",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Shop Name",
+   "read_only": 1
+  },
+  {
+   "default": "Manual",
+   "fieldname": "order_source",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Order Source",
+   "options": "Manual\nWhatsApp DM\nInstagram DM\nTikTok\nStorefront\nAI Parsed"
+  },
+  {
+   "fieldname": "column_break_header",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Draft",
+   "fieldname": "order_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Order Status",
+   "options": "Draft\nConfirmed\nProcessing\nReady\nCompleted\nCancelled"
+  },
+  {
+   "default": "Unpaid",
+   "fieldname": "payment_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Payment Status",
+   "options": "Unpaid\nPartial\nPaid\nRefunded"
+  },
+  {
+   "default": "Pending",
+   "fieldname": "fulfillment_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Fulfillment",
+   "options": "Pending\nPacking\nShipped\nDelivered\nReturned"
+  },
+  {
+   "fieldname": "section_customer",
+   "fieldtype": "Section Break",
+   "label": "Customer Details"
+  },
+  {
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "customer_phone",
+   "fieldtype": "Data",
+   "label": "Customer Phone",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_customer",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "delivery_location",
+   "fieldtype": "Data",
+   "label": "Delivery Location"
+  },
+  {
+   "fieldname": "delivery_notes",
+   "fieldtype": "Small Text",
+   "label": "Delivery Notes"
+  },
+  {
+   "fieldname": "section_items",
+   "fieldtype": "Section Break",
+   "label": "Order Items"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "options": "Order Item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_totals",
+   "fieldtype": "Section Break",
+   "label": "Order Total"
+  },
+  {
+   "fieldname": "subtotal",
+   "fieldtype": "Currency",
+   "label": "Subtotal",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "delivery_fee",
+   "fieldtype": "Currency",
+   "label": "Delivery Fee",
+   "precision": "2"
+  },
+  {
+   "fieldname": "column_break_totals",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "discount",
+   "fieldtype": "Currency",
+   "label": "Discount",
+   "precision": "2"
+  },
+  {
+   "fieldname": "total",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Total",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_payment",
+   "fieldtype": "Section Break",
+   "label": "Payment Details"
+  },
+  {
+   "default": "M-Pesa",
+   "fieldname": "payment_method",
+   "fieldtype": "Select",
+   "label": "Payment Method",
+   "options": "M-Pesa\nCash on Delivery\nBank Transfer\nOther"
+  },
+  {
+   "description": "Auto-filled when payment is reconciled",
+   "fieldname": "mpesa_receipt",
+   "fieldtype": "Data",
+   "label": "M-Pesa Receipt Number"
+  },
+  {
+   "fieldname": "column_break_payment",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "paid_amount",
+   "fieldtype": "Currency",
+   "label": "Paid Amount",
+   "precision": "2"
+  },
+  {
+   "fieldname": "payment_date",
+   "fieldtype": "Datetime",
+   "label": "Payment Date"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_dm_source",
+   "fieldtype": "Section Break",
+   "label": "DM Source (AI Parsed Orders)"
+  },
+  {
+   "fieldname": "dm_source_platform",
+   "fieldtype": "Select",
+   "label": "DM Platform",
+   "options": "\nWhatsApp\nInstagram\nTikTok\nFacebook\nTwitter"
+  },
+  {
+   "description": "The original message from the customer",
+   "fieldname": "original_dm_text",
+   "fieldtype": "Text",
+   "label": "Original DM Text"
+  },
+  {
+   "fieldname": "column_break_dm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "ai_parsed",
+   "fieldtype": "Check",
+   "label": "AI Parsed",
+   "read_only": 1
+  },
+  {
+   "description": "AI confidence score (0-100)",
+   "fieldname": "ai_confidence",
+   "fieldtype": "Percent",
+   "label": "AI Confidence"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_fulfillment",
+   "fieldtype": "Section Break",
+   "label": "Fulfillment Tracking"
+  },
+  {
+   "fieldname": "shipped_date",
+   "fieldtype": "Date",
+   "label": "Shipped Date"
+  },
+  {
+   "fieldname": "tracking_number",
+   "fieldtype": "Data",
+   "label": "Tracking Number"
+  },
+  {
+   "fieldname": "column_break_fulfillment",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "delivery_date",
+   "fieldtype": "Date",
+   "label": "Delivery Date"
+  },
+  {
+   "fieldname": "delivery_confirmation",
+   "fieldtype": "Attach",
+   "label": "Delivery Confirmation"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_notes",
+   "fieldtype": "Section Break",
+   "label": "Internal Notes"
+  },
+  {
+   "fieldname": "internal_notes",
+   "fieldtype": "Text Editor",
+   "label": "Notes"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [
+  {
+   "group": "Payments",
+   "link_doctype": "M-Pesa Transaction",
+   "link_fieldname": "linked_order"
+  }
+ ],
+ "modified": "2026-01-21 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Tookio Shop",
+ "name": "Sales Order",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "if_owner": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Tookio Seller",
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "search_fields": "customer_name,customer_phone,mpesa_receipt",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [
+  {
+   "color": "gray",
+   "title": "Draft"
+  },
+  {
+   "color": "blue",
+   "title": "Confirmed"
+  },
+  {
+   "color": "orange",
+   "title": "Processing"
+  },
+  {
+   "color": "yellow",
+   "title": "Ready"
+  },
+  {
+   "color": "green",
+   "title": "Completed"
+  },
+  {
+   "color": "red",
+   "title": "Cancelled"
+  }
+ ],
+ "title_field": "customer_name",
+ "track_changes": 1
+}

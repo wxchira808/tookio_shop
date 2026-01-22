@@ -21,20 +21,33 @@ app_license = "mit"
 
 
 doc_events = {
-      "User": {
+    "User": {
         "after_insert": "tookio_shop.utils.setup_new_user"
     },
     "Product": {
-        "before_insert": "tookio_shop.utils.check_item_limit"
+        "before_insert": "tookio_shop.utils.check_item_limit",
+        "on_update": "tookio_shop.utils.check_low_stock_on_update"
     },
     "Shop": {
         "before_insert": "tookio_shop.utils.check_shop_limit"
     },
-    "Sale Invoice": {
-        "before_insert": "tookio_shop.utils.check_sales_invoice_limit",
-        "validate": "tookio_shop.utils.prevent_negative_stock"
+    "Sales Order": {
+        "on_update": "tookio_shop.utils.handle_order_status_change"
     },
-    # Removed Product Stock after_insert hook to fix AttributeError
+    "M-Pesa Transaction": {
+        "on_update": "tookio_shop.utils.handle_mpesa_transaction_update"
+    },
+}
+
+# Scheduled Tasks for V2 Sales Automator
+scheduler_events = {
+    "daily": [
+        "tookio_shop.services.notification_service.check_all_low_stock",
+        "tookio_shop.services.notification_service.send_daily_summary"
+    ],
+    "hourly": [
+        "tookio_shop.utils.check_expired_subscriptions"
+    ]
 }
 
 fixtures = [

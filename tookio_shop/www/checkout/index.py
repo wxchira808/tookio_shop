@@ -10,23 +10,6 @@ def get_context(context):
     # Since app is free, redirect to subscriptions page with free message
     frappe.local.response["location"] = "/subscriptions?free=true"
     return
-
-@frappe.whitelist(allow_guest=False)
-def confirm_payment(plan_name, phone_number, transaction_code):
-    """Confirm payment and create subscription"""
-    if not plan_name or not phone_number:
-        frappe.throw(_("Plan and phone number are required."))
-
-    try:
-        # Get the plan details
-        plan = frappe.get_doc("Subscription Plan", plan_name)
-        
-        # Get current user's customer record
-        customer_name = frappe.db.get_value("Portal User", {"user": frappe.session.user}, "parent")
-        if not customer_name:
-            frappe.throw(_("No customer record found for your account."))
-        
-        customer = frappe.get_doc("Customer", customer_name)
         
         # Create a draft Sales Invoice for tracking
         sales_invoice = frappe.new_doc("Sales Invoice")

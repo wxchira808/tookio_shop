@@ -72,7 +72,7 @@
    "fieldname": "items",
    "fieldtype": "Table",
    "label": "Items",
-   "options": "Tookio Sales Invoice Item",
+   "options": "Order Item",
    "reqd": 1
   },
   {

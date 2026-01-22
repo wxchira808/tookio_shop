@@ -86,11 +86,10 @@
   },
   {
    "default": "Pcs",
+   "description": "Eg. (Kgs,Pcs,Ltrs)",
    "fieldname": "uom",
-   "fieldtype": "Link",
-   "label": "Unit Of Measure (UOM)",
-   "options": "UOM",
-   "reqd": 1
+   "fieldtype": "Data",
+   "label": "Unit Of Measure (UOM)"
   },
   {
    "allow_in_quick_entry": 1,
@@ -118,7 +117,7 @@
  "index_web_pages_for_search": 1,
  "links": [],
  "max_attachments": 1,
- "modified": "2025-12-08 15:00:06.067260",
+ "modified": "2026-01-21 21:52:49.867314",
  "modified_by": "Administrator",
  "module": "Tookio Shop",
  "name": "Product",

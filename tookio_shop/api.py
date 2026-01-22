@@ -294,7 +294,7 @@ def get_subscription_details():
 def get_subscription_plans():
     """Get all available subscription plans"""
     plans = frappe.get_all(
-        "Tookio Subscription",
+        "Subscription",
         filters={"enabled": 1},
         fields=["name", "subscription_name", "description", "price", "currency", "shop_limit", "products_limit", "sales_invoice_limit"],
         order_by="price asc"
@@ -310,10 +310,10 @@ def get_user_subscription():
         user = frappe.session.user
         
         # Get user subscription
-        user_sub = frappe.db.exists("Tookio User Subscription", {"user": user})
+        user_sub = frappe.db.exists("User Subscription", {"user": user})
         
         if user_sub:
-            doc = frappe.get_doc("Tookio User Subscription", user_sub)
+            doc = frappe.get_doc("User Subscription", user_sub)
             
             # Check if subscription has expired and auto-downgrade
             try:
@@ -345,7 +345,7 @@ def get_user_subscription():
             plan_name = "Free Plan"
             if doc.current_subscription and doc.current_subscription != "Free Plan":
                 try:
-                    plan_doc = frappe.get_doc("Tookio Subscription", doc.current_subscription)
+                    plan_doc = frappe.get_doc("Subscription", doc.current_subscription)
                     plan_name = plan_doc.subscription_name
                 except:
                     plan_name = doc.current_subscription
@@ -410,7 +410,7 @@ def submit_payment_confirmation(subscription_plan, user_name):
     frappe.logger().info(f"🔔 submit_payment_confirmation called for user: {user}, plan: {subscription_plan}")
 
     # Get the subscription plan details
-    plan = frappe.get_doc("Tookio Subscription", subscription_plan)
+    plan = frappe.get_doc("Subscription", subscription_plan)
     if not plan:
         frappe.throw("Invalid subscription plan")
 
@@ -420,7 +420,7 @@ def submit_payment_confirmation(subscription_plan, user_name):
     frappe.logger().info(f"✅ User {user} upgraded successfully")
 
     # Create payment confirmation record for admin records (marked as auto-verified)
-    doc = frappe.new_doc("Tookio Payment Confirmation")
+    doc = frappe.new_doc("Payment Confirmation")
     doc.user = user
     doc.user_name = user_name or ""
     doc.subscription_plan = subscription_plan
@@ -445,20 +445,20 @@ def upgrade_user_subscription(user, subscription_plan):
     frappe.logger().info(f"📝 upgrade_user_subscription called for {user} with plan {subscription_plan}")
     
     # Get the subscription plan details
-    plan = frappe.get_doc("Tookio Subscription", subscription_plan)
+    plan = frappe.get_doc("Subscription", subscription_plan)
 
     # Check if user already has a subscription record
-    user_sub_name = frappe.db.exists("Tookio User Subscription", {"user": user})
+    user_sub_name = frappe.db.exists("User Subscription", {"user": user})
     
     frappe.logger().info(f"💾 Existing subscription found: {user_sub_name}")
 
     if user_sub_name:
         # Update existing subscription
-        doc = frappe.get_doc("Tookio User Subscription", user_sub_name)
+        doc = frappe.get_doc("User Subscription", user_sub_name)
         frappe.logger().info(f"📄 Updating existing subscription {user_sub_name}")
     else:
         # Create new subscription record
-        doc = frappe.new_doc("Tookio User Subscription")
+        doc = frappe.new_doc("User Subscription")
         doc.user = user
         frappe.logger().info(f"📄 Creating new subscription for {user}")
 
@@ -534,20 +534,20 @@ def switch_to_free_plan():
     user = frappe.session.user
     
     # Get the Free Plan
-    free_plan = frappe.db.get_value("Tookio Subscription", {"subscription_name": "Free Plan"}, "name")
+    free_plan = frappe.db.get_value("Subscription", {"subscription_name": "Free Plan"}, "name")
     if not free_plan:
         frappe.throw("Free Plan not found")
     
     # Check if user already has a subscription record
-    user_sub_name = frappe.db.exists("Tookio User Subscription", {"user": user})
+    user_sub_name = frappe.db.exists("User Subscription", {"user": user})
     
     if user_sub_name:
         # Update existing subscription
-        doc = frappe.get_doc("Tookio User Subscription", user_sub_name)
+        doc = frappe.get_doc("User Subscription", user_sub_name)
         frappe.logger().info(f"📄 Updating existing subscription {user_sub_name} to Free Plan")
     else:
         # Create new subscription record
-        doc = frappe.new_doc("Tookio User Subscription")
+        doc = frappe.new_doc("User Subscription")
         doc.user = user
         frappe.logger().info(f"📄 Creating new subscription for {user} with Free Plan")
     

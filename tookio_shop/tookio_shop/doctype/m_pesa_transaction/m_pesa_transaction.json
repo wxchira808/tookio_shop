@@ -1,34 +1,51 @@
 {
  "actions": [],
- "allow_rename": 1,
- "creation": "2025-08-22 15:43:34.315695",
+ "autoname": "format:MPESA-{####}",
+ "creation": "2026-01-21 12:00:00.000000",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "section_break_uumv",
-  "amended_from"
+  "shop",
+  "transaction_type",
+  "status",
+  "phone_number",
+  "amount"
  ],
  "fields": [
   {
-   "fieldname": "section_break_uumv",
-   "fieldtype": "Section Break"
+   "fieldname": "shop",
+   "fieldtype": "Link",
+   "label": "Shop",
+   "options": "Shop",
+   "reqd": 1
   },
   {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "M-Pesa Transaction",
-   "print_hide": 1,
-   "read_only": 1,
-   "search_index": 1
+   "fieldname": "transaction_type",
+   "fieldtype": "Select",
+   "label": "Transaction Type",
+   "options": "STK Push\nC2B\nB2C",
+   "reqd": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Initiated\nPending\nCompleted\nFailed\nCancelled"
+  },
+  {
+   "fieldname": "phone_number",
+   "fieldtype": "Data",
+   "label": "Phone Number"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount"
   }
  ],
- "grid_page_length": 50,
- "index_web_pages_for_search": 1,
- "is_submittable": 1,
- "links": [],
- "modified": "2025-08-22 15:43:34.315695",
+ "issingle": 0,
+ "istable": 0,
+ "modified": "2026-01-21 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "Tookio Shop",
  "name": "M-Pesa Transaction",
@@ -37,19 +54,15 @@
   {
    "create": 1,
    "delete": 1,
-   "email": 1,
-   "export": 1,
+   "if_owner": 1,
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "System Manager",
-   "share": 1,
-   "submit": 1,
+   "role": "Tookio Seller",
    "write": 1
   }
  ],
- "row_format": "Dynamic",
  "sort_field": "modified",
- "sort_order": "DESC",
- "states": []
+ "sort_order": "Desc",
+ "track_changes": 1
 }

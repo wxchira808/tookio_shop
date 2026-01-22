@@ -11,7 +11,10 @@
   "address",
   "mobile_number",
   "email_address",
-  "shop_logo"
+  "shop_logo",
+  "section_links",
+  "store_link",
+  "whatsapp_link"
  ],
  "fields": [
   {
@@ -57,6 +60,25 @@
    "fieldname": "enabled",
    "fieldtype": "Check",
    "label": "Enabled"
+  },
+  {
+   "fieldname": "section_links",
+   "fieldtype": "Section Break",
+   "label": "Sharing Links"
+  },
+  {
+   "fieldname": "store_link",
+   "fieldtype": "Data",
+   "label": "Store Link",
+   "read_only": 1,
+   "description": "Copy this link to share in your TikTok/Instagram bio"
+  },
+  {
+   "fieldname": "whatsapp_link",
+   "fieldtype": "Data",
+   "label": "WhatsApp Link",
+   "read_only": 1,
+   "description": "Copy this link to share in WhatsApp bio"
   }
  ],
  "grid_page_length": 50,

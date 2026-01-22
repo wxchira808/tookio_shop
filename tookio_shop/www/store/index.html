@@ -1,0 +1,439 @@
+{% extends "templates/web.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block head_include %}
+<meta name="description" content="{{ meta_description or 'Shop on Tookio' }}">
+<meta property="og:title" content="{{ title }}">
+<meta property="og:description" content="{{ meta_description }}">
+<meta property="og:image" content="{{ meta_image or '' }}">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+{% endblock %}
+
+{% block style %}
+<style>
+    :root {
+        --tookio-primary: #2490ef;
+        --tookio-success: #28a745;
+        --tookio-warning: #ffc107;
+        --tookio-danger: #dc3545;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: #f8f9fa;
+        color: #333;
+    }
+
+    .store-header {
+        background: linear-gradient(135deg, var(--tookio-primary), #1a73e8);
+        color: white;
+        padding: 24px 16px;
+        text-align: center;
+    }
+
+    .store-logo {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid white;
+        margin-bottom: 12px;
+        background: white;
+    }
+
+    .store-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .store-location {
+        opacity: 0.9;
+        font-size: 0.9rem;
+    }
+
+    .store-stats {
+        display: flex;
+        justify-content: center;
+        gap: 24px;
+        margin-top: 16px;
+        font-size: 0.85rem;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-value {
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+
+    .products-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 16px;
+    }
+
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: #333;
+    }
+
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .product-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .product-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    }
+
+    .product-image {
+        width: 100%;
+        height: 140px;
+        object-fit: cover;
+        background: #f0f0f0;
+    }
+
+    .product-image.placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #999;
+        font-size: 2rem;
+    }
+
+    .product-info {
+        padding: 12px;
+    }
+
+    .product-name {
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 4px;
+        color: #333;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .product-price {
+        color: var(--tookio-primary);
+        font-weight: 700;
+        font-size: 1rem;
+        margin-bottom: 8px;
+    }
+
+    .stock-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .badge-success { background: #d4edda; color: #155724; }
+    .badge-warning { background: #fff3cd; color: #856404; }
+    .badge-danger { background: #f8d7da; color: #721c24; }
+    .badge-info { background: #d1ecf1; color: #0c5460; }
+
+    .order-btn {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-top: 8px;
+    }
+
+    .order-btn.primary {
+        background: var(--tookio-primary);
+        color: white;
+    }
+
+    .order-btn.primary:hover {
+        background: #1a73e8;
+    }
+
+    .order-btn.disabled {
+        background: #e9ecef;
+        color: #6c757d;
+        cursor: not-allowed;
+    }
+
+    .mpesa-section {
+        background: #e8f5e9;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+        text-align: center;
+    }
+
+    .mpesa-logo {
+        height: 24px;
+        margin-bottom: 8px;
+    }
+
+    .mpesa-info {
+        font-size: 0.85rem;
+        color: #2e7d32;
+    }
+
+    .mpesa-number {
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .whatsapp-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: #25D366;
+        color: white;
+        padding: 12px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        margin-top: 16px;
+    }
+
+    .whatsapp-btn:hover {
+        background: #1da851;
+        color: white;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #666;
+    }
+
+    .empty-icon {
+        font-size: 3rem;
+        margin-bottom: 16px;
+    }
+
+    .footer {
+        text-align: center;
+        padding: 24px;
+        color: #999;
+        font-size: 0.8rem;
+    }
+
+    .footer a {
+        color: var(--tookio-primary);
+        text-decoration: none;
+    }
+
+    @media (max-width: 400px) {
+        .product-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block page_content %}
+<div class="store-page">
+    {% if error %}
+        <!-- Error State -->
+        <div class="empty-state">
+            <div class="empty-icon">🏪</div>
+            <h2>{{ error }}</h2>
+            <p style="margin-top: 12px;">
+                <a href="/home">Go to Tookio Home</a>
+            </p>
+        </div>
+    {% elif shop %}
+        <!-- Store Header -->
+        <div class="store-header">
+            {% if shop.shop_logo %}
+                <img src="{{ shop.shop_logo }}" alt="{{ shop.shop_name }}" class="store-logo">
+            {% else %}
+                <div class="store-logo" style="display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+                    🏪
+                </div>
+            {% endif %}
+            <h1 class="store-name">{{ shop.shop_name }}</h1>
+            <p class="store-location">📍 {{ shop.location }}</p>
+            
+            <div class="store-stats">
+                <div class="stat-item">
+                    <div class="stat-value">{{ product_count }}</div>
+                    <div>Products</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ in_stock_count }}</div>
+                    <div>In Stock</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="products-container">
+            <!-- M-Pesa Payment Info -->
+            {% if mpesa_enabled %}
+            <div class="mpesa-section">
+                <div style="font-weight: 600; margin-bottom: 4px;">💚 Pay with M-Pesa</div>
+                <div class="mpesa-info">
+                    {{ mpesa_type }}: <span class="mpesa-number">{{ mpesa_shortcode }}</span>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Products -->
+            {% if products %}
+                <h2 class="section-title">🛍️ Products</h2>
+                <div class="product-grid">
+                    {% for product in products %}
+                    <div class="product-card" data-product="{{ product.name }}">
+                        {% if product.photo %}
+                            <img src="{{ product.photo }}" alt="{{ product.item_name }}" class="product-image">
+                        {% else %}
+                            <div class="product-image placeholder">📦</div>
+                        {% endif %}
+                        
+                        <div class="product-info">
+                            <div class="product-name">{{ product.item_name }}</div>
+                            <div class="product-price">{{ product.formatted_price }}</div>
+                            
+                            <span class="stock-badge badge-{{ product.stock_status.badge }}">
+                                {{ product.stock_status.text }}
+                            </span>
+
+                            {% if product.in_stock %}
+                                <button class="order-btn primary" onclick="orderProduct('{{ product.name }}', '{{ product.item_name }}', {{ product.selling_price or 0 }})">
+                                    Order Now
+                                </button>
+                            {% else %}
+                                <button class="order-btn disabled" disabled>
+                                    Out of Stock
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">📦</div>
+                    <h3>No products yet</h3>
+                    <p>This store is setting up. Check back soon!</p>
+                </div>
+            {% endif %}
+
+            <!-- WhatsApp Contact -->
+            {% if shop.mobile_number %}
+            <a href="https://wa.me/{{ shop.mobile_number | replace('+', '') | replace(' ', '') }}?text=Hi! I'm interested in your products on Tookio." 
+               class="whatsapp-btn" target="_blank">
+                <span>💬</span> Chat on WhatsApp
+            </a>
+            {% endif %}
+        </div>
+
+        <div class="footer">
+            Powered by <a href="/home" target="_blank">Tookio Shop</a>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Order Modal -->
+<div id="order-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+    <div style="background: white; border-radius: 16px; max-width: 400px; width: 90%; padding: 24px; margin: 20px;">
+        <h3 style="margin-bottom: 16px;">📦 Order Details</h3>
+        <p id="modal-product" style="font-weight: 600; margin-bottom: 16px;"></p>
+        
+        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Your Phone Number</label>
+        <input type="tel" id="order-phone" placeholder="0712345678" 
+               style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 12px; font-size: 1rem;">
+        
+        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Delivery Location</label>
+        <input type="text" id="order-location" placeholder="e.g., Westlands, Nairobi" 
+               style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 16px; font-size: 1rem;">
+
+        <div style="display: flex; gap: 12px;">
+            <button onclick="closeModal()" style="flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 8px; background: white; cursor: pointer;">
+                Cancel
+            </button>
+            <button onclick="submitOrder()" style="flex: 1; padding: 12px; border: none; border-radius: 8px; background: #25D366; color: white; font-weight: 600; cursor: pointer;">
+                Send Order via WhatsApp
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentProduct = null;
+    const shopPhone = "{{ shop.mobile_number | replace('+', '') | replace(' ', '') if shop else '' }}";
+    const shopName = "{{ shop.shop_name if shop else '' }}";
+
+    function orderProduct(productId, productName, price) {
+        currentProduct = { id: productId, name: productName, price: price };
+        document.getElementById('modal-product').textContent = 
+            productName + ' - KES ' + (price ? price.toLocaleString() : '0');
+        document.getElementById('order-modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('order-modal').style.display = 'none';
+        currentProduct = null;
+    }
+
+    function submitOrder() {
+        const phone = document.getElementById('order-phone').value.trim();
+        const location = document.getElementById('order-location').value.trim();
+
+        if (!phone) {
+            alert('Please enter your phone number');
+            return;
+        }
+
+        // Build WhatsApp message
+        let message = `🛍️ *New Order from Tookio Store*\n\n`;
+        message += `*Product:* ${currentProduct.name}\n`;
+        message += `*Price:* KES ${currentProduct.price ? currentProduct.price.toLocaleString() : 'TBD'}\n`;
+        message += `*Customer Phone:* ${phone}\n`;
+        if (location) {
+            message += `*Delivery to:* ${location}\n`;
+        }
+        message += `\n---\nSent via ${shopName}'s Tookio Store`;
+
+        const waUrl = `https://wa.me/${shopPhone}?text=${encodeURIComponent(message)}`;
+        window.open(waUrl, '_blank');
+        closeModal();
+    }
+
+    // Close modal on outside click
+    document.getElementById('order-modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeModal();
+        }
+    });
+</script>
+{% endblock %}

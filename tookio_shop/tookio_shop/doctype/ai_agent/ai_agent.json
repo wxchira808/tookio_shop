@@ -1,0 +1,204 @@
+{
+ "actions": [],
+ "creation": "2026-01-21 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_basic",
+  "enabled",
+  "shop",
+  "ai_provider",
+  "column_break_basic",
+  "model_name",
+  "temperature",
+  "section_api",
+  "api_key",
+  "api_endpoint",
+  "section_prompts",
+  "system_prompt",
+  "section_product_context",
+  "include_product_list",
+  "product_list_cache",
+  "column_break_context",
+  "last_product_sync",
+  "section_settings",
+  "auto_create_orders",
+  "require_confirmation",
+  "column_break_settings",
+  "confidence_threshold",
+  "max_tokens"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_basic",
+   "fieldtype": "Section Break",
+   "label": "Agent Settings"
+  },
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Enabled"
+  },
+  {
+   "fieldname": "shop",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Shop",
+   "options": "Shop",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "default": "Google Gemini",
+   "fieldname": "ai_provider",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "AI Provider",
+   "options": "Google Gemini\nOpenAI\nAnthropic Claude\nCustom",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_basic",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "gemini-1.5-flash",
+   "description": "Gemini: gemini-1.5-flash, gemini-1.5-pro | OpenAI: gpt-4o-mini, gpt-4o | Claude: claude-3-haiku",
+   "fieldname": "model_name",
+   "fieldtype": "Data",
+   "label": "Model Name",
+   "reqd": 1
+  },
+  {
+   "default": "0.3",
+   "description": "Lower = more focused, Higher = more creative (0.0 - 1.0)",
+   "fieldname": "temperature",
+   "fieldtype": "Float",
+   "label": "Temperature",
+   "precision": "1"
+  },
+  {
+   "fieldname": "section_api",
+   "fieldtype": "Section Break",
+   "label": "API Configuration"
+  },
+  {
+   "fieldname": "api_key",
+   "fieldtype": "Password",
+   "label": "API Key",
+   "reqd": 1
+  },
+  {
+   "description": "Leave empty for default provider endpoints. Required for custom providers.",
+   "fieldname": "api_endpoint",
+   "fieldtype": "Data",
+   "label": "Custom API Endpoint"
+  },
+  {
+   "fieldname": "section_prompts",
+   "fieldtype": "Section Break",
+   "label": "System Prompt"
+  },
+  {
+   "default": "You are a helpful assistant that parses customer messages from social media DMs to extract order information.\n\nFrom each message, extract:\n1. Product name(s) and quantity\n2. Customer name (if mentioned)\n3. Delivery location/address\n4. Any special instructions\n\nRespond in JSON format with these fields:\n- products: [{name, quantity, variant}]\n- customer_name: string or null\n- delivery_location: string or null\n- special_instructions: string or null\n- confidence: number (0-100)\n\nIf you cannot understand the message or it's not an order, set confidence to 0.",
+   "fieldname": "system_prompt",
+   "fieldtype": "Code",
+   "label": "System Prompt",
+   "options": "Markdown"
+  },
+  {
+   "fieldname": "section_product_context",
+   "fieldtype": "Section Break",
+   "label": "Product Context"
+  },
+  {
+   "default": "1",
+   "description": "Include shop's product list for better matching",
+   "fieldname": "include_product_list",
+   "fieldtype": "Check",
+   "label": "Include Product List in Context"
+  },
+  {
+   "fieldname": "product_list_cache",
+   "fieldtype": "Code",
+   "hidden": 1,
+   "label": "Product List Cache",
+   "options": "JSON",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_context",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "last_product_sync",
+   "fieldtype": "Datetime",
+   "label": "Last Product Sync",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_settings",
+   "fieldtype": "Section Break",
+   "label": "Behavior Settings"
+  },
+  {
+   "default": "1",
+   "description": "Automatically create draft orders from parsed DMs",
+   "fieldname": "auto_create_orders",
+   "fieldtype": "Check",
+   "label": "Auto-Create Draft Orders"
+  },
+  {
+   "default": "1",
+   "description": "Require seller confirmation before finalizing AI-created orders",
+   "fieldname": "require_confirmation",
+   "fieldtype": "Check",
+   "label": "Require Confirmation"
+  },
+  {
+   "fieldname": "column_break_settings",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "70",
+   "description": "Minimum confidence score to auto-create orders (0-100)",
+   "fieldname": "confidence_threshold",
+   "fieldtype": "Int",
+   "label": "Confidence Threshold"
+  },
+  {
+   "default": "500",
+   "fieldname": "max_tokens",
+   "fieldtype": "Int",
+   "label": "Max Response Tokens"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-01-21 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Tookio Shop",
+ "name": "AI Agent",
+ "naming_rule": "Expression",
+ "autoname": "format:AI-{shop}",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "if_owner": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Tookio Seller",
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
