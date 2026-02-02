@@ -58,9 +58,16 @@ fixtures = [
 # Note: Frappe serves pages placed in templates/pages/<name>.html automatically at /<name>.
 # The custom route rule previously pointed to a non-page path and caused 404s. We now provide
 # templates/pages/login.html so /login will be served without a custom rule.
-# website_route_rules = [
-#    {"from_route": "/login", "to_route": "tookio_shop/templates/login"}
-# ]
+
+# Website route rules for Shop Vue app
+website_route_rules = [
+    # Route all /shop/* paths to the Vue app
+    {"from_route": "/shop/<path:app_path>", "to_route": "shop"},
+    {"from_route": "/shop", "to_route": "shop"},
+    # Override login and signup to use Shop UI
+    {"from_route": "/login", "to_route": "shop"},
+    {"from_route": "/login#signup", "to_route": "shop"},
+]
 
 # Add custom JS
 # signup JS removed; no app-level web_include_js so default Frappe pages remain unchanged

@@ -1,0 +1,30 @@
+{
+	"name": "tookio-shop-frontend",
+	"private": true,
+	"version": "1.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build --base=/assets/tookio_shop/shop/",
+		"preview": "vite preview",
+		"lint": "biome check .",
+		"lint:fix": "biome check --write .",
+		"format": "biome format --write ."
+	},
+	"dependencies": {
+		"frappe-ui": "^0.1.240",
+		"pinia": "^3.0.3",
+		"socket.io-client": "^4.7.2",
+		"vue": "3.5.13",
+		"vue-router": "^4.5.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"@iconify-json/lucide": "^1.2.79",
+		"@vitejs/plugin-vue": "^5.1.4",
+		"autoprefixer": "^10.4.2",
+		"postcss": "^8.4.5",
+		"tailwindcss": "^3.4.15",
+		"vite": "^5.4.10"
+	}
+}
