@@ -1,13 +1,8 @@
 {
  "charts": [],
- "content": "[{\"id\":\"m8CpYTdR7q\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"Tookio Minimal\",\"col\":12}}]",
+ "content": "[{\"id\":\"hdr1\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Tookio Shop</span>\",\"col\":12}},{\"id\":\"shrt1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Open Tookio Shop\",\"col\":3}},{\"id\":\"shrt2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Shop\",\"col\":3}},{\"id\":\"shrt3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Product\",\"col\":3}},{\"id\":\"shrt4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sale Invoice\",\"col\":3}}]",
  "creation": "2025-08-24 18:46:42.387672",
- "custom_blocks": [
-  {
-   "custom_block_name": "Tookio Minimal",
-   "label": "Tookio Minimal"
-  }
- ],
+ "custom_blocks": [],
  "docstatus": 0,
  "doctype": "Workspace",
  "for_user": "",
@@ -27,9 +22,29 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Product",
+   "link_count": 0,
+   "link_to": "Product",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Sale Invoice",
+   "link_count": 0,
+   "link_to": "Sale Invoice",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2025-08-25 00:43:22.407223",
+ "modified": "2026-02-02 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "Tookio Shop",
  "name": "Tookio",
@@ -44,7 +59,39 @@
   }
  ],
  "sequence_id": 1.0,
- "shortcuts": [],
- "title": "Tookio",
+ "shortcuts": [
+  {
+   "color": "Green",
+   "doc_view": "",
+   "label": "Open Tookio Shop",
+   "type": "URL",
+   "url": "/shop"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Shop",
+   "link_to": "Shop",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Product",
+   "link_to": "Product",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Sale Invoice",
+   "link_to": "Sale Invoice",
+   "stats_filter": "[]",
+   "type": "DocType"
+  }
+ ],
+ "title": "Tookio Shop",
  "type": "Module"
 }

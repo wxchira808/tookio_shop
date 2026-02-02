@@ -64,9 +64,6 @@ website_route_rules = [
     # Route all /shop/* paths to the Vue app
     {"from_route": "/shop/<path:app_path>", "to_route": "shop"},
     {"from_route": "/shop", "to_route": "shop"},
-    # Override login and signup to use Shop UI
-    {"from_route": "/login", "to_route": "shop"},
-    {"from_route": "/login#signup", "to_route": "shop"},
 ]
 
 # Add custom JS
