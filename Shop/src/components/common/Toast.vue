@@ -180,6 +180,5 @@ if (typeof window !== "undefined") {
 	}
 }
 
-// Export for use in Vue components
-export { addToast, removeToast }
+// Functions are available globally via $toast
 </script>
