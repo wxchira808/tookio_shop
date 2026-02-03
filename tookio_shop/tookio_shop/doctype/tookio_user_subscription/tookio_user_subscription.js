@@ -3,11 +3,21 @@
 
 frappe.ui.form.on("Tookio User Subscription", {
 	refresh(frm) {
-		// Add Renew Subscription button
+		// Add mobile/desktop notice at the top
 		if (!frm.is_new()) {
-			frm.add_custom_button(__('Renew Subscription'), function() {
+			frm.dashboard.add_comment(`
+				<div style="padding: 10px; background-color: #fff3cd; border-left: 4px solid #ffc107; margin-bottom: 10px;">
+					<strong>📱 Mobile Users:</strong> Click the <strong>three dots (⋮)</strong> at the top right to manage your subscription.
+					<br><strong>💻 Desktop Users:</strong> Use the "Manage Subscription" button below for the best experience.
+				</div>
+			`, true);
+		}
+		
+		// Replace "Actions" dropdown with direct "Manage Subscription" button
+		if (!frm.is_new()) {
+			frm.add_custom_button(__('Manage Subscription'), function() {
 				show_subscription_renewal_dialog(frm);
-			}, __('Actions'));
+			}).addClass('btn-primary');  // Black button style
 		}
 	},
 });
@@ -124,6 +134,7 @@ function get_plan_details_html(plan) {
 
 function process_subscription_renewal(frm, values, subscriptions, dialog) {
 	let selected_plan = subscriptions.find(s => s.name === values.subscription_plan);
+	let current_plan = subscriptions.find(s => s.name === frm.doc.current_subscription);
 	
 	// Check if user is trying to select the same plan
 	if (frm.doc.current_subscription === values.subscription_plan) {
@@ -135,6 +146,39 @@ function process_subscription_renewal(frm, values, subscriptions, dialog) {
 		return;
 	}
 	
+	// Check if downgrading - show message about letting it expire instead
+	if (current_plan && selected_plan && selected_plan.price < current_plan.price) {
+		frappe.confirm(
+			`
+			<div style="padding: 10px;">
+				<h4 style="color: #f39c12;">⚠️ Downgrading Subscription</h4>
+				<p>You're trying to downgrade from <strong>${current_plan.subscription_name}</strong> (${current_plan.currency} ${current_plan.price}) to <strong>${selected_plan.subscription_name}</strong> (${selected_plan.currency} ${selected_plan.price}).</p>
+				<hr>
+				<p style="background-color: #fff3cd; padding: 10px; border-radius: 5px;">
+					<strong>💡 Recommendation:</strong> Instead of downgrading now, you can simply let your current subscription expire on <strong>${frm.doc.subscription_end_date}</strong>, then subscribe to the lower plan. This way you keep all the benefits of your current plan until it expires naturally.
+				</p>
+				<p>Do you still want to downgrade now and lose your current plan benefits?</p>
+			</div>
+			`,
+			function() {
+				// User still wants to downgrade, proceed with calculation
+				proceed_with_plan_change(frm, values, subscriptions, dialog, selected_plan);
+			},
+			function() {
+				frappe.show_alert({
+					message: __('Good choice! Your current plan will remain active until expiry.'),
+					indicator: 'blue'
+				});
+			}
+		);
+		return;
+	}
+	
+	// For upgrades, proceed directly
+	proceed_with_plan_change(frm, values, subscriptions, dialog, selected_plan);
+}
+
+function proceed_with_plan_change(frm, values, subscriptions, dialog, selected_plan) {
 	// Calculate upgrade pricing
 	frappe.call({
 		method: 'tookio_shop.api.calculate_subscription_upgrade_cost',
@@ -171,7 +215,7 @@ function process_subscription_renewal(frm, values, subscriptions, dialog) {
 					function() {
 						// User cancelled
 						frappe.show_alert({
-							message: __('Subscription upgrade cancelled'),
+							message: __('Subscription change cancelled'),
 							indicator: 'blue'
 						});
 					}
