@@ -4,12 +4,7 @@
 frappe.ui.form.on("Tookio User Subscription", {
 	refresh(frm) {
 		if (!frm.is_new()) {
-			frm.dashboard.add_comment(`
-				<div style="padding: 10px; background-color: #fff3cd; border-left: 4px solid #ffc107; margin-bottom: 10px;">
-					<strong>Mobile Users:</strong> Click the <strong>three dots</strong> at the top right to manage your subscription.
-					<br><strong>Desktop Users:</strong> Use the "Manage Subscription" button below for the best experience.
-				</div>
-			`, true);
+			frm.dashboard.add_comment(__('Mobile Users: Click the three dots at the top right to manage your subscription. Desktop Users: Use the "Manage Subscription" button below for the best experience.'), true);
 		}
 		
 		if (!frm.is_new()) {
