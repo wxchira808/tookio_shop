@@ -619,3 +619,286 @@ def user_signup(email, full_name, password):
     except Exception as e:
         frappe.log_error(f"Signup error for {email}: {str(e)}", "User Signup Error")
         frappe.throw(str(e))
+
+
+# ==================== SUBSCRIPTION RENEWAL WITH M-PESA ====================
+
+@frappe.whitelist()
+def get_available_subscriptions():
+	"""Get all enabled subscription plans for renewal"""
+	plans = frappe.get_all(
+		"Tookio Subscription",
+		filters={"enabled": 1},
+		fields=["name", "subscription_name", "description", "price", "currency", 
+		        "shop_limit", "products_limit", "sales_invoice_limit"],
+		order_by="price asc"
+	)
+	return plans
+
+
+@frappe.whitelist()
+def calculate_subscription_upgrade_cost(user_subscription, new_subscription):
+	"""
+	Calculate the cost of upgrading to a new subscription plan
+	Takes into account prorated credit from remaining days on current plan
+	"""
+	from frappe.utils import getdate, date_diff, today
+	
+	# Get user subscription document
+	user_sub = frappe.get_doc("Tookio User Subscription", user_subscription)
+	
+	# Get new subscription plan
+	new_plan = frappe.get_doc("Tookio Subscription", new_subscription)
+	
+	# Calculate credit from current plan
+	credit_from_old_plan = 0
+	days_remaining = 0
+	
+	if user_sub.current_subscription and user_sub.subscription_end_date:
+		# Get current plan
+		current_plan = frappe.get_doc("Tookio Subscription", user_sub.current_subscription)
+		
+		# Calculate days remaining
+		end_date = getdate(user_sub.subscription_end_date)
+		current_date = getdate(today())
+		days_remaining = date_diff(end_date, current_date)
+		
+		if days_remaining > 0:
+			# Calculate prorated credit (assuming 30 days per month)
+			daily_rate = current_plan.price / 30
+			credit_from_old_plan = daily_rate * days_remaining
+	
+	# Calculate amount to pay
+	amount_to_pay = new_plan.price - credit_from_old_plan
+	
+	# Ensure amount is not negative
+	if amount_to_pay < 0:
+		amount_to_pay = 0
+	
+	# Determine if it's an upgrade or downgrade
+	is_upgrade = False
+	if user_sub.current_subscription:
+		current_plan = frappe.get_doc("Tookio Subscription", user_sub.current_subscription)
+		is_upgrade = new_plan.price > current_plan.price
+	
+	return {
+		"new_plan_price": new_plan.price,
+		"credit_from_old_plan": credit_from_old_plan,
+		"days_remaining": days_remaining,
+		"amount_to_pay": round(amount_to_pay, 2),
+		"is_upgrade": is_upgrade,
+		"currency": new_plan.currency
+	}
+
+
+@frappe.whitelist()
+def initiate_subscription_payment(user_subscription, new_subscription, phone_number, amount):
+	"""
+	Initiate M-Pesa STK Push payment for subscription upgrade/renewal
+	"""
+	import sys
+	sys.path.append('/home/brian/frappe-bench/apps/tookio_mpesa')
+	
+	from tookio_mpesa.utils import initiate_stk_push_for_till
+	
+	try:
+		# Get user subscription document
+		user_sub = frappe.get_doc("Tookio User Subscription", user_subscription)
+		
+		# Get new subscription plan
+		new_plan = frappe.get_doc("Tookio Subscription", new_subscription)
+		
+		# Prepare transaction description
+		account_reference = f"SUB-{user_sub.name}"
+		transaction_desc = f"Subscription to {new_plan.subscription_name}"
+		
+		# Initiate STK Push
+		response = initiate_stk_push_for_till(
+			phone_number=phone_number,
+			amount=amount,
+			account_reference=account_reference,
+			transaction_desc=transaction_desc
+		)
+		
+		# Get the created transaction
+		checkout_request_id = response.get("CheckoutRequestID")
+		
+		if checkout_request_id:
+			# Find the transaction that was just created
+			transaction = frappe.get_last_doc("Mpesa Transaction", 
+				filters={"checkout_request_id": checkout_request_id})
+			
+			# Link the subscription upgrade details to the transaction
+			# We'll store this in a custom field or use account_reference to track
+			transaction.db_set("account_reference", f"{user_subscription}|{new_subscription}", update_modified=False)
+			frappe.db.commit()
+			
+			return {
+				"success": True,
+				"transaction_id": transaction.name,
+				"checkout_request_id": checkout_request_id,
+				"message": response.get("CustomerMessage", "STK Push sent to your phone")
+			}
+		else:
+			return {
+				"success": False,
+				"message": "Failed to initiate payment"
+			}
+	
+	except Exception as e:
+		frappe.log_error(f"Subscription payment initiation failed: {str(e)}", "Subscription Payment")
+		return {
+			"success": False,
+			"message": str(e)
+		}
+
+
+@frappe.whitelist()
+def check_subscription_payment_status(transaction_id):
+	"""Check the status of a subscription payment transaction"""
+	try:
+		transaction = frappe.get_doc("Mpesa Transaction", transaction_id)
+		
+		# If payment is successful and not yet processed
+		if transaction.status == "Success" and transaction.account_reference:
+			# Check if we haven't already processed this payment
+			if "|" in transaction.account_reference:
+				parts = transaction.account_reference.split("|")
+				if len(parts) == 2:
+					user_subscription = parts[0]
+					new_subscription = parts[1]
+					
+					# Check if this payment has already been processed
+					# by verifying if the subscription was already updated
+					user_sub = frappe.get_doc("Tookio User Subscription", user_subscription)
+					
+					# Only process if current subscription doesn't match the paid one
+					if user_sub.current_subscription != new_subscription:
+						# Process the subscription upgrade
+						process_subscription_upgrade(user_subscription, new_subscription, transaction.name)
+		
+		return {
+			"status": transaction.status,
+			"result_desc": transaction.result_desc,
+			"mpesa_receipt_number": transaction.mpesa_receipt_number
+		}
+	
+	except Exception as e:
+		frappe.log_error(f"Error checking payment status: {str(e)}", "Subscription Payment Status")
+		return {
+			"status": "Error",
+			"result_desc": str(e)
+		}
+
+
+def process_subscription_upgrade(user_subscription, new_subscription, transaction_id):
+	"""
+	Process subscription upgrade after successful payment
+	Updates user subscription and creates history record
+	"""
+	from frappe.utils import getdate, add_months, today
+	
+	try:
+		# Get documents
+		user_sub = frappe.get_doc("Tookio User Subscription", user_subscription)
+		new_plan = frappe.get_doc("Tookio Subscription", new_subscription)
+		
+		# Store old subscription details for history
+		old_subscription = user_sub.current_subscription
+		old_start_date = user_sub.subscription_start_date
+		old_end_date = user_sub.subscription_end_date
+		old_status = user_sub.status
+		
+		# Update subscription
+		user_sub.current_subscription = new_subscription
+		user_sub.subscription_start_date = getdate(today())
+		user_sub.subscription_end_date = add_months(getdate(today()), 1)  # 1 month subscription
+		user_sub.status = "Active"
+		
+		# Update limits from new plan
+		user_sub.shop_limit = new_plan.shop_limit
+		user_sub.products_limit = new_plan.products_limit
+		user_sub.sales_invoice_limit = new_plan.sales_invoice_limit
+		
+		# Add old subscription to history (manually, before save triggers automatic history)
+		if old_subscription:
+			user_sub.append("subscription_history", {
+				"tookio_subscription": old_subscription,
+				"subscription_start_date": old_start_date,
+				"subscription_end_date": old_end_date,
+				"status": "Replaced"
+			})
+		
+		# Save the subscription (this will also add the new one to history via on_update hook)
+		user_sub.save(ignore_permissions=True)
+		frappe.db.commit()
+		
+		# Log the upgrade
+		frappe.logger().info(f"✅ Subscription upgraded for {user_sub.user} from {old_subscription} to {new_subscription} (Transaction: {transaction_id})")
+		
+		# Send notification email
+		try:
+			frappe.sendmail(
+				recipients=[user_sub.user_email],
+				subject="Subscription Upgraded Successfully",
+				message=f"""
+					<h3>Your subscription has been upgraded!</h3>
+					<p>Your Tookio Shop subscription has been successfully upgraded to <strong>{new_plan.subscription_name}</strong>.</p>
+					<p><strong>New Limits:</strong></p>
+					<ul>
+						<li>Shops: {new_plan.shop_limit}</li>
+						<li>Products: {new_plan.products_limit}</li>
+						<li>Sales Invoices: {new_plan.sales_invoice_limit}</li>
+					</ul>
+					<p>Valid until: {user_sub.subscription_end_date}</p>
+					<p>M-Pesa Receipt: {transaction_id}</p>
+				"""
+			)
+		except Exception as email_error:
+			frappe.log_error(f"Failed to send upgrade email: {str(email_error)}", "Subscription Email")
+		
+		return True
+	
+	except Exception as e:
+		frappe.log_error(f"Failed to process subscription upgrade: {str(e)}", "Subscription Upgrade")
+		frappe.throw(f"Failed to upgrade subscription: {str(e)}")
+
+
+@frappe.whitelist(allow_guest=True)
+def subscription_payment_webhook():
+	"""
+	Webhook endpoint to handle M-Pesa payment callbacks for subscriptions
+	This is called by M-Pesa after payment is processed
+	"""
+	try:
+		# Get the callback data from M-Pesa
+		# The tookio_mpesa.utils.stk_callback already handles updating the transaction
+		# We just need to check for completed payments and process subscription upgrades
+		
+		callback_data = json.loads(frappe.request.data)
+		stk_callback = callback_data.get("Body", {}).get("stkCallback", {})
+		checkout_request_id = stk_callback.get("CheckoutRequestID")
+		result_code = stk_callback.get("ResultCode")
+		
+		if result_code == 0:  # Success
+			# Find the transaction
+			transaction = frappe.get_doc("Mpesa Transaction", 
+				{"checkout_request_id": checkout_request_id})
+			
+			if transaction and transaction.account_reference:
+				# Check if this is a subscription payment
+				if "|" in transaction.account_reference:
+					parts = transaction.account_reference.split("|")
+					if len(parts) == 2:
+						user_subscription = parts[0]
+						new_subscription = parts[1]
+						
+						# Process the subscription upgrade
+						process_subscription_upgrade(user_subscription, new_subscription, transaction.name)
+		
+		return {"ResultCode": 0, "ResultDesc": "Success"}
+	
+	except Exception as e:
+		frappe.log_error(f"Subscription webhook error: {str(e)}", "Subscription Webhook")
+		return {"ResultCode": 1, "ResultDesc": "Error processing webhook"}
+

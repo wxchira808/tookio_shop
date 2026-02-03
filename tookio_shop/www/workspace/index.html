@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOOKIO Workspace</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- User Greeting Block -->
+        <div class="user-greeting">
+            <div class="greeting-content">
+                <div class="greeting-text" id="userGreeting">Hi there! 👋</div>
+                <div class="greeting-subtext">Welcome back to your business dashboard</div>
+            </div>
+            <button class="subscription-btn" onclick="handleNavigation('subscriptions')">
+                📊 Subscriptions
+            </button>
+        </div>
+
+        <!-- Shops -->
+        <div class="section shops">
+            <h2 class="section-title">🏪 Manage Your Shops</h2>
+            <div class="grid">
+                <div class="card" onclick="handleNavigation('add-shop')">
+                    <div class="card-icon">🏪</div>
+                    <div class="card-title">Add Shop</div>
+                    <div class="card-description">Add a new shop or business</div>
+                    <div class="card-stats">
+                        <span class="stat-badge">New</span>
+                        <span class="arrow">→</span>
+                    </div>
+                </div>
+                <div class="card" onclick="handleNavigation('view-shops')">
+                    <div class="card-icon">🏬️</div>
+                    <div class="card-title">View Shops</div>
+                    <div class="card-description">Manage and monitor all your shops</div>
+                    <div class="card-stats">
+                        <span class="stat-badge">Shops</span>
+                        <span class="arrow">→</span>
+                    </div>
+                </div>
+                <div class="card" onclick="handleNavigation('view-dashboard')">
+                    <div class="card-icon">📊️</div>
+                    <div class="card-title">Dashboard</div>
+                    <div class="card-description">View charts for your business</div>
+                    <div class="card-stats">
+                        <span class="stat-badge">Charts</span>
+                        <span class="arrow">→</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products -->
+        <div class="section products">
+            <h2 class="section-title">🛍️ Products / Items</h2>
+            <div class="grid">
+                <div class="card" onclick="handleNavigation('add-product')">
+                    <div class="card-icon">➕</div>
+                    <div class="card-title">Add New Product</div>
+                    <div class="card-description">Add new items to your inventory catalog</div>
+                    <div class="card-stats">
+                        <span class="stat-badge">Create</span>
+                        <span class="arrow">→</span>
+                    </div>
+                </div>
+                <div class="card" onclick="handleNavigation('view-products')">
+                    <div class="card-icon">📋</div>
+                    <div class="card-title">View Products</div>
+                    <div class="card-description">Browse and manage your product catalog</div>
+                    <div class="card-stats">
+                        <span class="stat-badge">Items</span>
+                        <span class="arrow">→</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stock -->
+        <div class="section stock">
+            <h2 class="section-title">📦 Stock Management</h2>
+            <div class="grid">
+                <div class="card" onclick="handleNavigation('manage-stock')">
+                    <div class="card-icon">⬆️</div>
+                    <div class="card-title">Add or Remove Stock</div>
+                    <div class="card-description">Update inventory levels for your items</div>
+                    <div class="card-stats">
+                        <span class="stat-badge">Manage</span>
+                        <span class="arrow">→</span>
+                    </div>
+                </div>
+                <div class="card" onclick="handleNavigation('stock-transactions')">
+                    <div class="card-icon">📜</div>
+                    <div class="card-title">Stock Transactions</div>
+                    <div class="card-description">View all stock movement history</div>
+                    <div class="card-stats">
+                        <span class="stat-badge">Transactions</span>
+                        <span class="arrow">→</span>
+                    </div>
+                </div>
+                <div class="card" onclick="handleNavigation('stock-report')">
+                    <div class="card-icon">📈</div>
+                    <div class="card-title">Stock Balance Report</div>
+                    <div class="card-description">Generate comprehensive stock reports</div>
+                    <div class="card-stats">
+                        <span class="stat-badge">Report</span>
+                        <span class="arrow">→</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sales -->
+        <div class="section sales">
+            <h2 class="section-title">💰 Sales Management</h2>
+            <div class="grid">
+                <div class="card" onclick="handleNavigation('make-sale')">
+                    <div class="card-icon">💰</div>
+                    <div class="card-title">Make a Sale</div>
+                    <div class="card-description">Process new customer transactions</div>
+                    <div class="card-stats">
+                        <span class="stat-badge">New Sale</span>
+                        <span class="arrow">→</span>
+                    </div>
+                </div>
+                <div class="card" onclick="handleNavigation('view-invoices')">
+                    <div class="card-icon">🧾</div>
+                    <div class="card-title">View Sale Invoices</div>
+                    <div class="card-description">Access all your sales invoices</div>
+                    <div class="card-stats">
+                        <span class="stat-badge">Sales</span>
+                        <span class="arrow">→</span>
+                    </div>
+                </div>
+                <div class="card" onclick="handleNavigation('sales-report')">
+                    <div class="card-icon">📈</div>
+                    <div class="card-title">Sales Report</div>
+                    <div class="card-description">Analyze sales</div>
+                    <div class="card-stats">
+                        <span class="stat-badge">Analytics</span>
+                        <span class="arrow">→</span>
+                    </div>
+                </div>
+                <div class="card" onclick="handleNavigation('profit-analysis')">
+                    <div class="card-icon">💹</div>
+                    <div class="card-title">Profit Analysis Report</div>
+                    <div class="card-description">View detailed profit and loss analysis</div>
+                    <div class="card-stats">
+                        <span class="stat-badge">Profit</span>
+                        <span class="arrow">→</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Purchases -->
+        <div class="section purchases">
+            <h2 class="section-title">🛒 Purchases / Expenses</h2>
+            <div class="grid">
+                <div class="card" onclick="handleNavigation('add-purchase')">
+                    <div class="card-icon">➕</div>
+                    <div class="card-title">Add Purchase</div>
+                    <div class="card-description">Record new purchase transactions</div>
+                    <div class="card-stats">
+                        <span class="stat-badge">New</span>
+                        <span class="arrow">→</span>
+                    </div>
+                </div>
+                <div class="card" onclick="handleNavigation('view-purchases')">
+                    <div class="card-icon">🛍️</div>
+                    <div class="card-title">View Purchases</div>
+                    <div class="card-description">Manage and review all purchase records</div>
+                    <div class="card-stats">
+                        <span class="stat-badge">Expenses</span>
+                        <span class="arrow">→</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
