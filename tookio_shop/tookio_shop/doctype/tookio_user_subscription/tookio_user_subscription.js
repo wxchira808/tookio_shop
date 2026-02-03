@@ -3,21 +3,19 @@
 
 frappe.ui.form.on("Tookio User Subscription", {
 	refresh(frm) {
-		// Add mobile/desktop notice at the top
 		if (!frm.is_new()) {
 			frm.dashboard.add_comment(`
 				<div style="padding: 10px; background-color: #fff3cd; border-left: 4px solid #ffc107; margin-bottom: 10px;">
-					<strong>📱 Mobile Users:</strong> Click the <strong>three dots (⋮)</strong> at the top right to manage your subscription.
-					<br><strong>💻 Desktop Users:</strong> Use the "Manage Subscription" button below for the best experience.
+					<strong>Mobile Users:</strong> Click the <strong>three dots</strong> at the top right to manage your subscription.
+					<br><strong>Desktop Users:</strong> Use the "Manage Subscription" button below for the best experience.
 				</div>
 			`, true);
 		}
 		
-		// Replace "Actions" dropdown with direct "Manage Subscription" button
 		if (!frm.is_new()) {
 			frm.add_custom_button(__('Manage Subscription'), function() {
 				show_subscription_renewal_dialog(frm);
-			}).addClass('btn-primary');  // Black button style
+			}).addClass('btn-primary');
 		}
 	},
 });
@@ -136,50 +134,35 @@ function process_subscription_renewal(frm, values, subscriptions, dialog) {
 	let selected_plan = subscriptions.find(s => s.name === values.subscription_plan);
 	let current_plan = subscriptions.find(s => s.name === frm.doc.current_subscription);
 	
-	// Check if user is trying to select the same plan
 	if (frm.doc.current_subscription === values.subscription_plan) {
 		frappe.msgprint({
 			title: __('Same Plan Selected'),
 			indicator: 'orange',
-			message: __('You already have an active subscription to this plan. Please select a different plan to upgrade or downgrade.')
+			message: __('You already have an active subscription to this plan. Please select a different plan to upgrade.')
 		});
 		return;
 	}
 	
-	// Check if downgrading - show message about letting it expire instead
 	if (current_plan && selected_plan && selected_plan.price < current_plan.price) {
-		frappe.confirm(
-			`
-			<div style="padding: 10px;">
-				<h4 style="color: #f39c12;">⚠️ Downgrading Subscription</h4>
-				<p>You're trying to downgrade from <strong>${current_plan.subscription_name}</strong> (${current_plan.currency} ${current_plan.price}) to <strong>${selected_plan.subscription_name}</strong> (${selected_plan.currency} ${selected_plan.price}).</p>
-				<hr>
-				<p style="background-color: #fff3cd; padding: 10px; border-radius: 5px;">
-					<strong>💡 Recommendation:</strong> Instead of downgrading now, you can simply let your current subscription expire on <strong>${frm.doc.subscription_end_date}</strong>, then subscribe to the lower plan. This way you keep all the benefits of your current plan until it expires naturally.
-				</p>
-				<p>Do you still want to downgrade now and lose your current plan benefits?</p>
-			</div>
-			`,
-			function() {
-				// User still wants to downgrade, proceed with calculation
-				proceed_with_plan_change(frm, values, subscriptions, dialog, selected_plan);
-			},
-			function() {
-				frappe.show_alert({
-					message: __('Good choice! Your current plan will remain active until expiry.'),
-					indicator: 'blue'
-				});
-			}
-		);
+		frappe.msgprint({
+			title: __('Downgrade Not Allowed'),
+			indicator: 'red',
+			message: __(`
+				<div style="padding: 10px;">
+					<p>You cannot downgrade from <strong>${current_plan.subscription_name}</strong> to <strong>${selected_plan.subscription_name}</strong>.</p>
+					<hr>
+					<p>Your current subscription will remain active until <strong>${frm.doc.subscription_end_date}</strong>.</p>
+					<p>After it expires, you can subscribe to any plan you prefer.</p>
+				</div>
+			`)
+		});
 		return;
 	}
 	
-	// For upgrades, proceed directly
 	proceed_with_plan_change(frm, values, subscriptions, dialog, selected_plan);
 }
 
 function proceed_with_plan_change(frm, values, subscriptions, dialog, selected_plan) {
-	// Calculate upgrade pricing
 	frappe.call({
 		method: 'tookio_shop.api.calculate_subscription_upgrade_cost',
 		args: {
@@ -190,11 +173,10 @@ function proceed_with_plan_change(frm, values, subscriptions, dialog, selected_p
 			if (r.message) {
 				let cost_info = r.message;
 				
-				// Show confirmation dialog with upgrade details
 				frappe.confirm(
 					`
 					<div style="padding: 10px;">
-						<h4>Subscription ${cost_info.is_upgrade ? 'Upgrade' : 'Change'} Confirmation</h4>
+						<h4>Subscription Upgrade Confirmation</h4>
 						<p><strong>Current Plan:</strong> ${frm.doc.current_subscription}</p>
 						<p><strong>New Plan:</strong> ${values.subscription_plan}</p>
 						<hr>
@@ -204,18 +186,16 @@ function proceed_with_plan_change(frm, values, subscriptions, dialog, selected_p
 							: ''}
 						<p style="font-size: 16px; margin-top: 10px;"><strong>Total Amount to Pay:</strong> ${selected_plan.currency} ${cost_info.amount_to_pay.toLocaleString()}</p>
 						<hr>
-						<p style="color: #d32f2f; font-weight: bold;">⚠️ Your current subscription will be replaced with the new plan.</p>
+						<p style="color: #d32f2f; font-weight: bold;">Your current subscription will be replaced with the new plan.</p>
 						<p>Are you sure you want to proceed?</p>
 					</div>
 					`,
 					function() {
-						// User confirmed, initiate payment
 						initiate_mpesa_payment(frm, values, cost_info, dialog);
 					},
 					function() {
-						// User cancelled
 						frappe.show_alert({
-							message: __('Subscription change cancelled'),
+							message: __('Subscription upgrade cancelled'),
 							indicator: 'blue'
 						});
 					}
@@ -226,10 +206,27 @@ function proceed_with_plan_change(frm, values, subscriptions, dialog, selected_p
 }
 
 function initiate_mpesa_payment(frm, values, cost_info, dialog) {
-	frappe.show_alert({
-		message: __('Initiating M-Pesa payment...'),
-		indicator: 'blue'
+	dialog.hide();
+	
+	let loading_dialog = new frappe.ui.Dialog({
+		title: __('Processing Payment'),
+		fields: [{
+			fieldname: 'loading_html',
+			fieldtype: 'HTML',
+			options: `
+				<div style="text-align: center; padding: 30px;">
+					<div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+						<span class="sr-only">Loading...</span>
+					</div>
+					<h4 style="margin-top: 20px;">Initiating M-Pesa Payment...</h4>
+					<p>Please wait while we process your request.</p>
+				</div>
+			`
+		}]
 	});
+	
+	loading_dialog.show();
+	loading_dialog.$wrapper.find('.modal-header .close').hide();
 	
 	frappe.call({
 		method: 'tookio_shop.api.initiate_subscription_payment',
@@ -240,31 +237,26 @@ function initiate_mpesa_payment(frm, values, cost_info, dialog) {
 			amount: cost_info.amount_to_pay
 		},
 		callback: function(r) {
-			dialog.hide();
-			
 			if (r.message && r.message.success) {
-				// Show success message with STK push prompt
-				frappe.msgprint({
-					title: __('Payment Initiated'),
-					indicator: 'green',
-					message: __(`
-						<div style="padding: 10px;">
-							<h4>✓ M-Pesa STK Push Sent!</h4>
-							<p>Please check your phone and enter your M-Pesa PIN to complete the payment.</p>
-							<p><strong>Amount:</strong> KES ${cost_info.amount_to_pay}</p>
-							<p><strong>Phone:</strong> ${values.phone_number}</p>
-							<hr>
-							<p style="font-size: 12px; color: #666;">
-								Your subscription will be automatically updated once payment is confirmed.
-								You can check the payment status in M-Pesa Transaction list.
-							</p>
+				loading_dialog.fields_dict.loading_html.$wrapper.html(`
+					<div style="text-align: center; padding: 30px;">
+						<div class="spinner-border text-success" role="status" style="width: 3rem; height: 3rem;">
+							<span class="sr-only">Loading...</span>
 						</div>
-					`)
-				});
+						<h4 style="margin-top: 20px; color: green;">M-Pesa Prompt Sent!</h4>
+						<p>Please check your phone and enter your M-Pesa PIN.</p>
+						<p><strong>Amount:</strong> KES ${cost_info.amount_to_pay}</p>
+						<p><strong>Phone:</strong> ${values.phone_number}</p>
+						<hr>
+						<p style="font-size: 12px; color: #666;">
+							Waiting for payment confirmation...
+						</p>
+					</div>
+				`);
 				
-				// Optionally, set up polling to check payment status
-				check_payment_status(r.message.transaction_id, frm);
+				check_payment_status(r.message.transaction_id, frm, loading_dialog);
 			} else {
+				loading_dialog.hide();
 				frappe.msgprint({
 					title: __('Payment Failed'),
 					indicator: 'red',
@@ -273,7 +265,7 @@ function initiate_mpesa_payment(frm, values, cost_info, dialog) {
 			}
 		},
 		error: function(r) {
-			dialog.hide();
+			loading_dialog.hide();
 			frappe.msgprint({
 				title: __('Error'),
 				indicator: 'red',
@@ -283,7 +275,7 @@ function initiate_mpesa_payment(frm, values, cost_info, dialog) {
 	});
 }
 
-function check_payment_status(transaction_id, frm) {
+function check_payment_status(transaction_id, frm, loading_dialog) {
 	let check_interval = setInterval(function() {
 		frappe.call({
 			method: 'tookio_shop.api.check_subscription_payment_status',
@@ -294,25 +286,41 @@ function check_payment_status(transaction_id, frm) {
 				if (r.message) {
 					if (r.message.status === 'Success') {
 						clearInterval(check_interval);
-						frappe.show_alert({
-							message: __('Payment successful! Subscription updated.'),
-							indicator: 'green'
-						}, 10);
-						frm.reload_doc();
+						loading_dialog.fields_dict.loading_html.$wrapper.html(`
+							<div style="text-align: center; padding: 30px;">
+								<div style="font-size: 48px; color: green;">&#10004;</div>
+								<h4 style="margin-top: 20px; color: green;">Payment Successful!</h4>
+								<p>Your subscription has been updated.</p>
+								<p style="font-size: 12px; color: #666;">Refreshing page...</p>
+							</div>
+						`);
+						setTimeout(function() {
+							loading_dialog.hide();
+							frm.reload_doc();
+						}, 2000);
 					} else if (r.message.status === 'Failed') {
 						clearInterval(check_interval);
-						frappe.show_alert({
-							message: __('Payment failed. Please try again.'),
-							indicator: 'red'
-						}, 10);
+						loading_dialog.hide();
+						frappe.msgprint({
+							title: __('Payment Failed'),
+							indicator: 'red',
+							message: __('Payment was not successful. Please try again.')
+						});
 					}
 				}
 			}
 		});
-	}, 5000); // Check every 5 seconds
+	}, 5000);
 	
-	// Stop checking after 2 minutes
 	setTimeout(function() {
 		clearInterval(check_interval);
+		if (loading_dialog && loading_dialog.is_visible) {
+			loading_dialog.hide();
+			frappe.msgprint({
+				title: __('Payment Timeout'),
+				indicator: 'orange',
+				message: __('Payment confirmation timed out. Please check M-Pesa Transaction list for status.')
+			});
+		}
 	}, 120000);
 }
