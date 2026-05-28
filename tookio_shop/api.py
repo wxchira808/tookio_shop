@@ -700,8 +700,10 @@ def get_available_subscriptions():
 	plans = frappe.get_all(
 		"Tookio Subscription",
 		filters={"enabled": 1},
-		fields=["name", "subscription_name", "description", "price", "currency", 
-		        "shop_limit", "products_limit", "sales_invoice_limit"],
+		fields=[
+			"name", "subscription_name", "description", "price", "currency",
+			"shop_limit", "products_limit", "sales_invoice_limit",
+		],
 		order_by="price asc"
 	)
 	return plans
