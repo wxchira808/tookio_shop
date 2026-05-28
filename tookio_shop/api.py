@@ -872,7 +872,7 @@ def check_subscription_payment_status(transaction_id):
 					
 					# Check if this payment has already been processed
 					# by verifying if the subscription was already updated
-                    user_sub = resolve_current_user_subscription(user_subscription)
+					user_sub = resolve_current_user_subscription(user_subscription)
 					
 					# Only process if current subscription doesn't match the paid one
 					if user_sub.current_subscription != new_subscription:
