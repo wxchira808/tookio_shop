@@ -832,7 +832,7 @@ def initiate_subscription_payment(user_subscription=None, new_subscription=None,
 			
 			# Link the subscription upgrade details to the transaction
 			# We'll store this in a custom field or use account_reference to track
-            transaction.db_set("account_reference", f"{user_sub.name}|{new_subscription}", update_modified=False)
+			transaction.db_set("account_reference", f"{user_sub.name}|{new_subscription}", update_modified=False)
 			frappe.db.commit()
 			
 			return {
