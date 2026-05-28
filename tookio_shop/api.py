@@ -904,7 +904,7 @@ def process_subscription_upgrade(user_subscription, new_subscription, transactio
 	
 	try:
 		# Get documents
-        user_sub = resolve_current_user_subscription(user_subscription)
+		user_sub = resolve_current_user_subscription(user_subscription)
 		new_plan = frappe.get_doc("Tookio Subscription", new_subscription)
 		
 		# Store old subscription details for history
