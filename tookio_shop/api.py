@@ -301,17 +301,76 @@ def get_subscription_plans():
     )
     return {"plans": plans}
 
+
+def normalize_user_identifier(user_identifier):
+    if not user_identifier:
+        return user_identifier
+
+    if frappe.db.exists("User", user_identifier):
+        return user_identifier
+
+    resolved_user = frappe.db.get_value("User", {"email": user_identifier}, "name")
+    return resolved_user or user_identifier
+
+
+def ensure_user_subscription_record(user_identifier):
+    normalized_user = normalize_user_identifier(user_identifier)
+    if not normalized_user or normalized_user == "Guest":
+        return None
+
+    existing = frappe.db.exists("Tookio User Subscription", {"user": normalized_user})
+    if existing:
+        return existing
+
+    free_plan = frappe.db.get_value("Tookio Subscription", {"subscription_name": "Free Plan"}, "name")
+    if not free_plan:
+        frappe.log_error("Free Plan not found", "Auto Subscription Creation")
+        return None
+
+    user_sub = frappe.new_doc("Tookio User Subscription")
+    user_sub.user = normalized_user
+    user_sub.current_subscription = free_plan
+    user_sub.subscription_start_date = frappe.utils.getdate()
+    user_sub.subscription_end_date = None
+    user_sub.status = "Active"
+    user_sub.insert(ignore_permissions=True)
+
+    frappe.db.commit()
+    return user_sub.name
+
+
 @frappe.whitelist(allow_guest=False)
 def get_user_subscription():
     """Get current user's subscription details"""
     from frappe.utils import today, getdate
     
     try:
-        user = frappe.session.user
+        session_user = frappe.session.user
+
+        # Resolve the actual User DocType name as defensively as possible.
+        # Some logins come through as email while the linked User name can differ.
+        resolved_user = session_user
+        if session_user and session_user != "Guest":
+            try:
+                user_doc = frappe.get_doc("User", session_user)
+                resolved_user = user_doc.name or session_user
+            except Exception:
+                user_name = frappe.db.get_value("User", {"email": session_user}, "name")
+                if user_name:
+                    resolved_user = user_name
+                else:
+                    user_email = frappe.db.get_value("User", {"name": session_user}, "email")
+                    if user_email:
+                        resolved_user = user_email
         
         # Get user subscription
-        user_sub = frappe.db.exists("Tookio User Subscription", {"user": user})
-        
+        user_sub = frappe.db.exists("Tookio User Subscription", {"user": resolved_user})
+        if not user_sub and resolved_user != session_user:
+            user_sub = frappe.db.exists("Tookio User Subscription", {"user": session_user})
+
+        if not user_sub:
+            user_sub = ensure_user_subscription_record(resolved_user)
+
         if user_sub:
             doc = frappe.get_doc("Tookio User Subscription", user_sub)
             
@@ -322,7 +381,7 @@ def get_user_subscription():
                     current_date = getdate(today())
                     
                     if current_date > end_date and doc.status != "Expired":
-                        frappe.logger().info(f"🔄 Auto-downgrading expired subscription for {user} to Free Plan")
+                        frappe.logger().info(f"🔄 Auto-downgrading expired subscription for {resolved_user} to Free Plan")
                         doc.status = "Expired"
                         doc.current_subscription = "Free Plan"
                         doc.subscription_start_date = current_date
@@ -337,9 +396,9 @@ def get_user_subscription():
                 # Continue anyway, don't break the function
             
             # Get actual counts for current usage
-            current_shops = frappe.db.count("Shop", {"owner": user})
-            current_products = frappe.db.count("Product", {"owner": user})
-            current_sales_invoices = frappe.db.count("Sale Invoice", {"owner": user})
+            current_shops = frappe.db.count("Shop", {"owner": resolved_user})
+            current_products = frappe.db.count("Product", {"owner": resolved_user})
+            current_sales_invoices = frappe.db.count("Sale Invoice", {"owner": resolved_user})
             
             # Get subscription plan name
             plan_name = "Free Plan"
@@ -351,6 +410,10 @@ def get_user_subscription():
                     plan_name = doc.current_subscription
             
             return {
+                "name": doc.name,
+                "subscription_record_name": doc.name,
+                "user": doc.user,
+                "resolved_user": resolved_user,
                 "has_subscription": doc.current_subscription and doc.current_subscription != "Free Plan",
                 "subscription_plan": plan_name,
                 "current_subscription": doc.current_subscription,
@@ -366,11 +429,15 @@ def get_user_subscription():
             }
         else:
             # Return free plan as default
-            current_shops = frappe.db.count("Shop", {"owner": user})
-            current_products = frappe.db.count("Product", {"owner": user})
-            current_sales_invoices = frappe.db.count("Sale Invoice", {"owner": user})
+            current_shops = frappe.db.count("Shop", {"owner": resolved_user})
+            current_products = frappe.db.count("Product", {"owner": resolved_user})
+            current_sales_invoices = frappe.db.count("Sale Invoice", {"owner": resolved_user})
             
             return {
+                "name": None,
+                "subscription_record_name": None,
+                "user": resolved_user,
+                "resolved_user": resolved_user,
                 "has_subscription": False,
                 "subscription_plan": "Free Plan",
                 "current_subscription": "Free Plan",
@@ -389,6 +456,10 @@ def get_user_subscription():
         frappe.logger().error(f"❌ Error in get_user_subscription: {str(e)}")
         # Return safe default on error
         return {
+            "name": None,
+            "subscription_record_name": None,
+            "user": None,
+            "resolved_user": None,
             "has_subscription": False,
             "subscription_plan": "Free Plan",
             "current_subscription": "Free Plan",
@@ -636,8 +707,39 @@ def get_available_subscriptions():
 	return plans
 
 
+def resolve_current_user_subscription(subscription_name=None):
+    """Resolve a Tookio User Subscription document safely.
+    If a specific subscription name is provided, use it when valid.
+    Otherwise, fall back to the current session user's subscription row.
+    """
+    def is_missing(value):
+        if value is None:
+            return True
+        if isinstance(value, (dict, list, tuple)):
+            return True
+        return str(value).strip().lower() in {"", "none", "null", "undefined"}
+
+    if not is_missing(subscription_name):
+        try:
+            return frappe.get_doc("Tookio User Subscription", subscription_name)
+        except Exception:
+            pass
+
+    subscription_data = get_user_subscription()
+    record_name = subscription_data.get("name") or subscription_data.get("subscription_record_name")
+    if not is_missing(record_name):
+        return frappe.get_doc("Tookio User Subscription", record_name)
+
+    resolved_user = subscription_data.get("resolved_user") or subscription_data.get("user") or frappe.session.user
+    created_record = ensure_user_subscription_record(resolved_user)
+    if created_record:
+        return frappe.get_doc("Tookio User Subscription", created_record)
+
+    frappe.throw("No subscription record found for the current user")
+
+
 @frappe.whitelist()
-def calculate_subscription_upgrade_cost(user_subscription, new_subscription):
+def calculate_subscription_upgrade_cost(user_subscription=None, new_subscription=None):
 	"""
 	Calculate the cost of upgrading to a new subscription plan
 	Takes into account prorated credit from remaining days on current plan
@@ -645,7 +747,7 @@ def calculate_subscription_upgrade_cost(user_subscription, new_subscription):
 	from frappe.utils import getdate, date_diff, today
 	
 	# Get user subscription document
-	user_sub = frappe.get_doc("Tookio User Subscription", user_subscription)
+	user_sub = resolve_current_user_subscription(user_subscription)
 	
 	# Get new subscription plan
 	new_plan = frappe.get_doc("Tookio Subscription", new_subscription)
@@ -692,7 +794,7 @@ def calculate_subscription_upgrade_cost(user_subscription, new_subscription):
 
 
 @frappe.whitelist()
-def initiate_subscription_payment(user_subscription, new_subscription, phone_number, amount):
+def initiate_subscription_payment(user_subscription=None, new_subscription=None, phone_number=None, amount=None):
 	"""
 	Initiate M-Pesa STK Push payment for subscription upgrade/renewal
 	"""
@@ -703,7 +805,7 @@ def initiate_subscription_payment(user_subscription, new_subscription, phone_num
 	
 	try:
 		# Get user subscription document
-		user_sub = frappe.get_doc("Tookio User Subscription", user_subscription)
+		user_sub = resolve_current_user_subscription(user_subscription)
 		
 		# Get new subscription plan
 		new_plan = frappe.get_doc("Tookio Subscription", new_subscription)
@@ -730,7 +832,7 @@ def initiate_subscription_payment(user_subscription, new_subscription, phone_num
 			
 			# Link the subscription upgrade details to the transaction
 			# We'll store this in a custom field or use account_reference to track
-			transaction.db_set("account_reference", f"{user_subscription}|{new_subscription}", update_modified=False)
+            transaction.db_set("account_reference", f"{user_sub.name}|{new_subscription}", update_modified=False)
 			frappe.db.commit()
 			
 			return {
@@ -770,7 +872,7 @@ def check_subscription_payment_status(transaction_id):
 					
 					# Check if this payment has already been processed
 					# by verifying if the subscription was already updated
-					user_sub = frappe.get_doc("Tookio User Subscription", user_subscription)
+                    user_sub = resolve_current_user_subscription(user_subscription)
 					
 					# Only process if current subscription doesn't match the paid one
 					if user_sub.current_subscription != new_subscription:
@@ -800,7 +902,7 @@ def process_subscription_upgrade(user_subscription, new_subscription, transactio
 	
 	try:
 		# Get documents
-		user_sub = frappe.get_doc("Tookio User Subscription", user_subscription)
+        user_sub = resolve_current_user_subscription(user_subscription)
 		new_plan = frappe.get_doc("Tookio Subscription", new_subscription)
 		
 		# Store old subscription details for history
