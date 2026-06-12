@@ -292,5 +292,7 @@ scheduler_events = {
 # default_log_clearing_doctypes = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
-
-
+# Serve the Expo web app as a standalone SPA under /app.
+website_route_rules = [
+    {"from_route": "/app/<path:app_path>", "to_route": "app"},
+]
