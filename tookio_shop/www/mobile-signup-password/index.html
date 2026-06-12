@@ -1,0 +1,168 @@
+{% extends "templates/web.html" %}
+
+{% block style %}
+<style>
+    body {
+        background: #f6f8fb;
+    }
+    .mobile-signup-container {
+        max-width: 440px;
+        margin: 3rem auto;
+        padding: 0 1rem;
+    }
+    .mobile-signup-panel {
+        background: #fff;
+        border: 1px solid #e6e8ee;
+        border-radius: 8px;
+        padding: 2rem;
+    }
+    .mobile-signup-panel h1 {
+        font-size: 1.75rem;
+        margin-bottom: 0.5rem;
+    }
+    .mobile-signup-panel p {
+        color: #5f6673;
+    }
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ccd1da;
+        border-radius: 6px;
+        font-size: 1rem;
+    }
+    .btn-primary {
+        width: 100%;
+        padding: 0.85rem 1rem;
+        border: 0;
+        border-radius: 6px;
+        background: #007aff;
+        color: #fff;
+        font-weight: 600;
+        cursor: pointer;
+    }
+    .btn-primary:disabled {
+        opacity: 0.65;
+        cursor: not-allowed;
+    }
+    .message {
+        display: none;
+        margin-bottom: 1rem;
+        padding: 0.75rem;
+        border-radius: 6px;
+    }
+    .message.error {
+        display: block;
+        background: #fff0f0;
+        color: #9f1d1d;
+        border: 1px solid #ffd0d0;
+    }
+    .message.success {
+        display: block;
+        background: #edf9f0;
+        color: #1f7a35;
+        border: 1px solid #ccefd4;
+    }
+</style>
+{% endblock %}
+
+{% block page_content %}
+<div class="mobile-signup-container">
+    <div class="mobile-signup-panel">
+        <h1>Set your password</h1>
+
+        {% if invalid_key %}
+            <div class="message error">This signup link is invalid or has already been used.</div>
+            <p>Please return to the Tookio Shop app and start signup again.</p>
+        {% else %}
+            <p>Complete signup for {{ email }}. After this, return to the Tookio Shop app and sign in.</p>
+            <div id="signup-message" class="message"></div>
+            <form id="mobile-signup-form">
+                <input type="hidden" id="signup-key" value="{{ signup_key }}">
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input class="form-control" type="password" id="password" autocomplete="new-password" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">Confirm password</label>
+                    <input class="form-control" type="password" id="confirm-password" autocomplete="new-password" required minlength="6">
+                </div>
+                <button type="submit" id="submit-password" class="btn-primary">Set Password</button>
+            </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+frappe.ready(function() {
+    var form = document.getElementById('mobile-signup-form');
+    if (!form) return;
+
+    var message = document.getElementById('signup-message');
+    var button = document.getElementById('submit-password');
+
+    function showMessage(text, type) {
+        message.textContent = text;
+        message.className = 'message ' + type;
+    }
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        var password = document.getElementById('password').value;
+        var confirmPassword = document.getElementById('confirm-password').value;
+        var key = document.getElementById('signup-key').value;
+
+        if (password.length < 6) {
+            showMessage('Password must be at least 6 characters long.', 'error');
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            showMessage('Passwords do not match.', 'error');
+            return;
+        }
+
+        button.disabled = true;
+        button.textContent = 'Setting password...';
+
+        frappe.call({
+            method: 'tookio_shop.api.complete_mobile_signup',
+            args: {
+                key: key,
+                password: password
+            },
+            callback: function(response) {
+                if (response.message && response.message.success) {
+                    showMessage(response.message.message, 'success');
+                    form.style.display = 'none';
+                    return;
+                }
+
+                button.disabled = false;
+                button.textContent = 'Set Password';
+                showMessage('Could not set your password. Please try again.', 'error');
+            },
+            error: function(error) {
+                button.disabled = false;
+                button.textContent = 'Set Password';
+
+                var errorMessage = 'Could not set your password. Please try again.';
+                if (error && error._server_messages) {
+                    try {
+                        var messages = JSON.parse(error._server_messages);
+                        var first = JSON.parse(messages[0]);
+                        errorMessage = first.message || errorMessage;
+                    } catch (e) {}
+                }
+                showMessage(errorMessage, 'error');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

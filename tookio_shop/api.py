@@ -5,6 +5,8 @@ Pesapal Payment Gateway Integration for Tookio Shop
 import frappe
 import requests
 from datetime import datetime
+from html import escape
+from urllib.parse import quote
 import json
 
 # Pesapal API endpoints
@@ -650,46 +652,138 @@ def switch_to_free_plan():
         "subscription": doc.name
     }
 
-@frappe.whitelist(allow_guest=True)
-def user_signup(email, full_name, password):
-    """
-    Standard signup for mobile app that allows setting password immediately.
-    """
-    if not email or not full_name or not password:
-        frappe.throw(frappe._("All fields (email, full_name, password) are required"))
+def _split_full_name(full_name):
+    parts = (full_name or "").strip().split()
+    if not parts:
+        return "", ""
 
-    if frappe.db.exists("User", email):
+    return parts[0], " ".join(parts[1:])
+
+
+def _set_mobile_signup_key(user):
+    key = frappe.generate_hash(length=32)
+    user.db_set("reset_password_key", key, update_modified=False)
+
+    if user.meta.has_field("last_reset_password_key_generated_on"):
+        user.db_set("last_reset_password_key_generated_on", frappe.utils.now_datetime(), update_modified=False)
+
+    return key
+
+
+def _send_mobile_signup_email(email, full_name, key):
+    link = frappe.utils.get_url(f"/mobile-signup-password?key={quote(key)}")
+    escaped_name = escape(full_name or email)
+
+    frappe.sendmail(
+        recipients=[email],
+        subject="Verify your Tookio Shop account",
+        message=f"""
+            <p>Hello {escaped_name},</p>
+            <p>Welcome to Tookio Shop. Use the button below to verify your email and set your password.</p>
+            <p><a href="{link}" style="display:inline-block;padding:12px 18px;background:#007aff;color:#fff;text-decoration:none;border-radius:6px;">Set your password</a></p>
+            <p>If the button does not work, copy and paste this link into your browser:</p>
+            <p>{link}</p>
+            <p>If you did not request this account, you can ignore this email.</p>
+        """,
+        now=True,
+    )
+
+
+@frappe.whitelist(allow_guest=True)
+def request_mobile_signup(email, full_name):
+    """Start mobile signup by creating a disabled Website User and emailing a password link."""
+    email = (email or "").strip().lower()
+    full_name = (full_name or "").strip()
+
+    if not email or not full_name:
+        frappe.throw(frappe._("Full name and email are required"))
+
+    if "@" not in email:
+        frappe.throw(frappe._("Please enter a valid email address"))
+
+    existing_user = frappe.db.get_value("User", {"email": email}, ["name", "enabled"], as_dict=True)
+    if existing_user and existing_user.enabled:
         frappe.throw(frappe._("User with email {0} already exists").format(email))
 
     try:
-        # Create user
-        user = frappe.get_doc({
-            "doctype": "User",
-            "email": email,
-            "first_name": full_name,
-            "enabled": 1,
-            "new_password": password,
-            "user_type": "Website User"
-        })
-        user.flags.ignore_permissions = True
-        user.insert()
+        first_name, last_name = _split_full_name(full_name)
 
-        # Generate API Keys for the user
-        from frappe.core.doctype.user.user import generate_keys
-        api_keys = generate_keys(user.name)
+        if existing_user:
+            user = frappe.get_doc("User", existing_user.name)
+            user.first_name = first_name
+            user.last_name = last_name
+            user.enabled = 0
+            user.user_type = "Website User"
+            user.flags.ignore_permissions = True
+            user.save(ignore_permissions=True)
+        else:
+            user = frappe.get_doc({
+                "doctype": "User",
+                "email": email,
+                "first_name": first_name,
+                "last_name": last_name,
+                "enabled": 0,
+                "send_welcome_email": 0,
+                "user_type": "Website User",
+            })
+            user.flags.ignore_permissions = True
+            user.insert(ignore_permissions=True)
 
-        # Commit so the user is in the DB
+        key = _set_mobile_signup_key(user)
+        _send_mobile_signup_email(email, full_name, key)
         frappe.db.commit()
 
         return {
             "success": True,
-            "message": frappe._("User created successfully"),
-            "api_key": api_keys.get("api_key"),
-            "api_secret": api_keys.get("api_secret")
+            "message": frappe._("We sent a verification link to your email. Open it to set your password, then return to the app to sign in."),
         }
     except Exception as e:
-        frappe.log_error(f"Signup error for {email}: {str(e)}", "User Signup Error")
+        frappe.log_error(frappe.get_traceback(), "Mobile Signup Request Error")
         frappe.throw(str(e))
+
+
+@frappe.whitelist(allow_guest=True)
+def complete_mobile_signup(key, password):
+    """Complete mobile signup from the emailed link by setting the user's password."""
+    key = (key or "").strip()
+
+    if not key:
+        frappe.throw(frappe._("Invalid or expired signup link"))
+
+    if not password or len(password) < 6:
+        frappe.throw(frappe._("Password must be at least 6 characters long"))
+
+    user_name = frappe.db.get_value("User", {"reset_password_key": key}, "name")
+    if not user_name:
+        frappe.throw(frappe._("Invalid or expired signup link"))
+
+    try:
+        user = frappe.get_doc("User", user_name)
+        user.enabled = 1
+        user.new_password = password
+        user.reset_password_key = ""
+
+        if user.meta.has_field("last_reset_password_key_generated_on"):
+            user.last_reset_password_key_generated_on = None
+
+        user.flags.ignore_permissions = True
+        user.save(ignore_permissions=True)
+        frappe.db.commit()
+
+        return {
+            "success": True,
+            "message": frappe._("Your password has been set. You can now return to the Tookio Shop app and sign in."),
+            "email": user.email,
+        }
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Mobile Signup Completion Error")
+        frappe.throw(str(e))
+
+
+@frappe.whitelist(allow_guest=True)
+def user_signup(email, full_name=None, password=None):
+    """Backward-compatible mobile signup wrapper. Password is set only after email verification."""
+    return request_mobile_signup(email=email, full_name=full_name)
 
 
 # ==================== SUBSCRIPTION RENEWAL WITH M-PESA ====================
