@@ -1,0 +1,749 @@
+PS Plus Extra titles you would lose by downgrading to Essential
+
+Extra titles checked: 739
+Monthly titles checked from June 2021 onward: 192
+Normalized overlaps: 13
+Titles you lose access to: 726
+
+Titles that appear in both lists after normalization:
+- EA SPORTS FC 26
+- EA SPORTS FC 26 (PS4)
+- LEGO DC Super-Villains
+- LEGO DC Super-Villains (Asia)
+- LEGO DC Super-Villains (EU)
+- LEGO Horizon Adventures
+- Mortal Kombat X
+- Overcooked! All You Can Eat
+- Overcooked! All You Can Eat (PS4)
+- Sackboy: A Big Adventure
+- Sackboy: A Big Adventure (PS4)
+- Tennis World Tour 2
+- Tennis World Tour 2 (PS4)
+
+Titles you lose access to:
+- A Hat in Time
+- A Little to the Left (PS4)
+- A Quiet Place: The Road Ahead
+- A Quiet Place: The Road Ahead (EU)
+- A Space for the Unbound
+- A Space for the Unbound (PS4)
+- Abiotic Factor
+- Adventure Time: Pirates of the Enchiridion
+- Age of Wonders: Planetfall
+- Alex Kidd in Miracle World DX
+- Alienation
+- Anno 1800 Console Edition
+- ANNO: Mutationem
+- ANNO: Mutationem (EU)
+- ANNO: Mutationem (PS4)
+- Anodyne
+- Another Crab's Treasure
+- AO Tennis 2
+- Aragami
+- Arcade Paradise
+- Arcade Paradise (PS4)
+- art of rally
+- art of rally (EU)
+- As Dusk Falls
+- As Dusk Falls (PS4)
+- Assassin's Creed Chronicles: China
+- Assassin's Creed Chronicles: India
+- Assassin's Creed Chronicles: Russia
+- Assassin's Creed Freedom Cry
+- Assassin's Creed Freedom Cry (PS3)
+- Assassin's Creed II
+- Assassin's Creed III Remastered
+- Assassin's Creed IV: Black Flag
+- Assassin's Creed Liberation Remastered
+- Assassin's Creed Mirage
+- Assassin's Creed Mirage (PS4)
+- Assassin's Creed Odyssey
+- Assassin's Creed Origins
+- Assassin's Creed Rogue Remastered
+- Assassin's Creed Syndicate
+- Assassin's Creed Unity
+- Assassin's Creed Valhalla
+- Assassin's Creed Valhalla (PS4)
+- Assassin's Creed: Revelations
+- Assetto Corsa Competizione
+- Assetto Corsa Competizione (PS4)
+- ASTRONEER
+- ASTRONEER (PS4)
+- Atelier Ryza 3: Alchemist of the End & the Secret Key
+- Atlas Fallen
+- A-Train Express
+- A-Train Express+ (Asia)
+- Bad North
+- Bang-On Balls: Chronicles
+- Bang-On Balls: Chronicles (PS4)
+- Banishers: Ghosts of New Eden
+- Batman: Arkham Knight
+- Battle Chasers: Nightwar
+- Battlefield 1
+- Bee Simulator
+- Ben 10
+- Ben 10: Power Trip
+- Ben 10: Power Trip (EU)
+- Biped
+- Biped (HK)
+- Biped (HK) (PS4)
+- Biped (JP) (PS4)
+- Biped (PS4)
+- Blasphemous 2
+- Blood Bowl 3
+- Blood Bowl 3 (PS4)
+- Bloodborne
+- Blue Prince
+- Bluey: The Videogame
+- Bluey: The Videogame (EU)
+- Bomber Crew
+- Bound
+- Bramble: The Mountain King (EU) (PS4)
+- Bramble: The Mountain King (PS4)
+- Brawlout
+- Broken Sword - Shadow of the Templars: Reforged
+- Bubsy: The Woolies Strike Back
+- Bubsy: The Woolies Strike Back (EU)
+- Bus Simulator 21 Next Stop
+- Call of Cthulhu
+- Call Of The Sea (EU) (PS4)
+- Call Of The Sea (PS4)
+- Captain Tsubasa: Rise of New Champions
+- Car Mechanic Simulator
+- Carto
+- Cartoon Network: Battle Crashers
+- Cartoon Network: Battle Crashers (EU)
+- Cat Quest
+- Cat Quest II
+- Cat Quest II (Asia)
+- Cat Quest III (PS4)
+- Celeste
+- Chernobylite
+- Chernobylite (EU) (PS4)
+- Chernobylite (PS4)
+- Chess Ultra
+- Child of Light
+- Child of Light (PS3)
+- Child of Light (Vita)
+- Children of Morta
+- Circus Electrique
+- Cities: Skylines
+- Citizen Sleeper
+- Clash: Artifacts of Chaos
+- Clash: Artifacts of Chaos (PS4)
+- Coffee Talk
+- Coffee Talk (PS4)
+- Coffee Talk Episode 2: Hibiscus & Butterfly
+- Conan Exiles
+- Concrete Genie
+- CONSCRIPT
+- CONSCRIPT (PS4)
+- Construction Simulator
+- Construction Simulator (PS4)
+- CONTRA: ROGUE CORPS
+- CONTROL
+- CONTROL (JP)
+- Coral Island
+- Crash Bandicoot 2: Cortex Strikes Back
+- Cricket 24
+- Cricket 24 (PS4)
+- Crime Boss: Rockay City
+- Crow Country
+- Crow Country (EU) (PS4)
+- Crow Country (PS4)
+- Crusader Kings III
+- Crysis Remastered
+- Cursed to Golf (EU)
+- Cursed to Golf (PS4)
+- Cyberpunk 2077
+- Cyberpunk 2077 (PS4)
+- Dark Rose Valkyrie
+- Darkest Dungeon II (PS4)
+- Days Gone
+- Dead by Daylight
+- Dead by Daylight 1/3 (PS4)
+- Dead by Daylight 3/3 (PS4)
+- Dead Cells
+- Dead Cells (EU) (PS4)
+- Dead Cells (PS4)
+- Dead Island 2
+- Dead Island 2 (PS4)
+- Dead or Alive 5 Last Round
+- Dead or Alive 5 Last Round (PS3)
+- DEADCRAFT
+- DEADCRAFT (KR)
+- Death end re;Quest
+- Death end re;Quest (EU)
+- Death end re;Quest (HK/TW)
+- Death Squared
+- Death Squared (EU)
+- DEATH STRANDING
+- DEATH STRANDING DIRECTOR'S CUT
+- DECEIVE INC.
+- Deliver Us The Moon
+- Deliver Us The Moon (PS4)
+- Demon's Souls
+- Demon's Souls (JP) (PS3)
+- Desperados III
+- Destruction AllStars
+- Detroit: Become Human
+- Deus Ex: Mankind Divided
+- Disgaea 5: Alliance of Vengeance
+- Disgaea 6 (Asia) (PS4)
+- Dishonored 2
+- Dishonored: Death of the Outsider
+- DOOM
+- DOOM Eternal
+- DOOM Eternal (PS4)
+- DRAGON BALL FighterZ
+- DRAGON BALL XENOVERSE 2 (PS4)
+- Dragon Star Varnir
+- Dragon Star Varnir (HK/TW)
+- DREDGE
+- DREDGE (PS4)
+- Dynasty Warriors 8 Empires
+- Dynasty Warriors 8 Empires (HK/TW)
+- Dynasty Warriors 9
+- EA SPORTS Madden NFL 26
+- Eagle Flight
+- Earth Defense Force 4.1: The Shadow of New Despair
+- Earth Defense Force 5
+- Earth Defense Force 6
+- Earth Defense Force 6 (PS4)
+- EARTH DEFENSE FORCE: IRON RAIN
+- EARTH DEFENSE FORCE: WORLD BROTHERS
+- EARTH DEFENSE FORCE: WORLD BROTHERS (NA)
+- Echoes of the End
+- Eiyuden Chronicle: Hundred Heroes (PS4)
+- Eldest Souls
+- Eldest Souls (PS4)
+- Elite Dangerous
+- Embr
+- Embr (EU)
+- Empire of Sin
+- ENDLESS Dungeon
+- Enotria: The Last Song
+- Entwined
+- Erica
+- Erica (EU)
+- Everybody's Golf
+- Everybody's Golf (Vita)
+- Expeditions: A MudRunner Game
+- Expeditions: A MudRunner Game (PS4)
+- Fade to Silence
+- Fallout 4
+- Fallout 4 (PS4)
+- Far Cry 3 Blood Dragon Classic Edition
+- Far Cry 3 Classic Edition
+- Far Cry 4
+- Far Cry 5
+- Far Cry 6
+- Far Cry New Dawn
+- Far Cry Primal
+- FAR: Changing Tides (EU) (PS4)
+- FAR: Changing Tides (PS4)
+- Fate/Samurai Remnant
+- Fate/Samurai Remnant (Asia) (PS4)
+- Fate/Samurai Remnant (PS4)
+- FBC: Firebreak
+- FIA European Truck Racing Championship
+- FIA European Truck Racing Championship (EU)
+- FINAL FANTASY VII REMAKE
+- FINAL FANTASY VII REMAKE (Asia)
+- FINAL FANTASY VII REMAKE (EU)
+- FINAL FANTASY VII REMAKE (JP)
+- FINAL FANTASY VII REMAKE (PS4)
+- FINAL FANTASY XV
+- FINAL FANTASY XV (EU)
+- Fishing Planet
+- Five Nights At Freddy's VR: Help Wanted
+- Five Nights at Freddy's: Help Wanted - Full Time Edition
+- Five Nights at Freddy's: Help Wanted 2
+- Five Nights at Freddy's: Help Wanted 2 (EU)
+- Flintlock: The Siege of Dawn
+- Football Manager 2024 Console
+- Football Manager 26 Console
+- For Honor
+- For The King
+- Forager
+- Forager (EU)
+- Frostpunk: Console Edition
+- Fury Unleashed
+- Fury Unleashed (EU)
+- Get Even
+- Ghost of Tsushima
+- Gigantosaurus: The Game
+- Gloomhaven (PS4)
+- God of War Ragnarök
+- God of War Ragnarök (PS4)
+- Golf With Your Friends
+- Granblue Fantasy Versus: Rising
+- Granblue Fantasy Versus: Rising (PS4)
+- Granblue Fantasy: Relink
+- Grand Ages: Medieval
+- Grand Theft Auto III – The Definitive Edition
+- Grand Theft Auto V
+- Grand Theft Auto: San Andreas – The Definitive Edition
+- Grand Theft Auto: San Andreas – The Definitive Edition (PS4)
+- Gravity Heroes
+- Gravity Rush 2
+- Green Hell
+- Green Hell (EU) (PS4)
+- Green Hell (PS4)
+- Greyhill Incident
+- GRIME (PS4)
+- GRIS
+- GRIS (PS4)
+- Grounded
+- Grounded (PS4)
+- H1Z1 (EU)
+- Harold Halibut
+- Harvest Moon: Light of Hope Special Edition
+- Harvest Moon: One World
+- Hello Neighbor
+- Hello Neighbor (EU) (PS4)
+- Hello Neighbor (PS4)
+- Hogwarts Legacy
+- Hogwarts Legacy (EU) (PS4)
+- Hogwarts Legacy (PS4)
+- Hohokum
+- Hohokum (EU)
+- Hollow Knight Voidheart Edition
+- Hollow Knight Voidheart Edition (EU) (PS4)
+- Hollow Knight Voidheart Edition (PS4)
+- Horizon Forbidden West (PS4)
+- Horizon Zero Dawn Remastered
+- Hotel Transylvania: Scary-Tale Adventures
+- Hotel Transylvania: Scary-Tale Adventures (PS4)
+- Hotline Miami
+- Hotline Miami (PS4)
+- Hotline Miami 2: Wrong Number
+- Hotline Miami 2: Wrong Number (PS4)
+- Hotshot Racing
+- Human: Fall Flat
+- Human: Fall Flat (PS4)
+- HUMANITY
+- HUMANITY (PS4)
+- HUMANKIND
+- HUMANKIND (PS4)
+- Hundred Days - Winemaking Simulator
+- Hundred Days - Winemaking Simulator (PS4)
+- Hungry Shark World
+- Hungry Shark World (EU)
+- I Am Bread
+- Ice Age: Scrat's Nutty Adventure
+- Ice Age: Scrat's Nutty Adventure (EU)
+- Ice Age: Scrat's Nutty Adventure (PS4)
+- Immortals Fenyx Rising
+- Immortals Fenyx Rising (PS4)
+- INDIKA
+- inFAMOUS First Light
+- Infinite Minigolf
+- Insurgency: Sandstorm
+- Journey to the Savage Planet (PS4)
+- Jumanji: The Video Game (PS4)
+- Killer Frequency
+- Killing Floor 2
+- Killzone Shadow Fall
+- Kingdom: New Lands
+- Knack
+- Lake
+- Lake (PS4)
+- Lawn Mowing Simulator
+- Lawn Mowing Simulator (EU) (PS4)
+- Lawn Mowing Simulator (PS4)
+- Legendary Fishing
+- Legendary Fishing (EU)
+- LEGO Batman 3: Beyond Gotham
+- LEGO Batman 3: Beyond Gotham (Vita)
+- LEGO CITY Undercover
+- LEGO Jurassic World
+- LEGO Marvel's Avengers
+- LEGO Marvel's Avengers (PS3)
+- LEGO The Hobbit
+- LEGO The Hobbit (PS3)
+- LEGO The Incredibles
+- LEGO Worlds
+- Like a Dragon: Infinite Wealth
+- Like a Dragon: Infinite Wealth (PS4)
+- Little Big Workshop
+- Lonely Mountains: Downhill
+- Lost Records: Bloom & Rage
+- Magicka 2
+- Mahjong (PS4)
+- Malicious Fallen
+- Maneater
+- Maneater (PS4)
+- Marvel Rivals
+- Marvel's Guardians of the Galaxy
+- Marvel's Guardians of the Galaxy (PS4)
+- Marvel's Midnight Suns (PS4)
+- Marvel's Spider-Man 2
+- Marvel's Spider-Man Remastered
+- Marvel's Spider-Man: Miles Morales
+- Matterfall
+- MediEvil (2019)
+- Megadimension Neptunia VII
+- Megadimension Neptunia VII (HK/TW)
+- MELTY BLOOD: TYPE LUMINA
+- METAL EDEN
+- MONOPOLY
+- Monopoly Madness
+- Monopoly Madness (EU)
+- MONOPOLY Plus
+- MONOPOLY Plus (PS3)
+- Monster Boy and the Cursed Kingdom
+- Monster Hunter Stories
+- Monster Hunter Stories 2: Wings of Ruin
+- Monster Hunter: World
+- Monster Jam Showdown (PS4)
+- Monster Train
+- Monster Truck Championship
+- Monster Truck Championship (PS4)
+- Moonlighter
+- MORDHAU
+- Mortal Kombat 1
+- MotoGP 25
+- Mount & Blade II: Bannerlord (PS4)
+- My Friend Peppa Pig
+- My Friend Peppa Pig (EU)
+- My Friend Peppa Pig (PS4)
+- Mystic Pillars
+- NASCAR Heat 5
+- Neva
+- Neva (PS4)
+- New World: Aeternum
+- Nickelodeon All-Star Brawl 2
+- Nickelodeon All-Star Brawl 2 (PS4)
+- Nioh (PS4)
+- No More Heroes 3
+- No Straight Roads (EU)
+- Nobunaga's Ambition: Taishi
+- Nobunaga's Ambition: Taishi (HK/TW)
+- Observer: System Redux
+- OddBallers
+- Oddworld: New 'n' Tasty
+- Oddworld: Soulstorm
+- Oddworld: Soulstorm (PS4)
+- Omega Quintet
+- Omega Quintet (EU)
+- OneeChanbara ORIGIN
+- Orcs Must Die! 3
+- Outer Wilds (EU) (PS4)
+- Outer Wilds (PS4)
+- Outlast 2
+- Overpass
+- Overpass 2
+- Override 2: Super Mech League (PS4)
+- Pacific Drive
+- Paladins
+- Pathfinder: Wrath of the Righteous
+- PAW Patrol Mighty Pups Save Adventure Bay
+- PAW Patrol The Movie: Adventure City Calls
+- PAW Patrol World
+- PAW Patrol World (PS4)
+- PAW Patrol: Grand Prix (EU) (PS4)
+- PAW Patrol: Grand Prix (PS4)
+- PAW Patrol: On a Roll
+- Persona 5 Royal
+- Persona 5 Royal (EU) (PS4)
+- Persona 5 Royal (PS4)
+- Persona 5 Tactica
+- Persona 5 Tactica (Asia) (PS4)
+- Persona 5 Tactica (PS4)
+- PHOGS!
+- Pile Up! Box by Box
+- PJ Masks: Heroes of the Night
+- PJ Masks: Heroes of the Night (EU)
+- Planet Coaster 2
+- Planet Zoo
+- PlateUp!
+- PlateUp! (EU) (PS4)
+- PlateUp! (PS4)
+- Poker Club
+- Police Simulator: Patrol Officers (EU) (PS4)
+- Police Simulator: Patrol Officers (PS4)
+- Poppy Playtime: Chapter 1
+- Poppy Playtime: Chapter 1 (PS4)
+- Power Rangers: Battle for the Grid
+- Prey
+- Prince of Persia: The Lost Crown
+- Prince of Persia: The Lost Crown (PS4)
+- Prison Architect
+- Pure Pool
+- Rabbids Invasion: The Interactive TV Show
+- Rabbids: Party of Legends
+- RAGE 2
+- Rain World
+- Rain World (PS4)
+- Raji: An Ancient Epic
+- Raji: An Ancient Epic (PS4)
+- Rapala Fishing Pro Series
+- Ratchet & Clank
+- Ratchet & Clank: Rift Apart
+- Rayman Legends
+- Rayman Legends (Vita)
+- ReadySet Heroes
+- Realm Royale Reforged
+- Rebel Galaxy
+- Red Dead Redemption
+- Red Dead Redemption (EU) (PS4)
+- Red Dead Redemption (JP) (PS4)
+- Red Dead Redemption (PS3)
+- Red Dead Redemption (PS4)
+- Red Dead Redemption (SA) (PS4)
+- Redout 2
+- Redout 2 (PS4)
+- Remnant II
+- Resident Evil 3
+- Resident Evil Village
+- Resident Evil Village (PS4)
+- RESOGUN
+- RESOGUN (PS3/Vita)
+- Return To Monkey Island
+- Returnal
+- RIDE 5
+- Riders Republic
+- Rise of the Tomb Raider
+- Risk of Rain 2
+- Risk of Rain 2 (PS4)
+- Risk: Urban Assault
+- Risk: Urban Assault (PS3)
+- Rock of Ages 3: Make & Break
+- Rogue Company (PS4)
+- Rogue Lords
+- Roguebook
+- Roguebook (PS4)
+- Röki
+- Röki (EU)
+- Röki (EU) (PS4)
+- Romance of the Three Kingdoms XIII
+- Romance of the Three Kingdoms XIII (EU)
+- Rugby 25
+- Rune Factory 4 Special
+- S.T.A.L.K.E.R.: Call of Prypiat - Enhanced Edition
+- S.T.A.L.K.E.R.: Call of Prypiat (EU) (PS4)
+- S.T.A.L.K.E.R.: Call of Prypiat (PS4)
+- S.T.A.L.K.E.R.: Clear Sky (EU) (PS4)
+- S.T.A.L.K.E.R.: Clear Sky (PS4)
+- S.T.A.L.K.E.R.: Clear Sky Enhanced Edition
+- S.T.A.L.K.E.R.: Shadow of Chornobyl - Enhanced Edition
+- S.T.A.L.K.E.R.: Shadow of Chornobyl (EU) (PS4)
+- S.T.A.L.K.E.R.: Shadow of Chornobyl (PS4)
+- Sakuna: Of Rice and Ruin
+- Sakuna: Of Rice and Ruin (EU)
+- Salt and Sacrifice
+- Salt and Sacrifice (PS4)
+- Samurai Warriors 5
+- Samurai Warriors 5 (Asia)
+- Sayonara Wild Hearts (EU) (PS4)
+- Sayonara Wild Hearts (PS4)
+- Scott Pilgrim vs the World: The Game - Complete Edition
+- SEASON: A Letter to the future
+- SEASON: A Letter to the future (PS4)
+- Secret Neighbor
+- Secret Neighbor (EU)
+- Session: Skate Sim
+- Session: Skate Sim (PS4)
+- Shadow of the Beast
+- Shadow of the Colossus
+- Shadow of the Tomb Raider
+- Shadow Tactics: Blades of the Shogun
+- Shadow Tactics: Blades of the Shogun (PS4)
+- Shadow Warrior 2
+- Shadowrun Returns
+- Shadowrun: Dragonfall - Director's Cut
+- Shadowrun: Dragonfall - Director's Cut (PS4)
+- Shadowrun: Hong Kong - Extended Edition
+- Shadowrun: Hong Kong - Extended Edition (PS4)
+- SILENT HILL 2
+- Skate Story
+- SKULL AND BONES
+- SMITE
+- Sniper Elite 4
+- Sniper Elite 5
+- Sniper Elite 5 (PS4)
+- Somerville
+- Somerville (PS4)
+- SONIC X SHADOW GENERATIONS (PS4)
+- Source of Madness
+- Source of Madness (EU)
+- Source of Madness (EU) (PS4)
+- Source of Madness (PS4)
+- South Park: The Fractured but Whole
+- South Park: The Stick of Truth
+- Space Crew
+- Space Engineers (PS4)
+- Space Hulk: Deathwing
+- Space Junkies
+- Spintires: MudRunner
+- Spirit of the North: Enhanced Edition
+- Squirrel with a Gun
+- STAR WARS Jedi: Survivor (PS4)
+- Star Wars Outlaws
+- Starlink: Battle for Atlas
+- STEEP
+- Steins;Gate Elite
+- Steins;Gate Elite (JP) (Vita)
+- Stellaris: Console Edition
+- Stellaris: Console Edition - Additional Trophies (JP) (PS4)
+- Stellaris: Console Edition - Additional Trophies (PS4)
+- Stellaris: Console Edition (JP) (PS4)
+- Stellaris: Console Edition (PS4)
+- Stick Fight: The Game
+- Still Wakes The Deep
+- STORY OF SEASONS: A Wonderful Life
+- STORY OF SEASONS: A Wonderful Life (Asia)
+- STORY OF SEASONS: Friends of Mineral Town
+- STORY OF SEASONS: Pioneers of Olive Town
+- Stranded Deep
+- Stranded Deep (EU)
+- Surgeon Simulator
+- Surviving the Aftermath
+- Sword of the Sea
+- Syberia - The World Before
+- Syberia - The World Before (PS4)
+- Tails Noir
+- Tails Noir (EU) (PS4)
+- Tantei Jinguuji Saburou: Prism of Eyes (KR)
+- Tearaway Unfolded
+- Teardown
+- Teardown (EU)
+- Terraria
+- Test Drive Unlimited Solar Crown
+- Tetris Effect: Connected (PS4)
+- Thank Goodness You're Here!
+- Thank Goodness You're Here! (PS4)
+- The Casting of Frank Stone
+- The Crew 2
+- The Crew Motorfest
+- The Dark Pictures Anthology: Little Hope (PS4)
+- The Elder Scrolls Online: Volume I (PS4)
+- The Elder Scrolls Online: Volume II (PS4)
+- The Elder Scrolls V: Skyrim
+- The Evil Within 2
+- The Exit 8
+- The Fisherman - Fishing Planet
+- The Forgotten City
+- The Forgotten City (EU) (PS4)
+- The Four Kings Casino and Slots
+- The Gardens Between
+- The Invincible
+- The Jackbox Party Pack 9
+- The Jackbox Party Pack 9 (EU)
+- The Jackbox Party Pack 9 (EU) (PS4)
+- The Jackbox Party Pack 9 (PS4)
+- The Last Blade 2
+- The Last Guardian
+- The Last of Us Part I
+- The Last of Us Part II
+- The Last of Us Part II Remastered
+- The LEGO Movie Videogame
+- The LEGO Movie Videogame (DE)
+- The LEGO NINJAGO Movie Video Game
+- The Long Dark
+- The Long Dark (EU) (PS4)
+- The Long Dark (PS4)
+- The Lord of the Rings: Return to Moria
+- The Pedestrian
+- The Pedestrian (PS4)
+- The Rogue Prince of Persia
+- The Settlers: New Allies
+- The Surge
+- The Surge 2
+- The Talos Principle 2
+- The Technomancer
+- The Thaumaturge
+- The Witch and the Hundred Knight: Revival Edition
+- The Witcher 3: Wild Hunt (PS4)
+- theHunter: Call of the Wild
+- Thief
+- This War of Mine: Final Cut
+- Thymesia
+- Tin Hearts
+- Tom Clancy's Ghost Recon Breakpoint
+- Tom Clancy's Ghost Recon Wildlands
+- Tom Clancy's Rainbow Six Extraction
+- Tom Clancy's Rainbow Six Siege
+- Tom Clancy's The Division
+- Tom Clancy's The Division 2
+- Tomb Raider
+- Tomb Raider - Definitive Edition
+- TopSpin 2K25
+- Totally Reliable Delivery Service
+- Totally Reliable Delivery Service (EU) (PS4)
+- Totally Reliable Delivery Service (PS4)
+- Toukiden 2
+- Townsmen - A Kingdom Rebuilt
+- Trackmania Turbo
+- Train Sim World 5
+- Transference
+- Trials Fusion
+- Trials of the Blood Dragon
+- Trials Rising
+- Tricky Towers
+- Trine 4: The Nightmare Prince
+- TRON RUN/r
+- Tropico 6 - Next Gen Edition
+- Tropico 6 - Next Gen Edition (EU)
+- Tropico 6 (PS4)
+- Two Point Campus
+- Two Point Hospital
+- Uncharted: Legacy of Thieves Collection
+- Uncharted: The Lost Legacy
+- Under the Waves
+- Undertale
+- Unicorn Overlord
+- Unicorn Overlord (PS4)
+- UNO
+- UNO (PS4)
+- Until Dawn
+- Untitled Goose Game
+- V Rising
+- Valiant Hearts: The Great War
+- Vampire: The Masquerade - Coteries of New York
+- Vampire: The Masquerade - Swansong (PS4)
+- Vampyr
+- Venba
+- Vikings – Wolves of Midgard
+- War Thunder (PS4)
+- Warhammer 40,000: Darktide
+- Warhammer 40,000: Inquisitor - Martyr (PS4)
+- Warhammer 40,000: Space Marine 2
+- Warhammer: Chaosbane (PS4)
+- Warhammer: Chaosbane Slayer Edition
+- Warhammer: Vermintide 2
+- WARRIORS: Abyss
+- Watch Dogs: Legion
+- Watch_Dogs 2
+- We Love Katamari REROLL+ Royal Reverie
+- We Love Katamari REROLL+ Royal Reverie (PS4)
+- Werewolf: The Apocalypse - Earthblood
+- Werewolf: The Apocalypse - Earthblood (PS4)
+- Werewolves Within
+- West of Dead
+- West of Dead (EU)
+- Wheel of Fortune
+- Whispering Willows (Vita)
+- Wizard with a Gun
+- Wo Long: Fallen Dynasty
+- Wo Long: Fallen Dynasty (PS4)
+- Wolfenstein II: The New Colossus
+- Wolfenstein: The New Order
+- Wolfenstein: The Old Blood
+- Wolfenstein: Youngblood
+- World War Z: Aftermath
+- World War Z: Aftermath (PS4)
+- Worms W.M.D.
+- WRC Generations - The FIA WRC Official Game
+- WRC Generations - The FIA WRC Official Game (PS4)
+- XCOM 2
+- Yet Another Zombie Defense HD
+- You Suck at Parking
+- Ys IX: Monstrum Nox (PS4)
+- Ys VIII: Lacrimosa of DANA (Asia) (PS4)
+- Ys VIII: Lacrimosa of DANA (EU) (PS4)
+- Ys VIII: Lacrimosa of DANA (PS4)
+- Yu-Gi-Oh! Master Duel
+- ZOMBI
+- Zombie Army 4: Dead War

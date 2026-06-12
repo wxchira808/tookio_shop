@@ -1,0 +1,539 @@
+Consolidated PS Plus Extra loss list (platform/region suffixes removed)
+
+Total unique titles: 535
+
+- EA SPORTS FC 26
+- LEGO DC Super-Villains
+- LEGO Horizon Adventures
+- Mortal Kombat X
+- Overcooked! All You Can Eat
+- Sackboy: A Big Adventure
+- Tennis World Tour 2
+- A Hat in Time
+- A Little to the Left
+- A Quiet Place: The Road Ahead
+- A Space for the Unbound
+- Abiotic Factor
+- Adventure Time: Pirates of the Enchiridion
+- Age of Wonders: Planetfall
+- Alex Kidd in Miracle World DX
+- Alienation
+- Anno 1800 Console Edition
+- ANNO: Mutationem
+- Anodyne
+- Another Crab's Treasure
+- AO Tennis 2
+- Aragami
+- Arcade Paradise
+- art of rally
+- As Dusk Falls
+- Assassin's Creed Chronicles: China
+- Assassin's Creed Chronicles: India
+- Assassin's Creed Chronicles: Russia
+- Assassin's Creed Freedom Cry
+- Assassin's Creed II
+- Assassin's Creed III Remastered
+- Assassin's Creed IV: Black Flag
+- Assassin's Creed Liberation Remastered
+- Assassin's Creed Mirage
+- Assassin's Creed Odyssey
+- Assassin's Creed Origins
+- Assassin's Creed Rogue Remastered
+- Assassin's Creed Syndicate
+- Assassin's Creed Unity
+- Assassin's Creed Valhalla
+- Assassin's Creed: Revelations
+- Assetto Corsa Competizione
+- ASTRONEER
+- Atelier Ryza 3: Alchemist of the End & the Secret Key
+- Atlas Fallen
+- A-Train Express
+- A-Train Express+
+- Bad North
+- Bang-On Balls: Chronicles
+- Banishers: Ghosts of New Eden
+- Batman: Arkham Knight
+- Battle Chasers: Nightwar
+- Battlefield 1
+- Bee Simulator
+- Ben 10
+- Ben 10: Power Trip
+- Biped
+- Blasphemous 2
+- Blood Bowl 3
+- Bloodborne
+- Blue Prince
+- Bluey: The Videogame
+- Bomber Crew
+- Bound
+- Bramble: The Mountain King
+- Brawlout
+- Broken Sword - Shadow of the Templars: Reforged
+- Bubsy: The Woolies Strike Back
+- Bus Simulator 21 Next Stop
+- Call of Cthulhu
+- Call Of The Sea
+- Captain Tsubasa: Rise of New Champions
+- Car Mechanic Simulator
+- Carto
+- Cartoon Network: Battle Crashers
+- Cat Quest
+- Cat Quest II
+- Cat Quest III
+- Celeste
+- Chernobylite
+- Chess Ultra
+- Child of Light
+- Children of Morta
+- Circus Electrique
+- Cities: Skylines
+- Citizen Sleeper
+- Clash: Artifacts of Chaos
+- Coffee Talk
+- Coffee Talk Episode 2: Hibiscus & Butterfly
+- Conan Exiles
+- Concrete Genie
+- CONSCRIPT
+- Construction Simulator
+- CONTRA: ROGUE CORPS
+- CONTROL
+- Coral Island
+- Crash Bandicoot 2: Cortex Strikes Back
+- Cricket 24
+- Crime Boss: Rockay City
+- Crow Country
+- Crusader Kings III
+- Crysis Remastered
+- Cursed to Golf
+- Cyberpunk 2077
+- Dark Rose Valkyrie
+- Darkest Dungeon II
+- Days Gone
+- Dead by Daylight
+- Dead by Daylight 1/3
+- Dead by Daylight 3/3
+- Dead Cells
+- Dead Island 2
+- Dead or Alive 5 Last Round
+- DEADCRAFT
+- Death end re;Quest
+- Death Squared
+- DEATH STRANDING
+- DEATH STRANDING DIRECTOR'S CUT
+- DECEIVE INC.
+- Deliver Us The Moon
+- Demon's Souls
+- Desperados III
+- Destruction AllStars
+- Detroit: Become Human
+- Deus Ex: Mankind Divided
+- Disgaea 5: Alliance of Vengeance
+- Disgaea 6
+- Dishonored 2
+- Dishonored: Death of the Outsider
+- DOOM
+- DOOM Eternal
+- DRAGON BALL FighterZ
+- DRAGON BALL XENOVERSE 2
+- Dragon Star Varnir
+- DREDGE
+- Dynasty Warriors 8 Empires
+- Dynasty Warriors 9
+- EA SPORTS Madden NFL 26
+- Eagle Flight
+- Earth Defense Force 4.1: The Shadow of New Despair
+- Earth Defense Force 5
+- Earth Defense Force 6
+- EARTH DEFENSE FORCE: IRON RAIN
+- EARTH DEFENSE FORCE: WORLD BROTHERS
+- Echoes of the End
+- Eiyuden Chronicle: Hundred Heroes
+- Eldest Souls
+- Elite Dangerous
+- Embr
+- Empire of Sin
+- ENDLESS Dungeon
+- Enotria: The Last Song
+- Entwined
+- Erica
+- Everybody's Golf
+- Expeditions: A MudRunner Game
+- Fade to Silence
+- Fallout 4
+- Far Cry 3 Blood Dragon Classic Edition
+- Far Cry 3 Classic Edition
+- Far Cry 4
+- Far Cry 5
+- Far Cry 6
+- Far Cry New Dawn
+- Far Cry Primal
+- FAR: Changing Tides
+- Fate/Samurai Remnant
+- FBC: Firebreak
+- FIA European Truck Racing Championship
+- FINAL FANTASY VII REMAKE
+- FINAL FANTASY XV
+- Fishing Planet
+- Five Nights At Freddy's VR: Help Wanted
+- Five Nights at Freddy's: Help Wanted - Full Time Edition
+- Five Nights at Freddy's: Help Wanted 2
+- Flintlock: The Siege of Dawn
+- Football Manager 2024 Console
+- Football Manager 26 Console
+- For Honor
+- For The King
+- Forager
+- Frostpunk: Console Edition
+- Fury Unleashed
+- Get Even
+- Ghost of Tsushima
+- Gigantosaurus: The Game
+- Gloomhaven
+- God of War Ragnarök
+- Golf With Your Friends
+- Granblue Fantasy Versus: Rising
+- Granblue Fantasy: Relink
+- Grand Ages: Medieval
+- Grand Theft Auto III – The Definitive Edition
+- Grand Theft Auto V
+- Grand Theft Auto: San Andreas – The Definitive Edition
+- Gravity Heroes
+- Gravity Rush 2
+- Green Hell
+- Greyhill Incident
+- GRIME
+- GRIS
+- Grounded
+- H1Z1
+- Harold Halibut
+- Harvest Moon: Light of Hope Special Edition
+- Harvest Moon: One World
+- Hello Neighbor
+- Hogwarts Legacy
+- Hohokum
+- Hollow Knight Voidheart Edition
+- Horizon Forbidden West
+- Horizon Zero Dawn Remastered
+- Hotel Transylvania: Scary-Tale Adventures
+- Hotline Miami
+- Hotline Miami 2: Wrong Number
+- Hotshot Racing
+- Human: Fall Flat
+- HUMANITY
+- HUMANKIND
+- Hundred Days - Winemaking Simulator
+- Hungry Shark World
+- I Am Bread
+- Ice Age: Scrat's Nutty Adventure
+- Immortals Fenyx Rising
+- INDIKA
+- inFAMOUS First Light
+- Infinite Minigolf
+- Insurgency: Sandstorm
+- Journey to the Savage Planet
+- Jumanji: The Video Game
+- Killer Frequency
+- Killing Floor 2
+- Killzone Shadow Fall
+- Kingdom: New Lands
+- Knack
+- Lake
+- Lawn Mowing Simulator
+- Legendary Fishing
+- LEGO Batman 3: Beyond Gotham
+- LEGO CITY Undercover
+- LEGO Jurassic World
+- LEGO Marvel's Avengers
+- LEGO The Hobbit
+- LEGO The Incredibles
+- LEGO Worlds
+- Like a Dragon: Infinite Wealth
+- Little Big Workshop
+- Lonely Mountains: Downhill
+- Lost Records: Bloom & Rage
+- Magicka 2
+- Mahjong
+- Malicious Fallen
+- Maneater
+- Marvel Rivals
+- Marvel's Guardians of the Galaxy
+- Marvel's Midnight Suns
+- Marvel's Spider-Man 2
+- Marvel's Spider-Man Remastered
+- Marvel's Spider-Man: Miles Morales
+- Matterfall
+- MediEvil
+- Megadimension Neptunia VII
+- MELTY BLOOD: TYPE LUMINA
+- METAL EDEN
+- MONOPOLY
+- Monopoly Madness
+- MONOPOLY Plus
+- Monster Boy and the Cursed Kingdom
+- Monster Hunter Stories
+- Monster Hunter Stories 2: Wings of Ruin
+- Monster Hunter: World
+- Monster Jam Showdown
+- Monster Train
+- Monster Truck Championship
+- Moonlighter
+- MORDHAU
+- Mortal Kombat 1
+- MotoGP 25
+- Mount & Blade II: Bannerlord
+- My Friend Peppa Pig
+- Mystic Pillars
+- NASCAR Heat 5
+- Neva
+- New World: Aeternum
+- Nickelodeon All-Star Brawl 2
+- Nioh
+- No More Heroes 3
+- No Straight Roads
+- Nobunaga's Ambition: Taishi
+- Observer: System Redux
+- OddBallers
+- Oddworld: New 'n' Tasty
+- Oddworld: Soulstorm
+- Omega Quintet
+- OneeChanbara ORIGIN
+- Orcs Must Die! 3
+- Outer Wilds
+- Outlast 2
+- Overpass
+- Overpass 2
+- Override 2: Super Mech League
+- Pacific Drive
+- Paladins
+- Pathfinder: Wrath of the Righteous
+- PAW Patrol Mighty Pups Save Adventure Bay
+- PAW Patrol The Movie: Adventure City Calls
+- PAW Patrol World
+- PAW Patrol: Grand Prix
+- PAW Patrol: On a Roll
+- Persona 5 Royal
+- Persona 5 Tactica
+- PHOGS!
+- Pile Up! Box by Box
+- PJ Masks: Heroes of the Night
+- Planet Coaster 2
+- Planet Zoo
+- PlateUp!
+- Poker Club
+- Police Simulator: Patrol Officers
+- Poppy Playtime: Chapter 1
+- Power Rangers: Battle for the Grid
+- Prey
+- Prince of Persia: The Lost Crown
+- Prison Architect
+- Pure Pool
+- Rabbids Invasion: The Interactive TV Show
+- Rabbids: Party of Legends
+- RAGE 2
+- Rain World
+- Raji: An Ancient Epic
+- Rapala Fishing Pro Series
+- Ratchet & Clank
+- Ratchet & Clank: Rift Apart
+- Rayman Legends
+- ReadySet Heroes
+- Realm Royale Reforged
+- Rebel Galaxy
+- Red Dead Redemption
+- Redout 2
+- Remnant II
+- Resident Evil 3
+- Resident Evil Village
+- RESOGUN
+- Return To Monkey Island
+- Returnal
+- RIDE 5
+- Riders Republic
+- Rise of the Tomb Raider
+- Risk of Rain 2
+- Risk: Urban Assault
+- Rock of Ages 3: Make & Break
+- Rogue Company
+- Rogue Lords
+- Roguebook
+- Röki
+- Romance of the Three Kingdoms XIII
+- Rugby 25
+- Rune Factory 4 Special
+- S.T.A.L.K.E.R.: Call of Prypiat - Enhanced Edition
+- S.T.A.L.K.E.R.: Call of Prypiat
+- S.T.A.L.K.E.R.: Clear Sky
+- S.T.A.L.K.E.R.: Clear Sky Enhanced Edition
+- S.T.A.L.K.E.R.: Shadow of Chornobyl - Enhanced Edition
+- S.T.A.L.K.E.R.: Shadow of Chornobyl
+- Sakuna: Of Rice and Ruin
+- Salt and Sacrifice
+- Samurai Warriors 5
+- Sayonara Wild Hearts
+- Scott Pilgrim vs the World: The Game - Complete Edition
+- SEASON: A Letter to the future
+- Secret Neighbor
+- Session: Skate Sim
+- Shadow of the Beast
+- Shadow of the Colossus
+- Shadow of the Tomb Raider
+- Shadow Tactics: Blades of the Shogun
+- Shadow Warrior 2
+- Shadowrun Returns
+- Shadowrun: Dragonfall - Director's Cut
+- Shadowrun: Hong Kong - Extended Edition
+- SILENT HILL 2
+- Skate Story
+- SKULL AND BONES
+- SMITE
+- Sniper Elite 4
+- Sniper Elite 5
+- Somerville
+- SONIC X SHADOW GENERATIONS
+- Source of Madness
+- South Park: The Fractured but Whole
+- South Park: The Stick of Truth
+- Space Crew
+- Space Engineers
+- Space Hulk: Deathwing
+- Space Junkies
+- Spintires: MudRunner
+- Spirit of the North: Enhanced Edition
+- Squirrel with a Gun
+- STAR WARS Jedi: Survivor
+- Star Wars Outlaws
+- Starlink: Battle for Atlas
+- STEEP
+- Steins;Gate Elite
+- Stellaris: Console Edition
+- Stellaris: Console Edition - Additional Trophies
+- Stick Fight: The Game
+- Still Wakes The Deep
+- STORY OF SEASONS: A Wonderful Life
+- STORY OF SEASONS: Friends of Mineral Town
+- STORY OF SEASONS: Pioneers of Olive Town
+- Stranded Deep
+- Surgeon Simulator
+- Surviving the Aftermath
+- Sword of the Sea
+- Syberia - The World Before
+- Tails Noir
+- Tantei Jinguuji Saburou: Prism of Eyes
+- Tearaway Unfolded
+- Teardown
+- Terraria
+- Test Drive Unlimited Solar Crown
+- Tetris Effect: Connected
+- Thank Goodness You're Here!
+- The Casting of Frank Stone
+- The Crew 2
+- The Crew Motorfest
+- The Dark Pictures Anthology: Little Hope
+- The Elder Scrolls Online: Volume I
+- The Elder Scrolls Online: Volume II
+- The Elder Scrolls V: Skyrim
+- The Evil Within 2
+- The Exit 8
+- The Fisherman - Fishing Planet
+- The Forgotten City
+- The Four Kings Casino and Slots
+- The Gardens Between
+- The Invincible
+- The Jackbox Party Pack 9
+- The Last Blade 2
+- The Last Guardian
+- The Last of Us Part I
+- The Last of Us Part II
+- The Last of Us Part II Remastered
+- The LEGO Movie Videogame
+- The LEGO NINJAGO Movie Video Game
+- The Long Dark
+- The Lord of the Rings: Return to Moria
+- The Pedestrian
+- The Rogue Prince of Persia
+- The Settlers: New Allies
+- The Surge
+- The Surge 2
+- The Talos Principle 2
+- The Technomancer
+- The Thaumaturge
+- The Witch and the Hundred Knight: Revival Edition
+- The Witcher 3: Wild Hunt
+- theHunter: Call of the Wild
+- Thief
+- This War of Mine: Final Cut
+- Thymesia
+- Tin Hearts
+- Tom Clancy's Ghost Recon Breakpoint
+- Tom Clancy's Ghost Recon Wildlands
+- Tom Clancy's Rainbow Six Extraction
+- Tom Clancy's Rainbow Six Siege
+- Tom Clancy's The Division
+- Tom Clancy's The Division 2
+- Tomb Raider
+- Tomb Raider - Definitive Edition
+- TopSpin 2K25
+- Totally Reliable Delivery Service
+- Toukiden 2
+- Townsmen - A Kingdom Rebuilt
+- Trackmania Turbo
+- Train Sim World 5
+- Transference
+- Trials Fusion
+- Trials of the Blood Dragon
+- Trials Rising
+- Tricky Towers
+- Trine 4: The Nightmare Prince
+- TRON RUN/r
+- Tropico 6 - Next Gen Edition
+- Tropico 6
+- Two Point Campus
+- Two Point Hospital
+- Uncharted: Legacy of Thieves Collection
+- Uncharted: The Lost Legacy
+- Under the Waves
+- Undertale
+- Unicorn Overlord
+- UNO
+- Until Dawn
+- Untitled Goose Game
+- V Rising
+- Valiant Hearts: The Great War
+- Vampire: The Masquerade - Coteries of New York
+- Vampire: The Masquerade - Swansong
+- Vampyr
+- Venba
+- Vikings – Wolves of Midgard
+- War Thunder
+- Warhammer 40,000: Darktide
+- Warhammer 40,000: Inquisitor - Martyr
+- Warhammer 40,000: Space Marine 2
+- Warhammer: Chaosbane
+- Warhammer: Chaosbane Slayer Edition
+- Warhammer: Vermintide 2
+- WARRIORS: Abyss
+- Watch Dogs: Legion
+- Watch_Dogs 2
+- We Love Katamari REROLL+ Royal Reverie
+- Werewolf: The Apocalypse - Earthblood
+- Werewolves Within
+- West of Dead
+- Wheel of Fortune
+- Whispering Willows
+- Wizard with a Gun
+- Wo Long: Fallen Dynasty
+- Wolfenstein II: The New Colossus
+- Wolfenstein: The New Order
+- Wolfenstein: The Old Blood
+- Wolfenstein: Youngblood
+- World War Z: Aftermath
+- Worms W.M.D.
+- WRC Generations - The FIA WRC Official Game
+- XCOM 2
+- Yet Another Zombie Defense HD
+- You Suck at Parking
+- Ys IX: Monstrum Nox
+- Ys VIII: Lacrimosa of DANA
+- Yu-Gi-Oh! Master Duel
+- ZOMBI
+- Zombie Army 4: Dead War
