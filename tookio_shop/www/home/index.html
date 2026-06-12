@@ -1,56 +1,660 @@
 {% extends "templates/web.html" %}
 {% block style %}
 <style>
-    :root { --ink:#101828; --muted:#5f6b7a; --line:#e5e7eb; --soft:#f6f8fb; --blue:#1f6feb; --blue-dark:#174ea6; }
-    body { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: var(--ink); background:#fff; }
-    .wrap { max-width:1160px; margin:0 auto; padding:0 24px; }
-    .eyebrow { color:var(--blue-dark); font-size:.76rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; margin-bottom:12px; }
-    .button { display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:0 18px; border-radius:6px; font-weight:760; text-decoration:none; }
-    .primary { background:var(--ink); color:#fff; }
-    .primary:hover { background:#243041; color:#fff; text-decoration:none; }
-    .secondary { color:var(--ink); border:1px solid var(--line); background:#fff; }
-    .secondary:hover { color:var(--ink); border-color:#b8c0cc; text-decoration:none; }
-    .card { background:#fff; border:1px solid var(--line); border-radius:8px; padding:24px; }
-    .card h3 { margin:0 0 10px; font-size:1.05rem; font-weight:740; }
-    .card p, .card li { color:var(--muted); line-height:1.65; margin:0; }
+    .page_content,
+    .page_content.with-container,
+    .web-page-content,
+    .web-page-content .container,
+    .page_content .container {
+        max-width: none !important;
+        width: 100% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
 
-    .hero { padding:72px 0 56px; border-bottom:1px solid var(--line); background:linear-gradient(180deg,#fff,#f8fafc); }
-    .hero-grid { display:grid; grid-template-columns:minmax(0,1.02fr) minmax(320px,.98fr); gap:56px; align-items:center; }
-    h1 { font-size:clamp(2.3rem,5vw,4.7rem); line-height:.98; letter-spacing:-.045em; margin:0 0 24px; font-weight:780; }
-    .lead { color:var(--muted); font-size:1.14rem; line-height:1.72; max-width:680px; margin:0 0 28px; }
-    .actions { display:flex; gap:12px; flex-wrap:wrap; }
-    .product-frame { background:#fff; border:1px solid var(--line); border-radius:10px; padding:10px; box-shadow:0 24px 60px rgba(16,24,40,.10); }
-    .product-frame img { display:block; width:100%; border-radius:6px; }
-    .proof { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; margin-top:36px; border:1px solid var(--line); background:var(--line); border-radius:8px; overflow:hidden; }
-    .proof div { background:#fff; padding:18px; }
-    .proof strong { display:block; font-size:1.25rem; margin-bottom:4px; }
-    .proof span { color:var(--muted); font-size:.9rem; }
-    .section { padding:72px 0; }
-    .muted { background:var(--soft); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
-    .section-head { max-width:760px; margin-bottom:36px; }
-    .section h2 { font-size:clamp(1.9rem,3vw,3rem); line-height:1.08; letter-spacing:-.035em; margin:0 0 14px; font-weight:760; }
-    .section-head p { color:var(--muted); font-size:1.05rem; line-height:1.68; margin:0; }
-    .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
-    .pricing-strip { display:grid; grid-template-columns:1fr 1fr auto; gap:16px; align-items:stretch; }
-    .price { font-size:2.2rem; font-weight:800; letter-spacing:-.04em; margin-bottom:6px; }
-    .price small { font-size:.9rem; color:var(--muted); font-weight:650; letter-spacing:0; }
-    .cta-panel { background:var(--ink); color:#fff; border-radius:10px; padding:34px; display:flex; justify-content:space-between; gap:24px; align-items:center; }
-    .cta-panel h2 { margin:0 0 8px; color:#fff; }
-    .cta-panel p { color:#cfd6e1; margin:0; }
-    .cta-panel .button { background:#fff; color:var(--ink); white-space:nowrap; }
-    @media (max-width:900px) { .hero-grid,.grid-3,.pricing-strip,.proof { grid-template-columns:1fr; } .cta-panel { flex-direction:column; align-items:flex-start; } }
+    .shop-home {
+        --page: #ffffff;
+        --panel: #ffffff;
+        --ink: #111827;
+        --soft-ink: #334155;
+        --muted: #64748b;
+        --line: #e2e8f0;
+        --line-strong: #cbd5e1;
+        --blue: #36a3f7;
+        --blue-dark: #1e88d8;
+        --green: #16a34a;
+        --green-soft: #eaf8ef;
+        --sky-soft: #f6fbff;
+        background: #ffffff;
+        color: var(--ink);
+        overflow: hidden;
+    }
+
+    .shop-home * {
+        box-sizing: border-box;
+    }
+
+    .shop-home a {
+        text-decoration: none;
+    }
+
+    .shop-home-shell {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+    }
+
+    .shop-home .hero {
+        padding: 76px 0 46px;
+    }
+
+    .shop-home .hero-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 0.92fr) minmax(360px, 1.08fr);
+        gap: 54px;
+        align-items: center;
+    }
+
+    .shop-home .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 18px;
+        padding: 8px 12px;
+        border: 1px solid #e7edf4;
+        border-radius: 999px;
+        background: #ffffff;
+        color: var(--blue-dark);
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0;
+        text-transform: uppercase;
+    }
+
+    .shop-home .eyebrow::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--green);
+    }
+
+    .shop-home h1,
+    .shop-home h2,
+    .shop-home h3,
+    .shop-home p {
+        letter-spacing: 0;
+    }
+
+    .shop-home h1 {
+        max-width: 660px;
+        margin: 0 0 18px;
+        font-size: clamp(2.65rem, 5.8vw, 5.35rem);
+        line-height: 0.98;
+        font-weight: 850;
+    }
+
+    .shop-home .lead {
+        max-width: 620px;
+        margin: 0 0 26px;
+        color: var(--muted);
+        font-size: 1.08rem;
+        line-height: 1.75;
+    }
+
+    .shop-home .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 22px;
+    }
+
+    .shop-home .button {
+        min-height: 48px;
+        padding: 0 20px;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+
+    .shop-home .button:hover {
+        transform: translateY(-1px);
+    }
+
+    .shop-home .button-primary {
+        background: var(--blue);
+        color: #ffffff;
+        box-shadow: 0 10px 20px rgba(54, 163, 247, 0.16);
+    }
+
+    .shop-home .button-primary:hover {
+        background: #0576dd;
+    }
+
+    .shop-home .button-secondary {
+        border: 1px solid var(--line-strong);
+        background: #ffffff;
+        color: var(--ink);
+    }
+
+    .shop-home .trust-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        color: var(--soft-ink);
+        font-size: 0.94rem;
+    }
+
+    .shop-home .trust-pill {
+        padding: 9px 12px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: #ffffff;
+    }
+
+    .shop-home .hero-media {
+        position: relative;
+    }
+
+    .shop-home .hero-image-card {
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        background: #ffffff;
+        box-shadow: 0 24px 56px rgba(15, 23, 42, 0.06);
+    }
+
+    .shop-home .hero-image-wrap {
+        position: relative;
+        overflow: hidden;
+        border-radius: 20px;
+        background: #f8fafc;
+        aspect-ratio: 16 / 9;
+    }
+
+    .shop-home .hero-image-wrap img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    .shop-home .hero-metric {
+        position: absolute;
+        left: 30px;
+        bottom: -22px;
+        width: min(320px, calc(100% - 60px));
+        padding: 16px;
+        border: 1px solid #e6edf4;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.96);
+        box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+        backdrop-filter: blur(10px);
+    }
+
+    .shop-home .hero-metric strong {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 1.05rem;
+    }
+
+    .shop-home .hero-metric span {
+        color: var(--muted);
+        font-size: 0.92rem;
+        line-height: 1.5;
+    }
+
+    .shop-home .logo-strip {
+        padding: 22px 0 10px;
+    }
+
+    .shop-home .strip-card {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 22px;
+        align-items: center;
+        padding: 18px 20px;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #ffffff;
+    }
+
+    .shop-home .strip-label {
+        color: var(--muted);
+        font-size: 0.92rem;
+        font-weight: 700;
+    }
+
+    .shop-home .channel-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .shop-home .channel {
+        padding: 10px 13px;
+        border-radius: 999px;
+        background: #f8fafc;
+        color: var(--soft-ink);
+        font-weight: 800;
+        font-size: 0.92rem;
+    }
+
+    .shop-home .section {
+        padding: 70px 0;
+    }
+
+    .shop-home .section.tight {
+        padding-top: 46px;
+    }
+
+    .shop-home .section-head {
+        max-width: 700px;
+        margin-bottom: 28px;
+    }
+
+    .shop-home .section-kicker {
+        margin: 0 0 10px;
+        color: var(--blue-dark);
+        font-size: 0.8rem;
+        font-weight: 850;
+        text-transform: uppercase;
+    }
+
+    .shop-home .section-title {
+        margin: 0 0 12px;
+        font-size: clamp(2rem, 3.8vw, 3.35rem);
+        line-height: 1.04;
+        font-weight: 850;
+    }
+
+    .shop-home .section-copy {
+        margin: 0;
+        color: var(--muted);
+        font-size: 1.02rem;
+        line-height: 1.72;
+    }
+
+    .shop-home .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .shop-home .feature-card,
+    .shop-home .step-card,
+    .shop-home .price-card {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #ffffff;
+    }
+
+    .shop-home .feature-card {
+        min-height: 210px;
+        padding: 22px;
+    }
+
+    .shop-home .feature-icon {
+        width: 42px;
+        height: 42px;
+        margin-bottom: 18px;
+        border-radius: 13px;
+        display: grid;
+        place-items: center;
+        background: var(--sky-soft);
+        color: var(--blue-dark);
+        font-size: 1.25rem;
+        font-weight: 900;
+    }
+
+    .shop-home .feature-card h3 {
+        margin: 0 0 9px;
+        font-size: 1.08rem;
+        font-weight: 850;
+    }
+
+    .shop-home .feature-card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.62;
+        font-size: 0.95rem;
+    }
+
+    .shop-home .workflow {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .shop-home .step-card {
+        padding: 24px;
+    }
+
+    .shop-home .step-number {
+        width: 34px;
+        height: 34px;
+        margin-bottom: 18px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: #111827;
+        color: #ffffff;
+        font-weight: 900;
+        font-size: 0.9rem;
+    }
+
+    .shop-home .step-card h3 {
+        margin: 0 0 9px;
+        font-size: 1.16rem;
+        font-weight: 850;
+    }
+
+    .shop-home .step-card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.65;
+    }
+
+    .shop-home .pricing-band {
+        padding: 34px;
+        border: 1px solid var(--line);
+        border-radius: 26px;
+        background: #ffffff;
+    }
+
+    .shop-home .pricing-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(320px, 0.72fr);
+        gap: 26px;
+        align-items: center;
+    }
+
+    .shop-home .mini-prices {
+        display: grid;
+        gap: 10px;
+    }
+
+    .shop-home .price-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 16px;
+    }
+
+    .shop-home .price-card strong {
+        display: block;
+        margin-bottom: 3px;
+    }
+
+    .shop-home .price-card span {
+        color: var(--muted);
+        font-size: 0.9rem;
+    }
+
+    .shop-home .price {
+        color: var(--ink);
+        font-size: 1.5rem;
+        font-weight: 900;
+        white-space: nowrap;
+    }
+
+    .shop-home .cta {
+        padding: 0 0 78px;
+    }
+
+    .shop-home .cta-card {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 18px;
+        align-items: center;
+        padding: 28px;
+        border-radius: 24px;
+        background: #ffffff;
+        color: var(--ink);
+        border: 1px solid var(--line);
+        box-shadow: 0 18px 36px rgba(15, 23, 42, 0.06);
+    }
+
+    .shop-home .cta-card h2 {
+        margin: 0 0 8px;
+        font-size: clamp(1.8rem, 3vw, 2.55rem);
+        font-weight: 850;
+    }
+
+    .shop-home .cta-card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.65;
+    }
+
+    .shop-home .cta-card .button {
+        background: var(--blue);
+        color: #ffffff;
+        white-space: nowrap;
+    }
+
+    @media (max-width: 1060px) {
+        .shop-home .hero-grid,
+        .shop-home .pricing-grid,
+        .shop-home .cta-card {
+            grid-template-columns: 1fr;
+        }
+
+        .shop-home .feature-grid,
+        .shop-home .workflow {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .shop-home .cta-card .button {
+            justify-self: start;
+        }
+    }
+
+    @media (max-width: 720px) {
+        .shop-home-shell {
+            width: min(100% - 20px, 1180px);
+        }
+
+        .shop-home .hero {
+            padding: 44px 0 34px;
+        }
+
+        .shop-home .hero-grid {
+            gap: 34px;
+        }
+
+        .shop-home h1 {
+            font-size: 2.85rem;
+        }
+
+        .shop-home .actions,
+        .shop-home .button,
+        .shop-home .strip-card,
+        .shop-home .feature-grid,
+        .shop-home .workflow {
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+
+        .shop-home .hero-metric {
+            position: static;
+            width: auto;
+            margin: 12px 0 0;
+        }
+
+        .shop-home .hero-image-card,
+        .shop-home .pricing-band,
+        .shop-home .cta-card {
+            border-radius: 18px;
+            padding: 16px;
+        }
+
+        .shop-home .section {
+            padding: 52px 0;
+        }
+
+        .shop-home .price-card {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
 </style>
 {% endblock %}
 {% block page_content %}
-<section class="hero"><div class="wrap"><div class="hero-grid"><div>
-    <div class="eyebrow">Tookio Shop</div>
-    <h1>Inventory and sales control for modern online sellers.</h1>
-    <p class="lead">Run stock, orders, invoices, purchases and performance reporting from one clean workspace built for Instagram, WhatsApp and small retail operators.</p>
-    <div class="actions"><a class="button primary" href="/login#signup">Create account</a><a class="button secondary" href="/pricing">View pricing</a></div>
-    <div class="proof"><div><strong>Starter</strong><span>$3.50 per month for small shops getting organized.</span></div><div><strong>Pro</strong><span>$9 per month for sellers managing more products and sales.</span></div><div><strong>Mobile ready</strong><span>Designed for work that happens from your phone.</span></div></div>
-</div><div class="product-frame"><img src="/home/mockup.webp" srcset="/home/mockup-mobile.webp 480w, /home/mockup.webp 1600w" sizes="(max-width: 900px) 92vw, 560px" alt="Tookio Shop inventory and sales dashboard" loading="lazy"></div></div></div></section>
-<section class="section"><div class="wrap"><div class="section-head"><div class="eyebrow">Operating system for sellers</div><h2>Replace scattered notebooks, chats and spreadsheets.</h2><p>Tookio Shop gives small commerce teams a disciplined way to record stock movement, issue invoices, understand margins and keep every shop in sync.</p></div><div class="grid-3"><div class="card"><h3>Stock clarity</h3><p>Track products, opening stock, adjustments and availability before overselling becomes a customer problem.</p></div><div class="card"><h3>Sales discipline</h3><p>Create sale invoices, capture customer details and maintain a clean commercial record for every order.</p></div><div class="card"><h3>Business visibility</h3><p>See what is selling, where profit is moving and which purchases are quietly eating into margins.</p></div></div></div></section>
-<section class="section muted"><div class="wrap"><div class="section-head"><div class="eyebrow">Plans</div><h2>Simple pricing for sellers who need control, not complexity.</h2></div><div class="pricing-strip"><div class="card"><h3>Starter</h3><div class="price">$3.50 <small>/ month</small></div><p>For solo sellers and new shops that need stock, sales and invoicing basics.</p></div><div class="card"><h3>Pro</h3><div class="price">$9 <small>/ month</small></div><p>For growing sellers managing more products, more orders and sharper reporting.</p></div><a class="button primary" href="/pricing">Compare plans</a></div></div></section>
-<section class="section"><div class="wrap"><div class="section-head"><div class="eyebrow">Built for control</div><h2>Professional enough for a growing business. Simple enough to use every day.</h2></div><div class="grid-3"><div class="card"><h3>Multi-shop structure</h3><p>Separate locations or brands without losing central visibility.</p></div><div class="card"><h3>Clean documents</h3><p>Generate invoices and records that make your business look organized.</p></div><div class="card"><h3>Reliable foundation</h3><p>Built on Frappe, with role-based access and structured business data.</p></div></div></div></section>
-<section class="section"><div class="wrap"><div class="cta-panel"><div><h2>Start with a cleaner operating rhythm.</h2><p>Create your Tookio Shop account and move your shop records into one place.</p></div><a class="button" href="/login#signup">Create account</a></div></div></section>
+<div class="shop-home">
+    <section class="hero">
+        <div class="shop-home-shell">
+            <div class="hero-grid">
+                <div>
+                    <div class="eyebrow">Tookio Shop for online sellers</div>
+                    <h1>Run your social shop from one simple dashboard.</h1>
+                    <p class="lead">Tookio Shop helps Instagram, TikTok and WhatsApp sellers track sales, stock, invoices and expenses without spreadsheets, notebooks or lost chat records.</p>
+                    <div class="actions">
+                        <a class="button button-primary" href="/login#signup">Sign up for free</a>
+                        <a class="button button-secondary" href="/pricing">View pricing</a>
+                    </div>
+                    <div class="trust-row">
+                        <span class="trust-pill">Free plan available</span>
+                        <span class="trust-pill">Built for mobile sellers</span>
+                        <span class="trust-pill">Sales, stock and expenses</span>
+                    </div>
+                </div>
+                <div class="hero-media" aria-label="Social commerce sales illustration">
+                    <div class="hero-image-card">
+                        <div class="hero-image-wrap">
+                            <img src="/home/social-sales-hero.jpg" alt="Instagram, TikTok, WhatsApp and Facebook sales channels turning into revenue growth">
+                        </div>
+                    </div>
+                    <div class="hero-metric">
+                        <strong>From chat orders to clear records.</strong>
+                        <span>Capture what sold, what remains in stock and what you spent to keep the shop moving.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="logo-strip">
+        <div class="shop-home-shell">
+            <div class="strip-card">
+                <div class="strip-label">Made for sellers taking orders through</div>
+                <div class="channel-list">
+                    <span class="channel">Instagram</span>
+                    <span class="channel">TikTok</span>
+                    <span class="channel">WhatsApp</span>
+                    <span class="channel">Facebook</span>
+                    <span class="channel">Walk-in customers</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section tight">
+        <div class="shop-home-shell">
+            <div class="section-head">
+                <p class="section-kicker">What Tookio Shop handles</p>
+                <h2 class="section-title">Everything your online business needs to stay organized.</h2>
+                <p class="section-copy">A clean workspace for the daily work of selling online: knowing what came in, what went out, what is left and whether you are making money.</p>
+            </div>
+            <div class="feature-grid">
+                <article class="feature-card">
+                    <div class="feature-icon">S</div>
+                    <h3>Sales tracking</h3>
+                    <p>Record every order from chats, DMs or walk-ins and keep customer details easy to find.</p>
+                </article>
+                <article class="feature-card">
+                    <div class="feature-icon">I</div>
+                    <h3>Inventory control</h3>
+                    <p>Update quantities as items sell so you always know what is available before posting.</p>
+                </article>
+                <article class="feature-card">
+                    <div class="feature-icon">E</div>
+                    <h3>Expense tracking</h3>
+                    <p>Log restocks, delivery, packaging and other costs so profit is clearer at the end of the day.</p>
+                </article>
+                <article class="feature-card">
+                    <div class="feature-icon">R</div>
+                    <h3>Simple reports</h3>
+                    <p>See product movement, shop performance and the numbers that help you make better decisions.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="shop-home-shell">
+            <div class="section-head">
+                <p class="section-kicker">How it works</p>
+                <h2 class="section-title">A calmer way to manage busy social selling.</h2>
+            </div>
+            <div class="workflow">
+                <article class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Add your products</h3>
+                    <p>Create your item list with prices and available stock before you start posting or selling.</p>
+                </article>
+                <article class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Record each sale</h3>
+                    <p>When a customer buys, save the sale, reduce stock and create a cleaner invoice record.</p>
+                </article>
+                <article class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Review performance</h3>
+                    <p>Check sales, costs and stock movement so you know what to restock and what to stop buying.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="shop-home-shell">
+            <div class="pricing-band">
+                <div class="pricing-grid">
+                    <div>
+                        <p class="section-kicker">Start free</p>
+                        <h2 class="section-title">Begin with the basics. Upgrade when the shop grows.</h2>
+                        <p class="section-copy">Tookio Shop gives new sellers a free way to get organized. Paid plans are there when you need more room, more records and a stronger workflow.</p>
+                        <div class="actions">
+                            <a class="button button-primary" href="/login#signup">Create free account</a>
+                            <a class="button button-secondary" href="/pricing">Compare plans</a>
+                        </div>
+                    </div>
+                    <div class="mini-prices" aria-label="Tookio Shop plan summary">
+                        <div class="price-card">
+                            <div><strong>Free</strong><span>For getting started</span></div>
+                            <div class="price">$0</div>
+                        </div>
+                        <div class="price-card">
+                            <div><strong>Starter</strong><span>For growing sellers</span></div>
+                            <div class="price">$3.5</div>
+                        </div>
+                        <div class="price-card">
+                            <div><strong>Pro</strong><span>For busier shops</span></div>
+                            <div class="price">$9</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div class="shop-home-shell">
+            <div class="cta-card">
+                <div>
+                    <h2>Ready to organize your online shop?</h2>
+                    <p>Set up Tookio Shop today and keep your sales, inventory and expenses in one reliable place.</p>
+                </div>
+                <a class="button" href="/login#signup">Sign up for free</a>
+            </div>
+        </div>
+    </section>
+</div>
 {% endblock %}
