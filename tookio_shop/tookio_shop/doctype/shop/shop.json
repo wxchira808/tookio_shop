@@ -8,6 +8,8 @@
   "enabled",
   "shop_name",
   "location",
+  "country",
+  "currency",
   "address",
   "mobile_number",
   "email_address",
@@ -26,6 +28,20 @@
    "in_list_view": 1,
    "label": "Location",
    "reqd": 1
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Country",
+   "options": "Country"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Currency",
+   "options": "Currency"
   },
   {
    "fieldname": "mobile_number",

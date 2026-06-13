@@ -52,7 +52,6 @@ fixtures = [
             }
         ]
     }
-]
 
 # Override login page
 # Note: Frappe serves pages placed in templates/pages/<name>.html automatically at /<name>.
@@ -292,7 +291,3 @@ scheduler_events = {
 # default_log_clearing_doctypes = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
-# Serve the Expo web app as a standalone SPA under /tookio_shop.
-website_route_rules = [
-    {"from_route": "/tookio_shop/<path:app_path>", "to_route": "tookio_shop"},
-]

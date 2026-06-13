@@ -5,8 +5,3 @@
 tags
 node_modules
 __pycache__
-# Keep Expo web build assets that include font files under assets/node_modules.
-!tookio_shop/public/tookio_app/
-!tookio_shop/public/tookio_app/assets/
-!tookio_shop/public/tookio_app/assets/node_modules/
-!tookio_shop/public/tookio_app/assets/node_modules/**
