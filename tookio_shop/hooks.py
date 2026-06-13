@@ -52,6 +52,7 @@ fixtures = [
             }
         ]
     }
+]
 
 # Override login page
 # Note: Frappe serves pages placed in templates/pages/<name>.html automatically at /<name>.

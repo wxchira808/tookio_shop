@@ -24,7 +24,15 @@ class ProductStock(Document):
 		for item in self.prodcuts:
 			if not item.product or not item.quantity:
 				continue
-			product_name = item.product_name or frappe.db.get_value("Product", item.product, "item_name") or item.product
+			product = frappe.db.get_value(
+				"Product",
+				item.product,
+				["item_name", "track_stock", "stock_quantity"],
+				as_dict=True,
+			)
+			product_name = (product.item_name if product else None) or item.product_name or item.product
+			if not product or not product.track_stock:
+				continue
 			if self.purpose == "Add Stock":
 				frappe.db.sql("""
 					UPDATE `tabProduct`
@@ -34,9 +42,9 @@ class ProductStock(Document):
 				messages.append(f"Added {item.quantity} to {product_name}")
 			elif self.purpose == "Remove Stock" or self.purpose == "Sale":
 				# Both Remove Stock and Sale deduct stock
-				current_stock = frappe.db.get_value("Product", item.product, "stock_quantity") or 0
+				current_stock = product.stock_quantity or 0
 				if item.quantity > current_stock:
-					frappe.throw(f"Cannot remove {item.quantity} from {product_name}. Only {current_stock} in stock.")
+					frappe.throw(f"Cannot remove {item.quantity} from <strong>{frappe.utils.escape_html(product_name)}</strong>. Only {current_stock} in stock.")
 				frappe.db.sql("""
 					UPDATE `tabProduct`
 					SET stock_quantity = stock_quantity - %s

@@ -1,5 +1,5 @@
 import frappe
-from frappe.utils import getdate, add_months
+from frappe.utils import getdate, add_months, escape_html
 
 
 def setup_new_user(doc, method):
@@ -197,10 +197,23 @@ def check_shop_limit(doc, method):
 
 def prevent_negative_stock(doc, method):
     for item in doc.items:
-        # Always fetch latest stock from DB, not from item_stock field
-        stock = frappe.db.get_value("Product", item.product, "stock_quantity") or 0
+        product = frappe.db.get_value(
+            "Product",
+            item.product,
+            ["item_name", "stock_quantity", "track_stock"],
+            as_dict=True,
+        )
+
+        if not product or not product.track_stock:
+            continue
+
+        stock = product.stock_quantity or 0
         if item.quantity > stock:
-            frappe.throw(f"Not enough stock for {item.product}. Available: {stock}, Requested: {item.quantity}")
+            product_name = product.item_name or item.product
+            frappe.throw(
+                f"There is not enough stock for <strong>{escape_html(product_name)}</strong>. "
+                f"Available stock: {stock}. Requested quantity: {item.quantity}."
+            )
 
 def check_sales_invoice_limit(doc, method):
     """Check if user has exceeded their sales invoice limit"""
