@@ -74,15 +74,14 @@ default_module_profile = "Default Restricted Profile"
 # required_apps = []
 
 # Each item in the list will be shown as an app in the apps page
-# add_to_apps_screen = [
-# 	{
-# 		"name": "tookio_shop",
-# 		"logo": "/assets/tookio_shop/logo.png",
-# 		"title": "Tookio Shop",
-# 		"route": "/tookio_shop",
-# 		"has_permission": "tookio_shop.api.permission.has_app_permission"
-# 	}
-# ]
+add_to_apps_screen = [
+    {
+        "name": "tookio_shop",
+        "logo": "/assets/tookio_shop/logo.png",
+        "title": "Tookio Shop",
+        "route": "/app",
+    }
+]
 
 # Includes in <head>
 # ------------------
