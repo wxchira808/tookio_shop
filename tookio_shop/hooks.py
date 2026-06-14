@@ -88,8 +88,8 @@ default_module_profile = "Default Restricted Profile"
 # ------------------
 
 # include js, css files in header of desk.html
-# app_include_css = "/assets/tookio_shop/css/tookio_shop.css"
-# app_include_js = "/assets/tookio_shop/js/tookio_shop.js"
+app_include_css = "/assets/tookio_shop/css/desk_mobile_sidebar_fix.css"
+app_include_js = "/assets/tookio_shop/js/desk_mobile_sidebar_fix.js"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/tookio_shop/css/tookio_shop.css"

@@ -1,0 +1,19 @@
+@media (max-width: 767.98px) {
+	.navbar-brand .app-logo,
+	.sidebar-toggle-btn.navbar-brand {
+		position: relative;
+		z-index: 2;
+		pointer-events: auto;
+		touch-action: manipulation;
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	.tookio-mobile-sidebar-fix .overlay {
+		pointer-events: none;
+	}
+
+	.tookio-mobile-sidebar-fix.tookio-mobile-sidebar-open .overlay,
+	.tookio-mobile-sidebar-fix .tookio-mobile-sidebar-overlay-active {
+		pointer-events: auto;
+	}
+}
