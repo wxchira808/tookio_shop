@@ -2,6 +2,10 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Product Stock', {
+	before_save: function(frm) {
+		frm.__prompt_submit_after_save = frm.is_new() && !frm.__skip_submit_prompt_once;
+	},
+
 	refresh: function(frm) {
 		// Hide "Sale" from the dropdown
 		if (frm.fields_dict.purpose && frm.fields_dict.purpose.df.options) {
@@ -47,11 +51,22 @@ frappe.ui.form.on('Product Stock', {
 	},
 
 	after_save: function(frm) {
+		const should_prompt_submit = Boolean(frm.__prompt_submit_after_save) && frm.doc.docstatus === 0;
+		frm.__prompt_submit_after_save = false;
+		frm.__skip_submit_prompt_once = false;
+
 		// Force refresh after save (for both draft and submitted docs)
 		frm.reload_doc().then(() => {
 			// Additional refresh of shop field to ensure red outline is removed
 			if (frm.doc.shop) {
 				frm.refresh_field('shop');
+			}
+
+			if (should_prompt_submit) {
+				frappe.confirm(
+					__('Product Stock was saved as draft. Submit it now?'),
+					() => frm.save('Submit')
+				);
 			}
 		});
 	},
@@ -71,6 +86,7 @@ frappe.ui.form.on('Product Stock', {
 					frappe.show_alert({message: __('Products fetched!'), indicator: 'green'});
 					
 					// Save the document automatically after fetching products
+					frm.__skip_submit_prompt_once = true;
 					frm.save()
 				}
 			}
