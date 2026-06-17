@@ -150,7 +150,7 @@
    "type": "Link"
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "icon": "change",
    "indent": 0,
@@ -162,8 +162,8 @@
    "type": "Link"
   }
  ],
- "modified": "2026-06-17 09:30:37.719919",
- "modified_by": "brian@tookio.co.ke",
+ "modified": "2026-06-18 00:31:00.758275",
+ "modified_by": "Administrator",
  "module": "Tookio Shop",
  "name": "Tookio Shop",
  "owner": "Administrator",
