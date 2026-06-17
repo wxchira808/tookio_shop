@@ -1,5 +1,5 @@
 {
- "add_total_row": 1,
+ "add_total_row": 0,
  "add_translate_data": 0,
  "columns": [],
  "creation": "2025-08-19 10:00:00",
@@ -7,12 +7,12 @@
  "docstatus": 0,
  "doctype": "Report",
  "filters": [
-  {
-   "fieldname": "from_date",
-   "fieldtype": "Date",
-   "label": "From Date",
-   "mandatory": 0,
-   "wildcard_filter": 0
+ {
+  "fieldname": "from_date",
+  "fieldtype": "Date",
+  "label": "From Date",
+  "mandatory": 0,
+  "wildcard_filter": 0
   },
   {
    "fieldname": "to_date",
@@ -20,6 +20,23 @@
    "label": "To Date",
    "mandatory": 0,
    "wildcard_filter": 0
+  },
+  {
+   "fieldname": "shop",
+   "fieldtype": "Link",
+   "label": "Shop",
+   "options": "Shop"
+  },
+  {
+   "fieldname": "payment_method",
+   "fieldtype": "Select",
+   "label": "Payment Method",
+   "options": "\nMpesa\nCash\nBank"
+  },
+  {
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer"
   }
  ],
  "idx": 0,
