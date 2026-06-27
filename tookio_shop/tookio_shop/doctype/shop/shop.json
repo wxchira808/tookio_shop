@@ -5,15 +5,16 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "enabled",
   "shop_name",
   "location",
-  "country",
-  "currency",
   "address",
   "mobile_number",
   "email_address",
-  "shop_logo"
+  "shop_logo",
+  "column_break_peqb",
+  "country",
+  "currency",
+  "enabled"
  ],
  "fields": [
   {
@@ -34,7 +35,8 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Country",
-   "options": "Country"
+   "options": "Country",
+   "reqd": 1
   },
   {
    "fieldname": "currency",
@@ -73,17 +75,21 @@
    "fieldname": "enabled",
    "fieldtype": "Check",
    "label": "Enabled"
+  },
+  {
+   "fieldname": "column_break_peqb",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "image_field": "shop_logo",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-12-11 00:21:41.546186",
+ "modified": "2026-06-18 09:40:21.379527",
  "modified_by": "Administrator",
  "module": "Tookio Shop",
  "name": "Shop",
- "naming_rule": "Expression",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {

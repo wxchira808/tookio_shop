@@ -329,8 +329,10 @@ def delete_user_account(user=None, password=None):
         frappe.db.rollback()
         return {'success': False, 'error': str(e)}
 
-
-
-
-
-
+def update_website_context(context):
+    """Override context for specific pages"""
+    if frappe.local.request and frappe.local.request.path.startswith('/login'):
+        # Force show header and footer on login page
+        context.no_header = False
+        context.show_language_picker = True
+        context.show_footer_on_login = 1

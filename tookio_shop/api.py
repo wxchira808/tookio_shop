@@ -1062,6 +1062,37 @@ def process_subscription_upgrade(user_subscription, new_subscription, transactio
 		frappe.throw(f"Failed to upgrade subscription: {str(e)}")
 
 
+@frappe.whitelist()
+def process_free_subscription_upgrade(user_subscription, new_subscription):
+	"""
+	Process subscription upgrade to a free plan (no payment required)
+	"""
+	try:
+		# Verify the new plan is actually free
+		new_plan = frappe.get_doc("Tookio Subscription", new_subscription)
+		if new_plan.price > 0:
+			return {
+				"success": False,
+				"message": "This plan is not free and requires payment."
+			}
+			
+		# Process the upgrade using the existing function, passing "Free-Plan-Switch" as transaction_id
+		process_subscription_upgrade(user_subscription, new_subscription, "Free-Plan-Switch")
+		
+		return {
+			"success": True,
+			"message": "Subscription updated successfully"
+		}
+		
+	except Exception as e:
+		frappe.log_error(f"Failed to process free subscription upgrade: {str(e)}", "Free Subscription Upgrade")
+		return {
+			"success": False,
+			"message": str(e)
+		}
+
+
+
 @frappe.whitelist(allow_guest=True)
 def subscription_payment_webhook():
 	"""

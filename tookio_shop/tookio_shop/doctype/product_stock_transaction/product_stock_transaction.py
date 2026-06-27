@@ -10,7 +10,7 @@ from frappe.model.document import Document
 import frappe
 
 
-class ProductStock(Document):
+class ProductStockTransaction(Document):
 	def validate(self):
 		"""Validate that all products in stock transaction are enabled"""
 		for item in self.prodcuts:

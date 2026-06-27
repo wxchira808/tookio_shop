@@ -5,11 +5,6 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 
-
-
-
-
-
 class SaleInvoice(Document):
 	def validate(self):
 		# Check that all products are enabled
@@ -26,9 +21,9 @@ class SaleInvoice(Document):
 		self.total = total
 
 	def on_submit(self):
-		# Create a Product Stock entry for this sale
-		product_stock = frappe.new_doc("Product Stock")
-		product_stock.purpose = "Sale"  # Not user-selectable, set programmatically
+		# Create a Product Stock Transaction entry for this sale
+		product_stock = frappe.new_doc("Product Stock Transaction")
+		product_stock.purpose = "Sale"
 		product_stock.date = self.get("date")
 		product_stock.shop = self.get("shop")
 		product_stock.prodcuts = []
@@ -44,31 +39,6 @@ class SaleInvoice(Document):
 		product_stock.flags.ignore_permissions = True
 		product_stock.insert()
 		product_stock.submit()
-
-	def on_cancel(self):
-		# Restore stock in Product doctype for each item
-		for item in self.items:
-			if item.price and item.quantity:
-				frappe.db.sql(
-					"""
-					UPDATE `tabProduct`
-					SET stock_quantity = stock_quantity + %s
-					WHERE name = %s
-					""",
-					(item.quantity, item.product)
-				)
-
-	def no_stock(self):
-		low_stock_items = []
-		for item in self.items:
-			if item.stock < item.quantity or item.stock <= 0:
-				low_stock_items.append(
-					_("{product}: In stock {stock}, requested {quantity}").format(
-						product=item.product, stock=item.stock, quantity=item.quantity
-					)
-				)
-		if low_stock_items:
-			frappe.throw(_("Low stock for the following items:<br>{0}").format("<br>".join(low_stock_items)))
 
 	def on_cancel(self):
 		# Restore stock in Product doctype for each item

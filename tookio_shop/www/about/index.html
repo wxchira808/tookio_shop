@@ -1,0 +1,102 @@
+{% extends "templates/web.html" %}
+
+
+
+{% block footer %}
+    {% include "tookio_shop/templates/includes/footer.html" %}
+{% endblock %}
+
+{% block style %}
+<style>
+    .about-hero {
+        text-align: center;
+        padding: 80px 0 40px;
+    }
+    
+    .about-hero-content {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .about-content {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 40px 0 80px;
+    }
+    
+    .about-content p {
+        font-size: 1.125rem;
+        line-height: 1.7;
+        color: var(--ts-ink-soft);
+        margin-bottom: 24px;
+    }
+    
+    .about-content h2 {
+        margin-top: 48px;
+        margin-bottom: 24px;
+    }
+
+    .values-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 32px;
+        margin-top: 48px;
+    }
+
+    .value-card h3 {
+        margin-bottom: 12px;
+        font-weight: 600;
+        color: var(--ts-ink);
+    }
+    
+    .value-card p {
+        font-size: 1rem;
+        color: var(--ts-ink-soft);
+        margin: 0;
+    }
+</style>
+{% endblock %}
+
+{% block page_content %}
+<main>
+    <section class="about-hero">
+        <div class="ts-container">
+            <div class="about-hero-content">
+
+                <h1 class="ts-h1">Built for social sellers in Kenya and beyond.</h1>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-content">
+        <div class="ts-container" style="max-width: 800px; margin: 0 auto;">
+            <p>Tookio Shop started from a simple observation: selling online through Instagram, WhatsApp, and TikTok is a great way to build a business, but keeping track of everything gets messy very fast.</p>
+            <p>Between unread DMs, misplaced receipts, lost stock counts, and end-of-month calculations, sellers spend too much time managing logistics instead of serving customers and growing their reach.</p>
+            <p>We built Tookio Shop to be the simple, reliable backbone for your online store. It is not a complex enterprise ERP, and it is not a bloated e-commerce site builder. It is exactly what you need to track what came in, what went out, and what money you made today.</p>
+            
+            <h2 class="ts-h2">Our Values</h2>
+            
+            <div class="values-grid">
+                <div class="value-card">
+                    <h3>Keep it simple</h3>
+                    <p>Software should not need a manual. We focus on clean interfaces and straight-forward workflows that get out of your way.</p>
+                </div>
+                <div class="value-card">
+                    <h3>Be reliable</h3>
+                    <p>Your business data is critical. We prioritize speed, stability, and data safety over flashy features.</p>
+                </div>
+                <div class="value-card">
+                    <h3>Stay affordable</h3>
+                    <p>We believe good tools should be accessible. Our pricing is designed to grow fairly with your success.</p>
+                </div>
+            </div>
+
+            <div class="ts-card" style="margin-top: 80px; text-align: center;">
+                <h3 class="ts-h3">Have a question?</h3>
+                <p class="ts-body">We are always happy to hear from sellers. If you need help getting set up or have a feature request, reach out.</p>
+                <a href="mailto:info@tookio.co.ke" class="ts-btn ts-btn-primary" style="margin-top: 16px;">Email info@tookio.co.ke</a>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

@@ -1,7 +1,7 @@
 // Copyright (c) 2025, Tookio and contributors
 // For license information, please see license.txt
 
-frappe.ui.form.on('Product Stock', {
+frappe.ui.form.on('Product Stock Transaction', {
 	before_save: function(frm) {
 		frm.__prompt_submit_after_save = frm.is_new() && !frm.__skip_submit_prompt_once;
 	},
@@ -64,7 +64,7 @@ frappe.ui.form.on('Product Stock', {
 
 			if (should_prompt_submit) {
 				frappe.confirm(
-					__('Product Stock was saved as draft. Submit it now?'),
+					__('Product Stock Transaction was saved as draft. Submit it now?'),
 					() => frm.save('Submit')
 				);
 			}

@@ -1,0 +1,33 @@
+{
+ "app": "tookio_shop",
+ "bg_color": "blue",
+ "creation": "2026-06-14 00:30:30.778751",
+ "docstatus": 0,
+ "doctype": "Desktop Icon",
+ "hidden": 0,
+ "icon_image": "",
+ "icon_type": "App",
+ "idx": 0,
+ "label": "Tookio Shop",
+ "link_to": "Tookio Shop",
+ "link_type": "Workspace Sidebar",
+ "logo_url": "/assets/tookio_shop/tookio_shop.svg",
+ "modified": "2026-06-15 09:24:29.410378",
+ "modified_by": "Administrator",
+ "name": "Tookio Shop",
+ "owner": "bwkinyua01@gmail.com",
+ "restrict_removal": 1,
+ "roles": [
+  {
+   "role": "Tookio Seller"
+  },
+  {
+   "role": "Desk User"
+  },
+  {
+   "role": "System Manager"
+  }
+ ],
+ "sidebar": "Tookio Shop",
+ "standard": 1
+}

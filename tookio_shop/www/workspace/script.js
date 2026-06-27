@@ -34,10 +34,10 @@ window.handleNavigation = function(action) {
 
             // Stock Management
             case 'manage-stock':
-                frappe.new_doc('Product Stock');
+                frappe.new_doc('Product Stock Transaction');
                 break;
             case 'stock-transactions':
-                frappe.set_route('List', 'Product Stock');
+                frappe.set_route('List', 'Product Stock Transaction');
                 break;
             case 'stock-report':
                 frappe.set_route('query-report', 'Shop Stock Balance');

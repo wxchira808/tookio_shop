@@ -5,7 +5,7 @@
  "currency": "KES",
  "docstatus": 0,
  "doctype": "Number Card",
- "document_type": "Sales Invoice",
+ "document_type": "Sale Invoice",
  "dynamic_filters_json": "[]",
  "filters_json": "[]",
  "function": "Count",

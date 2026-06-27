@@ -34,7 +34,7 @@ doc_events = {
         "before_insert": "tookio_shop.utils.check_sales_invoice_limit",
         "validate": "tookio_shop.utils.prevent_negative_stock"
     },
-    # Removed Product Stock after_insert hook to fix AttributeError
+    # Removed Product Stock Transaction after_insert hook to fix AttributeError
 }
 
 fixtures = [
@@ -91,11 +91,18 @@ app_include_css = "/assets/tookio_shop/css/desk_mobile_sidebar_fix.css"
 app_include_js = "/assets/tookio_shop/js/desk_mobile_sidebar_fix.js"
 
 # include js, css files in header of web template
-# web_include_css = "/assets/tookio_shop/css/tookio_shop.css"
+web_include_css = "/assets/tookio_shop/css/tookio_website.css"
 # web_include_js = "/assets/tookio_shop/js/tookio_shop.js"
 
 # include custom scss in every website theme (without file extension ".scss")
 # website_theme_scss = "tookio_shop/public/scss/website"
+
+website_context = {
+    "full_page": 1,
+    "no_breadcrumbs": 1
+}
+
+update_website_context = "tookio_shop.utils.update_website_context"
 
 # include js, css files in header of web form
 # webform_include_js = {"doctype": "public/js/doctype.js"}
