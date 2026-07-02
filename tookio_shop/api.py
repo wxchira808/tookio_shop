@@ -762,6 +762,7 @@ def complete_mobile_signup(key, password):
         user.enabled = 1
         user.new_password = password
         user.reset_password_key = ""
+        user.flags.in_insert = True
 
         if user.meta.has_field("last_reset_password_key_generated_on"):
             user.last_reset_password_key_generated_on = None
