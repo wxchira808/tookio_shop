@@ -408,6 +408,11 @@ def get_user_subscription():
                 try:
                     plan_doc = frappe.get_doc("Tookio Subscription", doc.current_subscription)
                     plan_name = plan_doc.subscription_name
+                    # Always expose the current plan limits. Existing user
+                    # subscription records may contain stale copied values.
+                    doc.shop_limit = plan_doc.shop_limit
+                    doc.products_limit = plan_doc.products_limit
+                    doc.sales_invoice_limit = plan_doc.sales_invoice_limit
                 except:
                     plan_name = doc.current_subscription
             

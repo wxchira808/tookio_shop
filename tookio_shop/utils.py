@@ -89,7 +89,7 @@ def get_user_plan_limits(user):
     user_sub = frappe.db.get_value(
         "Tookio User Subscription",
         {"user": user},
-        ["shop_limit", "products_limit", "sales_invoice_limit", "status", "subscription_end_date"],
+        ["current_subscription", "shop_limit", "products_limit", "sales_invoice_limit", "status", "subscription_end_date"],
         as_dict=True
     )
     
@@ -120,10 +120,27 @@ def get_user_plan_limits(user):
         
         # A limit of 0 means unlimited. Do not use ``or`` here because it
         # would turn a deliberately configured zero into the free-plan limit.
+        shop_limit = user_sub.shop_limit if user_sub.shop_limit is not None else 1
+        item_limit = user_sub.products_limit if user_sub.products_limit is not None else 50
+        sales_limit = user_sub.sales_invoice_limit if user_sub.sales_invoice_limit is not None else 200
+
+        # Plan values are authoritative. User subscriptions copy these values
+        # when activated, but older records can retain limits from a previous
+        # version or before the plan was edited.
+        if user_sub.current_subscription and user_sub.current_subscription != "Free Plan":
+            plan = frappe.db.get_value(
+                "Tookio Subscription", user_sub.current_subscription,
+                ["shop_limit", "products_limit", "sales_invoice_limit"], as_dict=True
+            )
+            if plan:
+                shop_limit = plan.shop_limit
+                item_limit = plan.products_limit
+                sales_limit = plan.sales_invoice_limit
+
         return {
-            "custom_shop_limit": user_sub.shop_limit if user_sub.shop_limit is not None else 1,
-            "custom_item_limits": user_sub.products_limit if user_sub.products_limit is not None else 50,
-            "sales_invoice_limit": user_sub.sales_invoice_limit if user_sub.sales_invoice_limit is not None else 200
+            "custom_shop_limit": shop_limit,
+            "custom_item_limits": item_limit,
+            "sales_invoice_limit": sales_limit
         }
     
     # No subscription found, return free plan defaults
