@@ -578,12 +578,12 @@ def check_user_limits():
             "shops": {
                 "used": shops_count,
                 "limit": shop_limit,
-                "exceeded": shops_count >= shop_limit
+                "exceeded": shop_limit != 0 and shops_count >= shop_limit
             },
             "products": {
                 "used": products_count,
                 "limit": products_limit,
-                "exceeded": products_count >= products_limit
+                "exceeded": products_limit != 0 and products_count >= products_limit
             },
             "sales_invoices": {
                 "used": sales_count,
@@ -1131,4 +1131,3 @@ def subscription_payment_webhook():
 	except Exception as e:
 		frappe.log_error(f"Subscription webhook error: {str(e)}", "Subscription Webhook")
 		return {"ResultCode": 1, "ResultDesc": "Error processing webhook"}
-

@@ -118,10 +118,12 @@ def get_user_plan_limits(user):
             except Exception as e:
                 frappe.logger().error(f"Error checking subscription expiry in utils: {str(e)}")
         
+        # A limit of 0 means unlimited. Do not use ``or`` here because it
+        # would turn a deliberately configured zero into the free-plan limit.
         return {
-            "custom_shop_limit": user_sub.shop_limit or 1,
-            "custom_item_limits": user_sub.products_limit or 50,
-            "sales_invoice_limit": user_sub.sales_invoice_limit or 200
+            "custom_shop_limit": user_sub.shop_limit if user_sub.shop_limit is not None else 1,
+            "custom_item_limits": user_sub.products_limit if user_sub.products_limit is not None else 50,
+            "sales_invoice_limit": user_sub.sales_invoice_limit if user_sub.sales_invoice_limit is not None else 200
         }
     
     # No subscription found, return free plan defaults
@@ -172,7 +174,8 @@ def check_item_limit(doc, method):
     # Count existing products for this user
     product_count = frappe.db.count("Product", {"owner": user})
     
-    if product_count >= limits["custom_item_limits"]:
+    # 0 means unlimited.
+    if limits["custom_item_limits"] != 0 and product_count >= limits["custom_item_limits"]:
         frappe.throw(
             f"You have reached your product limit of {limits['custom_item_limits']}. "
             f"Please upgrade your subscription to add more products."
@@ -189,7 +192,8 @@ def check_shop_limit(doc, method):
     # Count existing shops for this user
     shop_count = frappe.db.count("Shop", {"owner": user})
     
-    if shop_count >= limits["custom_shop_limit"]:
+    # 0 means unlimited.
+    if limits["custom_shop_limit"] != 0 and shop_count >= limits["custom_shop_limit"]:
         frappe.throw(
             f"You have reached your shop limit of {limits['custom_shop_limit']}. "
             f"Please upgrade your subscription to add more shops."
