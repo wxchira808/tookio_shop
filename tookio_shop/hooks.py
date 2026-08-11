@@ -20,6 +20,10 @@ app_license = "mit"
 
 
 
+override_doctype_class = {
+	"User": "tookio_shop.overrides.user.CustomUser"
+}
+
 doc_events = {
       "User": {
         "after_insert": "tookio_shop.utils.setup_new_user"
