@@ -22,7 +22,9 @@ frappe.ui.form.on('Product Stock Transaction', {
 			frm.set_query('product', 'prodcuts', function() {
 				return {
 					filters: {
-						'shop': frm.doc.shop
+						'shop': frm.doc.shop,
+						'enabled': 1,
+						'track_stock': 1
 					}
 				};
 			});
@@ -44,7 +46,9 @@ frappe.ui.form.on('Product Stock Transaction', {
 		frm.set_query('product', 'prodcuts', function() {
 			return {
 				filters: {
-					'shop': frm.doc.shop
+					'shop': frm.doc.shop,
+					'enabled': 1,
+					'track_stock': 1
 				}
 			};
 		});

@@ -14,6 +14,8 @@
   "shop_limit",
   "products_limit",
   "sales_invoice_limit",
+  "website_enabled",
+  "website_limit",
   "enabled"
  ],
  "fields": [
@@ -71,6 +73,21 @@
    "fieldtype": "Int",
    "in_list_view": 1,
    "label": "Sales Invoice Limit"
+  },
+  {
+   "default": "0",
+   "description": "Enable public Tookio Websites for this plan.",
+   "fieldname": "website_enabled",
+   "fieldtype": "Check",
+   "label": "Website Access"
+  },
+  {
+   "depends_on": "website_enabled",
+   "description": "0 means unlimited websites when Website Access is enabled.",
+   "fieldname": "website_limit",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Website Limit"
   },
   {
    "default": "1",

@@ -1,0 +1,26 @@
+{
+ "app": "tookio_shop",
+ "bg_color": "gray",
+ "creation": "2026-08-12 11:58:41.505342",
+ "docstatus": 0,
+ "doctype": "Desktop Icon",
+ "hidden": 0,
+ "icon_type": "Link",
+ "idx": 0,
+ "label": "Mobile Version",
+ "link": "https://tookio.shop/",
+ "link_type": "External",
+ "logo_url": "/assets/tookio_shop/tookio_shop.svg",
+ "modified": "2026-08-12 12:02:12.980027",
+ "modified_by": "Administrator",
+ "name": "Mobile Version",
+ "owner": "bwkinyua01@gmail.com",
+ "parent_icon": "Tookio Shop",
+ "restrict_removal": 1,
+ "roles": [
+  {
+   "role": "Tookio Seller"
+  }
+ ],
+ "standard": 1
+}

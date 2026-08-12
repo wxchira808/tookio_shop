@@ -35,7 +35,7 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Item Price",
-   "options": "shop:currency",
+   "options": "currency",
    "precision": "2"
   },
   {

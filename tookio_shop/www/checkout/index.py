@@ -2,8 +2,9 @@ import frappe
 
 
 PLANS = {
-    "starter": {"name": "Starter", "price": "$3.50", "description": "For solo sellers and small shops moving away from manual records."},
-    "pro": {"name": "Pro", "price": "$9", "description": "For growing sellers with more products, more sales activity and sharper reporting needs."},
+    "starter": {"name": "Starter", "price": "KES 450", "description": "For one growing shop with stock, sales, and expense records."},
+    "pro": {"name": "Pro", "price": "KES 1,000", "description": "For unlimited shops and one public Tookio Website."},
+    "premium": {"name": "Premium", "price": "KES 2,500", "description": "For unlimited shops and up to five separate Tookio Websites."},
 }
 
 

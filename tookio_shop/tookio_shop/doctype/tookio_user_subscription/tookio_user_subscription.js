@@ -145,6 +145,7 @@ function get_plan_details_html(plan) {
 			<p style="margin: 5px 0;"><strong>Shop Limit:</strong> ${plan.shop_limit}</p>
 			<p style="margin: 5px 0;"><strong>Products Limit:</strong> ${plan.products_limit}</p>
 			<p style="margin: 5px 0;"><strong>Sales Invoice Limit:</strong> ${plan.sales_invoice_limit || 'Unlimited'}</p>
+			<p style="margin: 5px 0;"><strong>Website Access:</strong> ${plan.website_enabled ? (plan.website_limit || 'Unlimited') : 'Not included'}</p>
 			${plan.description ? `<p style="margin: 5px 0; font-style: italic;">${plan.description}</p>` : ''}
 		</div>
 	`;

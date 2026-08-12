@@ -15,9 +15,15 @@ class ProductStockTransaction(Document):
 		"""Validate that all products in stock transaction are enabled"""
 		for item in self.prodcuts:
 			if item.product:
-				is_enabled = frappe.db.get_value('Product', item.product, 'enabled')
-				if not is_enabled:
+				product = frappe.db.get_value(
+					"Product", item.product, ["enabled", "track_stock", "shop"], as_dict=True
+				)
+				if not product or not product.enabled:
 					frappe.throw(f"Product {item.product} is disabled and cannot be used in stock transactions.")
+				if product.shop != self.shop:
+					frappe.throw(_("Product {0} belongs to a different shop.").format(item.product))
+				if self.purpose != "Sale" and not product.track_stock:
+					frappe.throw(_("Product {0} does not track stock.").format(item.product))
 
 	def on_submit(self):
 		messages = []
@@ -72,7 +78,7 @@ class ProductStockTransaction(Document):
 		products = frappe.get_all(
 			'Product',
 			fields=['name', 'uom', 'stock_quantity'],
-			filters={'shop': self.shop}
+			filters={'shop': self.shop, 'enabled': 1, 'track_stock': 1}
 		)
 		for prod in products:
 			self.append('prodcuts', {

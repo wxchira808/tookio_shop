@@ -8,6 +8,7 @@
   "posting_date",
   "column_break_bwaq",
   "shop",
+  "currency",
   "section_break_qjnk",
   "items",
   "total",
@@ -26,6 +27,7 @@
    "in_list_view": 1,
    "in_preview": 1,
    "label": "Total",
+   "options": "currency",
    "precision": "2",
    "read_only": 1
   },
@@ -57,6 +59,13 @@
    "label": "Shop",
    "options": "Shop",
    "reqd": 1
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency",
+   "read_only": 1
   },
   {
    "fieldname": "amended_from",

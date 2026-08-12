@@ -1,0 +1,33 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:WEB-{#####}",
+ "creation": "2026-08-11 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": ["website_name", "shop", "enabled", "website_slug", "section_break_content", "headline", "description", "whatsapp_number", "show_address"],
+ "fields": [
+  {"fieldname": "website_name", "fieldtype": "Data", "in_list_view": 1, "label": "Website Name", "reqd": 1},
+  {"fieldname": "shop", "fieldtype": "Link", "in_list_view": 1, "label": "Shop", "options": "Shop", "reqd": 1, "unique": 1},
+  {"default": "1", "fieldname": "enabled", "fieldtype": "Check", "in_list_view": 1, "label": "Enabled"},
+  {"description": "The public address will be this value followed by .tookio.shop.", "fieldname": "website_slug", "fieldtype": "Data", "in_list_view": 1, "label": "Website Slug", "reqd": 1, "unique": 1},
+  {"fieldname": "section_break_content", "fieldtype": "Section Break", "label": "Website Content"},
+  {"fieldname": "headline", "fieldtype": "Data", "label": "Headline"},
+  {"fieldname": "description", "fieldtype": "Small Text", "label": "Description"},
+  {"fetch_from": "shop.mobile_number", "fieldname": "whatsapp_number", "fieldtype": "Data", "label": "WhatsApp Number"},
+  {"default": "1", "fieldname": "show_address", "fieldtype": "Check", "label": "Show Shop Address"}
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "module": "Tookio Shop",
+ "name": "Tookio Website",
+ "naming_rule": "Expression (old style)",
+ "permissions": [
+  {"create": 1, "delete": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "System Manager", "share": 1, "write": 1},
+  {"create": 1, "delete": 1, "if_owner": 1, "read": 1, "report": 1, "role": "Tookio Seller", "write": 1}
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "website_name",
+ "track_changes": 1
+}

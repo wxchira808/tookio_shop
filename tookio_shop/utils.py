@@ -1,5 +1,5 @@
 import frappe
-from frappe.utils import getdate, add_months, escape_html
+from frappe.utils import getdate, add_months, escape_html, today
 
 
 def setup_new_user(doc, method):
@@ -61,93 +61,100 @@ def create_free_subscription_for_user(user):
             frappe.log_error("Free Plan not found", "Auto Subscription Creation")
             return
 
-        # Set the user as the session user temporarily to make them the owner
-        frappe.set_user(user)
-        
         # Create user subscription
         user_sub = frappe.new_doc("Tookio User Subscription")
+        user_sub.owner = user
         user_sub.user = user
         user_sub.current_subscription = free_plan
         user_sub.subscription_start_date = getdate()
-        user_sub.subscription_end_date = add_months(getdate(), 600)  # Free plan for 50 years
+        user_sub.subscription_end_date = None
         user_sub.status = "Active"
         user_sub.insert(ignore_permissions=True)
-        
-        # Reset to Administrator
-        frappe.set_user("Administrator")
         
         frappe.db.commit()
         frappe.logger().info(f"Created free subscription for user {user}")
     except Exception as e:
-        frappe.set_user("Administrator")  # Reset even on error
         frappe.log_error(f"Error creating free subscription for user {user}: {str(e)}", "Auto Subscription Creation Failed")
     
 
+PLAN_LIMIT_FIELDS = [
+    "shop_limit",
+    "products_limit",
+    "sales_invoice_limit",
+    "website_enabled",
+    "website_limit",
+]
+
+
+def get_free_plan_name():
+    free_plan = frappe.db.get_value("Tookio Subscription", {"subscription_name": "Free Plan", "enabled": 1}, "name")
+    if not free_plan:
+        frappe.throw("Configure an enabled Free Plan before creating users or checking limits.")
+    return free_plan
+
+
+def get_plan_limits(plan_name):
+    plan = frappe.db.get_value("Tookio Subscription", plan_name, PLAN_LIMIT_FIELDS, as_dict=True)
+    if not plan:
+        frappe.throw("The selected subscription plan no longer exists.")
+    return plan
+
+
+def sync_subscription_limits(subscription_name, plan_name=None, status=None, end_date=None):
+    subscription = frappe.get_doc("Tookio User Subscription", subscription_name)
+    plan_name = plan_name or subscription.current_subscription
+    limits = get_plan_limits(plan_name)
+    subscription.current_subscription = plan_name
+    subscription.shop_limit = limits.shop_limit
+    subscription.products_limit = limits.products_limit
+    subscription.sales_invoice_limit = limits.sales_invoice_limit
+    subscription.website_enabled = limits.website_enabled
+    subscription.website_limit = limits.website_limit
+    if status is not None:
+        subscription.status = status
+    if end_date is not None:
+        subscription.subscription_end_date = end_date
+    subscription.save(ignore_permissions=True)
+    return limits
+
+
+def _downgrade_expired_subscription(subscription):
+    if not subscription.subscription_end_date or getdate(subscription.subscription_end_date) >= getdate(today()):
+        return False
+    free_plan = get_free_plan_name()
+    subscription.current_subscription = free_plan
+    subscription.subscription_start_date = getdate(today())
+    subscription.subscription_end_date = None
+    subscription.status = "Active"
+    limits = get_plan_limits(free_plan)
+    subscription.shop_limit = limits.shop_limit
+    subscription.products_limit = limits.products_limit
+    subscription.sales_invoice_limit = limits.sales_invoice_limit
+    subscription.website_enabled = limits.website_enabled
+    subscription.website_limit = limits.website_limit
+    subscription.save(ignore_permissions=True)
+    return True
+
+
 def get_user_plan_limits(user):
-    """Get user's subscription plan limits"""
-    # First, try to get any subscription (Active or Expired)
-    user_sub = frappe.db.get_value(
-        "Tookio User Subscription",
-        {"user": user},
-        ["current_subscription", "shop_limit", "products_limit", "sales_invoice_limit", "status", "subscription_end_date"],
-        as_dict=True
-    )
-    
-    if user_sub:
-        # Check if expired and auto-downgrade to free plan
-        if user_sub.subscription_end_date:
-            try:
-                from frappe.utils import getdate, today
-                if getdate(user_sub.subscription_end_date) < getdate(today()) and user_sub.status != "Expired":
-                    # Auto-downgrade to free plan
-                    frappe.db.set_value("Tookio User Subscription", {"user": user}, {
-                        "status": "Expired",
-                        "current_subscription": "Free Plan",
-                        "shop_limit": 1,
-                        "products_limit": 50,
-                        "sales_invoice_limit": 200,
-                        "subscription_end_date": None
-                    })
-                    frappe.db.commit()
-                    # Return free plan limits
-                    return {
-                        "custom_shop_limit": 1,
-                        "custom_item_limits": 50,
-                        "sales_invoice_limit": 200
-                    }
-            except Exception as e:
-                frappe.logger().error(f"Error checking subscription expiry in utils: {str(e)}")
-        
-        # A limit of 0 means unlimited. Do not use ``or`` here because it
-        # would turn a deliberately configured zero into the free-plan limit.
-        shop_limit = user_sub.shop_limit if user_sub.shop_limit is not None else 1
-        item_limit = user_sub.products_limit if user_sub.products_limit is not None else 50
-        sales_limit = user_sub.sales_invoice_limit if user_sub.sales_invoice_limit is not None else 200
+    """Return limits from the user's current plan. A value of 0 means unlimited."""
+    subscription_name = frappe.db.exists("Tookio User Subscription", {"user": user})
+    if not subscription_name:
+        create_free_subscription_for_user(user)
+        subscription_name = frappe.db.exists("Tookio User Subscription", {"user": user})
+    if not subscription_name:
+        frappe.throw("No subscription record could be created for this user.")
 
-        # Plan values are authoritative. User subscriptions copy these values
-        # when activated, but older records can retain limits from a previous
-        # version or before the plan was edited.
-        if user_sub.current_subscription and user_sub.current_subscription != "Free Plan":
-            plan = frappe.db.get_value(
-                "Tookio Subscription", user_sub.current_subscription,
-                ["shop_limit", "products_limit", "sales_invoice_limit"], as_dict=True
-            )
-            if plan:
-                shop_limit = plan.shop_limit
-                item_limit = plan.products_limit
-                sales_limit = plan.sales_invoice_limit
-
-        return {
-            "custom_shop_limit": shop_limit,
-            "custom_item_limits": item_limit,
-            "sales_invoice_limit": sales_limit
-        }
-    
-    # No subscription found, return free plan defaults
+    subscription = frappe.get_doc("Tookio User Subscription", subscription_name)
+    _downgrade_expired_subscription(subscription)
+    subscription.reload()
+    limits = get_plan_limits(subscription.current_subscription)
     return {
-        "custom_shop_limit": 1,
-        "custom_item_limits": 50,
-        "sales_invoice_limit": 200
+        "custom_shop_limit": limits.shop_limit,
+        "custom_item_limits": limits.products_limit,
+        "sales_invoice_limit": limits.sales_invoice_limit,
+        "website_enabled": bool(limits.website_enabled),
+        "website_limit": limits.website_limit,
     }
 
 
@@ -162,10 +169,9 @@ def check_subscription_expired(user):
     
     if user_sub and user_sub.subscription_end_date:
         if getdate(user_sub.subscription_end_date) < getdate():
-            # Subscription expired, deactivate it
-            if user_sub.status == "Active":
-                frappe.db.set_value("Tookio User Subscription", {"user": user}, "status", "Expired")
-                frappe.db.commit()
+            subscription_name = frappe.db.exists("Tookio User Subscription", {"user": user})
+            if subscription_name:
+                _downgrade_expired_subscription(frappe.get_doc("Tookio User Subscription", subscription_name))
             return True
     return False
 
@@ -173,6 +179,7 @@ def check_subscription_expired(user):
 def ensure_active_subscription(user=None):
     """Enforce active subscription status before allowing any transactional insert."""
     current_user = user or frappe.session.user
+    get_user_plan_limits(current_user)
     status = frappe.db.get_value("Tookio User Subscription", {"user": current_user}, "status")
 
     if status and status.lower() != "active":
@@ -182,7 +189,7 @@ def ensure_active_subscription(user=None):
 
 def check_item_limit(doc, method):
     """Check if user has exceeded their item limit"""
-    user = frappe.session.user
+    user = doc.owner or frappe.session.user
 
     ensure_active_subscription(user)
     
@@ -200,7 +207,7 @@ def check_item_limit(doc, method):
 
 def check_shop_limit(doc, method):
     """Check if user has exceeded their shop limit"""
-    user = frappe.session.user
+    user = doc.owner or frappe.session.user
 
     ensure_active_subscription(user)
     
@@ -238,7 +245,7 @@ def prevent_negative_stock(doc, method):
 
 def check_sales_invoice_limit(doc, method):
     """Check if user has exceeded their sales invoice limit"""
-    user = frappe.session.user
+    user = doc.owner or frappe.session.user
 
     ensure_active_subscription(user)
     
@@ -257,13 +264,32 @@ def check_sales_invoice_limit(doc, method):
             f"Please upgrade your subscription to create more invoices."
         )
 
+def check_website_limit(doc, method):
+    """Enforce website access. 0 means unlimited only after Website Access is enabled."""
+    user = doc.owner or frappe.session.user
+    ensure_active_subscription(user)
+    limits = get_user_plan_limits(user)
+    if not limits["website_enabled"]:
+        frappe.throw("Your current plan does not include a Tookio Website.")
+    if limits["website_limit"] == 0:
+        return
+    website_count = frappe.db.count("Tookio Website", {"owner": user})
+    if website_count >= limits["website_limit"]:
+        frappe.throw(f"You have reached your website limit of {limits['website_limit']}. Please upgrade your subscription to add more websites.")
+
+
 def check_and_handle_expired_subscriptions():
-    """UNLIMITED FREE APP - No subscriptions to expire"""
-    pass  # No subscriptions in free app
+    """Downgrade expired paid subscriptions to the data-configured Free Plan."""
+    subscriptions = frappe.get_all(
+        "Tookio User Subscription",
+        filters={"status": "Active", "subscription_end_date": ("is", "set")},
+        pluck="name",
+    )
+    for subscription_name in subscriptions:
+        _downgrade_expired_subscription(frappe.get_doc("Tookio User Subscription", subscription_name))
 
 def get_user_subscription_status(user=None):
-    """UNLIMITED FREE APP - Always return unlimited status"""
-    return {"custom_item_limits": 999999, "custom_shop_limit": 999999}
+    return get_user_plan_limits(user or frappe.session.user)
 
 
 def get_enabled_products_for_user(shop=None):

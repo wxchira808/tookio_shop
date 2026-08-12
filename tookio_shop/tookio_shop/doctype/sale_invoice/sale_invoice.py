@@ -7,6 +7,7 @@ from frappe.model.document import Document
 
 class SaleInvoice(Document):
 	def validate(self):
+		self.currency = _get_shop_currency(self.shop)
 		# Check that all products are enabled
 		for item in self.items:
 			if item.product:
@@ -64,3 +65,10 @@ class SaleInvoice(Document):
 				)
 		if low_stock_items:
 			frappe.throw(_("Low stock for the following items:<br>{0}").format("<br>".join(low_stock_items)))
+
+
+def _get_shop_currency(shop):
+	currency = frappe.db.get_value("Shop", shop, "currency")
+	if not currency:
+		frappe.throw("Set a currency on this shop before creating or editing sales invoices.")
+	return currency

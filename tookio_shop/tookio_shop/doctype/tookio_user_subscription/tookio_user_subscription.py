@@ -8,33 +8,19 @@ from frappe.utils import getdate, add_months, today
 
 class TookioUserSubscription(Document):
 	def before_save(self):
-		"""Update current subscription limits from the linked subscription plan"""
-		# Check if subscription has expired and auto-downgrade to free plan
-		if self.subscription_end_date:
-			try:
-				end_date = getdate(self.subscription_end_date)
-				current_date = getdate(today())
-				
-				if current_date > end_date:
-					frappe.logger().info(f"⏰ Subscription expired for {self.user}, auto-downgrading to Free Plan")
-					self.status = "Expired"
-					self.current_subscription = "Free Plan"  # Auto-switch to free plan on expiry
-					self.subscription_start_date = current_date
-					self.subscription_end_date = None  # Free plan never expires
-			except Exception as e:
-				frappe.logger().error(f"Error checking subscription expiry: {str(e)}")
-		
-		# Set free plan limits if on free plan
-		if self.current_subscription == "Free Plan":
-			self.shop_limit = 1
-			self.products_limit = 50
-			self.sales_invoice_limit = 200
-			self.subscription_end_date = None  # Free plan never expires
-		elif self.current_subscription:
-			subscription = frappe.get_doc("Tookio Subscription", self.current_subscription)
-			self.shop_limit = subscription.shop_limit
-			self.products_limit = subscription.products_limit
-			self.sales_invoice_limit = subscription.sales_invoice_limit
+		"""Mirror the selected plan for display; enforcement always reads the plan itself."""
+		if not self.current_subscription:
+			return
+
+		subscription = frappe.get_doc("Tookio Subscription", self.current_subscription)
+		self.shop_limit = subscription.shop_limit
+		self.products_limit = subscription.products_limit
+		self.sales_invoice_limit = subscription.sales_invoice_limit
+		self.website_enabled = subscription.website_enabled
+		self.website_limit = subscription.website_limit
+
+		if subscription.subscription_name == "Free Plan":
+			self.subscription_end_date = None
 	
 	def on_update(self):
 		"""Add to history when subscription changes"""

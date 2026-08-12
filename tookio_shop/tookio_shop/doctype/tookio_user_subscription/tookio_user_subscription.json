@@ -17,6 +17,8 @@
   "shop_limit",
   "products_limit",
   "sales_invoice_limit",
+  "website_enabled",
+  "website_limit",
   "section_break_12",
   "subscription_history"
  ],
@@ -91,6 +93,19 @@
    "fieldname": "sales_invoice_limit",
    "fieldtype": "Int",
    "label": "Sales Invoice Limit",
+   "read_only": 1
+  },
+  {
+   "fieldname": "website_enabled",
+   "fieldtype": "Check",
+   "label": "Website Access",
+   "read_only": 1
+  },
+  {
+   "description": "0 means unlimited websites when Website Access is enabled.",
+   "fieldname": "website_limit",
+   "fieldtype": "Int",
+   "label": "Website Limit",
    "read_only": 1
   },
   {

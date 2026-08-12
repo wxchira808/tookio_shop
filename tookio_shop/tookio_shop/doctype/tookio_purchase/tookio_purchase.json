@@ -7,6 +7,7 @@
  "field_order": [
   "date",
   "shop",
+  "currency",
   "description",
   "amount",
   "category"
@@ -30,6 +31,13 @@
    "reqd": 1
   },
   {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency",
+   "read_only": 1
+  },
+  {
    "fieldname": "description",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -41,6 +49,7 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Amount",
+   "options": "currency",
    "reqd": 1
   },
   {

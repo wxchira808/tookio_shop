@@ -8,9 +8,12 @@
  "engine": "InnoDB",
  "field_order": [
   "item_name",
+  "description",
   "price",
   "selling_price",
   "shop",
+  "currency",
+  "item_group",
   "shop_name",
   "uom",
   "column_break_ocan",
@@ -30,11 +33,17 @@
    "reqd": 1
   },
   {
+   "description": "Full product details shown on the public shop website.",
+   "fieldname": "description",
+   "fieldtype": "Text Editor",
+   "label": "Description"
+  },
+  {
    "fieldname": "price",
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Buying Price",
-   "options": "shop:currency",
+   "options": "currency",
    "precision": "2",
    "reqd": 1
   },
@@ -64,6 +73,20 @@
    "label": "Shop",
    "options": "Shop",
    "reqd": 1
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "item_group",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item Group",
+   "options": "Tookio Item Group"
   },
   {
    "fieldname": "item_owner",
@@ -100,7 +123,7 @@
    "fieldname": "selling_price",
    "fieldtype": "Currency",
    "label": "Selling Price",
-   "options": "shop:currency"
+   "options": "currency"
   },
   {
    "fetch_from": "shop.shop_name",

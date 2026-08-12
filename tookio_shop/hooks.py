@@ -62,9 +62,10 @@ fixtures = [
 # Note: Frappe serves pages placed in templates/pages/<name>.html automatically at /<name>.
 # The custom route rule previously pointed to a non-page path and caused 404s. We now provide
 # templates/pages/login.html so /login will be served without a custom rule.
-# website_route_rules = [
-#    {"from_route": "/login", "to_route": "tookio_shop/templates/login"}
-# ]
+website_route_rules = [
+	{"from_route": "/shop/<slug>/product/<path:product>", "to_route": "store_product"},
+	{"from_route": "/shop/<slug>", "to_route": "store"},
+]
 
 # Add custom JS
 # signup JS removed; no app-level web_include_js so default Frappe pages remain unchanged
@@ -95,7 +96,10 @@ app_include_css = "/assets/tookio_shop/css/desk_mobile_sidebar_fix.css"
 app_include_js = "/assets/tookio_shop/js/desk_mobile_sidebar_fix.js"
 
 # include js, css files in header of web template
-web_include_css = "/assets/tookio_shop/css/tookio_website.css"
+web_include_css = [
+	"/assets/tookio_shop/css/tookio_website.css",
+	"/assets/tookio_shop/css/storefront.css?v=20260812e",
+]
 # web_include_js = "/assets/tookio_shop/js/tookio_shop.js"
 
 # include custom scss in every website theme (without file extension ".scss")

@@ -1,0 +1,160 @@
+{% extends "templates/web.html" %}
+
+{% block title %}{{ website.website_name or shop.shop_name }}{% endblock %}
+{% block navbar %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% macro frappe_icon(name, class_name="") %}
+<svg class="store-icon {{ class_name }}" aria-hidden="true"><use href="/assets/frappe/icons/lucide/icons.svg#icon-{{ name }}"></use></svg>
+{% endmacro %}
+
+{% block page_content %}
+<main class="tookio-store" data-currency="{{ shop.currency | e }}" data-whatsapp="{{ whatsapp_number | e }}" data-shop="{{ shop.shop_name | e }}" data-store-slug="{{ website.website_slug | e }}">
+  <header class="store-navbar">
+    <div class="store-navbar-inner">
+      <a class="store-brand" href="/shop/{{ website.website_slug | e }}" aria-label="{{ shop.shop_name | e }} home">
+        <span class="store-logo-wrap" aria-hidden="true">
+          <span>{{ shop.shop_name[:1] | upper }}</span>
+          {% if shop.shop_logo %}<img class="store-logo" src="{{ shop.shop_logo | e }}" alt="" onerror="this.hidden=true">{% endif %}
+        </span>
+        <span class="store-brand-copy">
+          <strong>{{ shop.shop_name }}</strong>
+        </span>
+      </a>
+
+      <nav class="store-nav-links" aria-label="Store navigation">
+        <a href="#products-title">Products</a>
+        {% if website.show_address and (shop.address or shop.location) %}<a href="#store-details">Location</a>{% endif %}
+      </nav>
+
+      <button class="cart-trigger frappe-button frappe-button-subtle" type="button" aria-controls="store-cart" aria-expanded="false">
+        {{ frappe_icon("shopping-cart") }}
+        <span>Cart</span>
+        <span class="cart-count">0</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="store-shell">
+    {% if products %}
+    <section class="store-products" aria-labelledby="products-title">
+      <div class="store-page-header">
+        <div>
+          <h2 id="products-title">Products</h2>
+          <p>
+            <span class="visible-product-count">{{ products | length }}</span> items available
+            {% if website.description %}<span class="store-meta-divider">·</span> {{ website.description }}{% endif %}
+          </p>
+        </div>
+        <label class="store-search">
+          <span class="sr-only">Search products</span>
+          {{ frappe_icon("search") }}
+          <input type="search" placeholder="Search products" autocomplete="off">
+        </label>
+      </div>
+
+      {% if groups | length > 1 %}
+      <div class="group-filters" aria-label="Product categories">
+        <button type="button" class="group-filter frappe-button frappe-button-subtle is-active" data-group="all" aria-pressed="true">All</button>
+        {% for group in groups %}<button type="button" class="group-filter frappe-button frappe-button-subtle" data-group="{{ group | e }}" aria-pressed="false">{{ group }}</button>{% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="product-grid">
+        {% for product in products %}
+        <article class="product-card" data-group="{{ product.group_label | e }}" data-name="{{ product.item_name | lower | e }}">
+          <a class="product-card-link" href="/shop/{{ website.website_slug | e }}/product/{{ product.name | e }}" aria-label="View {{ product.item_name | e }}"></a>
+          <div class="product-image-wrap">
+            {% if product.photo %}
+            <img class="product-image" src="{{ product.photo | e }}" alt="{{ product.item_name | e }}" loading="lazy">
+            {% else %}
+            <div class="product-placeholder" aria-hidden="true">{{ frappe_icon("image") }}</div>
+            {% endif %}
+            {% if not product.in_stock %}<span class="stock-badge">Out of stock</span>{% endif %}
+          </div>
+          <div class="product-copy">
+            <span class="product-group">{{ product.group_label }}</span>
+            <h3>{{ product.item_name }}</h3>
+            <strong class="product-price">{{ shop.currency }} {{ "{:,.2f}".format(product.selling_price) }}</strong>
+            {% if product.track_stock %}
+            <span class="product-stock {% if not product.in_stock %}is-unavailable{% endif %}">
+              {% if product.in_stock %}{{ product.stock_label }} {{ product.uom }} in stock{% else %}Out of stock{% endif %}
+            </span>
+            {% endif %}
+            <button class="add-to-cart frappe-button frappe-button-solid" type="button"
+              data-id="{{ product.name | e }}"
+              data-name="{{ product.item_name | e }}"
+              data-price="{{ product.selling_price }}"
+              data-track-stock="{{ 1 if product.track_stock else 0 }}"
+              data-stock="{{ product.stock_quantity or 0 }}"
+              {% if not product.in_stock %}disabled{% endif %}>
+              {{ frappe_icon("plus") }}
+              <span>{% if product.in_stock %}Add to cart{% else %}Sold out{% endif %}</span>
+            </button>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+      <div class="store-no-results" hidden>
+        {{ frappe_icon("search") }}
+        <h3>No products found</h3>
+        <p>Try a different product name or category.</p>
+      </div>
+    </section>
+    {% else %}
+    <section class="empty-store">
+      {{ frappe_icon("package") }}
+      <h2>Products are coming soon</h2>
+      <p>This shop has not published any products yet.</p>
+    </section>
+    {% endif %}
+
+    <footer class="store-footer" id="store-details">
+      <div>
+        <strong>{{ shop.shop_name }}</strong>
+        <span>Powered by Tookio Shop</span>
+      </div>
+      <div class="store-footer-links">
+        {% if shop.location %}<span>{{ frappe_icon("map-pin") }} {{ shop.location }}</span>{% endif %}
+        {% if shop.mobile_number %}<a href="tel:{{ shop.mobile_number | e }}">{{ frappe_icon("phone") }} {{ shop.mobile_number }}</a>{% endif %}
+      </div>
+    </footer>
+  </div>
+
+  <div class="cart-backdrop" hidden></div>
+  <aside id="store-cart" class="store-cart" aria-hidden="true" aria-label="Shopping cart">
+    <div class="cart-sheet-handle" aria-hidden="true"></div>
+    <div class="cart-header">
+      <div><h2>Your cart</h2><p><span class="cart-item-label-count">0</span> items</p></div>
+      <button class="cart-close frappe-button frappe-button-ghost frappe-icon-button" type="button" aria-label="Close cart">{{ frappe_icon("x") }}</button>
+    </div>
+    <div class="cart-items"></div>
+    <div class="cart-empty">
+      <span>{{ frappe_icon("shopping-cart") }}</span>
+      <h3>Your cart is empty</h3>
+      <p>Add products to start an order.</p>
+    </div>
+    <div class="cart-summary">
+      <div><span>Total</span><strong class="cart-total">{{ shop.currency }} 0.00</strong></div>
+      <button class="whatsapp-checkout frappe-button frappe-button-solid" type="button">
+        {{ frappe_icon("message-circle") }}
+        <span>Order via WhatsApp</span>
+      </button>
+      <small>You can review the message before sending it.</small>
+    </div>
+  </aside>
+
+  <div class="store-toast" role="status" aria-live="polite" hidden>
+    <span class="store-toast-icon">{{ frappe_icon("check") }}</span>
+    <div><strong>Added to cart</strong><small class="store-toast-product"></small></div>
+  </div>
+  <button class="floating-cart-trigger cart-trigger" type="button" aria-controls="store-cart" aria-expanded="false" aria-label="Open cart, 0 items">
+    {{ frappe_icon("shopping-cart") }}
+    <span class="cart-count">0</span>
+  </button>
+</main>
+{% endblock %}
+
+{% block script %}
+<script src="/assets/tookio_shop/js/storefront.js?v=20260812e"></script>
+{% endblock %}

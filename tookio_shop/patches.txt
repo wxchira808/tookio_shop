@@ -4,3 +4,4 @@
 
 [post_model_sync]
 # Patches added in this section will be executed after doctypes are migrated
+tookio_shop.patches.v0_0.configure_subscription_tiers_and_website_limits
