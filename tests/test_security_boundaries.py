@@ -295,6 +295,49 @@ class SecurityTests(unittest.TestCase):
         self.assertEqual(fn('victim-payment')['status'], 'Error')
         ns['process_subscription_upgrade'].assert_not_called()
 
+    def test_guest_callback_applies_only_verified_intent_without_identity_switch(self):
+        tx, sub = self.payment()
+        tx.db_set = Mock()
+        sub.current_subscription = 'old-plan'
+        sub.subscription_start_date = None
+        sub.subscription_end_date = None
+        sub.status = 'Active'
+        sub.user_email = 'seller'
+        sub.append = Mock()
+        sub.save = Mock()
+        plan = types.SimpleNamespace(enabled=True, currency='KES', subscription_name='Paid',
+            shop_limit=2, products_limit=100, sales_invoice_limit=100, name='plan-1')
+        docs = {'Mpesa Transaction': tx, 'Tookio User Subscription': sub, 'Tookio Subscription': plan}
+        self.frappe.get_doc.side_effect = lambda dt, name: docs[dt]
+        self.frappe.session.user = 'Guest'
+        self.frappe.sendmail = Mock()
+        fn, ns = self.api_function('process_subscription_upgrade')
+        ns['verify_mpesa_settlement'] = Mock()
+        self.assertTrue(fn(sub.name, tx.account_reference.split('|')[1], tx.name))
+        ns['verify_mpesa_settlement'].assert_called_once_with(tx)
+        sub.save.assert_called_once_with(ignore_permissions=True)
+        tx.db_set.assert_called_once_with('account_reference', 'SETTLED:tx-1', update_modified=False)
+        self.assertEqual(self.frappe.session.user, 'Guest')
+        self.frappe.set_user.assert_not_called()
+
+    def test_client_cannot_choose_subscription_payment_amount(self):
+        tx, sub = self.payment()
+        tx.db_set = Mock()
+        fn, ns = self.api_function('initiate_subscription_payment')
+        ns['resolve_current_user_subscription'] = Mock(return_value=sub)
+        ns['calculate_subscription_upgrade_cost'] = Mock(return_value={'amount_to_pay': 100})
+        self.frappe.get_doc.return_value = types.SimpleNamespace(enabled=True, currency='KES',
+            subscription_name='Paid')
+        self.frappe.get_last_doc = Mock(return_value=tx)
+        module = types.ModuleType('tookio_mpesa.utils')
+        module.initiate_stk_push_for_till = Mock(return_value={'CheckoutRequestID': 'checkout-1'})
+        with patch.dict(sys.modules, {'tookio_mpesa.utils': module}), patch.object(sys, 'path', sys.path.copy()):
+            result = fn(sub.name, 'plan-1', '254700000000', amount=1)
+        self.assertTrue(result['success'])
+        self.assertEqual(module.initiate_stk_push_for_till.call_args.kwargs['amount'], 100)
+        signed_reference = tx.db_set.call_args.args[1]
+        self.assertIn('plan-1~10000~', signed_reference)
+
     def test_guest_user_creation_permission_removed(self):
         import json
         fixtures = json.loads((ROOT / 'tookio_shop/fixtures/custom_docperm.json').read_text())
