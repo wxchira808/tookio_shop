@@ -36,6 +36,9 @@ class SecurityTests(unittest.TestCase):
         f.session = types.SimpleNamespace(user='seller')
         f.get_roles = Mock(return_value=['Tookio Seller'])
         f.PermissionError = Denied
+        f.conf = {'encryption_key': 'offline-test-key'}
+        f.logger = Mock()
+        f.log_error = Mock()
         f.db = Mock()
         f.db.escape.side_effect = lambda s: "'" + s.replace("'", "''") + "'"
         f.get_doc = Mock()
@@ -44,6 +47,9 @@ class SecurityTests(unittest.TestCase):
         f.throw = lambda message, exc=Denied: (_ for _ in ()).throw(exc(message))
         f.whitelist = lambda **kwargs: lambda fn: fn
         utils = types.ModuleType('frappe.utils')
+        from datetime import datetime
+        utils.now_datetime = Mock(return_value=datetime(2026, 11, 24, 12, 0))
+        utils.today = Mock(return_value='2026-11-24')
         utils.getdate = Mock(return_value='2026-11-24')
         utils.add_months = Mock(return_value='2026-12-24')
         utils.now = Mock(return_value='2026-11-24 12:00:00')
@@ -77,7 +83,11 @@ class SecurityTests(unittest.TestCase):
         node = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == name)
         node.decorator_list = []
         ns = dict(frappe=self.frappe, require_subscription_owner=self.security.require_subscription_owner,
-            ensure_signup_enabled=self.security.ensure_signup_enabled)
+            ensure_signup_enabled=self.security.ensure_signup_enabled,
+            require_transaction_owner=self.security.require_transaction_owner,
+            authorize_subscription_payment=self.security.authorize_subscription_payment,
+            validate_subscription_payment=self.security.validate_subscription_payment,
+            verify_mpesa_settlement=self.security.verify_mpesa_settlement)
         exec(compile(ast.Module(body=[node], type_ignores=[]), str(ROOT / 'tookio_shop/api.py'), 'exec'), ns)
         return ns[name], ns
 
@@ -195,6 +205,95 @@ class SecurityTests(unittest.TestCase):
         with self.assertRaises(Denied):
             fn('disabled-plan', 'Customer')
         self.frappe.new_doc.assert_not_called()
+
+    def payment(self):
+        subscription = types.SimpleNamespace(name='sub-1', user='seller')
+        transaction = types.SimpleNamespace(name='tx-1', owner='seller', checkout_request_id='checkout-1',
+            merchant_request_id='merchant-1', amount=100, account_reference='')
+        transaction.account_reference = self.security.authorize_subscription_payment(
+            transaction, subscription, 'plan-1', 100)
+        return transaction, subscription
+
+    def test_signed_payment_accepts_customer_and_callback_plan_formats(self):
+        tx, sub = self.payment()
+        for plan in ['plan-1', tx.account_reference.split('|')[1]]:
+            self.assertEqual(self.security.validate_subscription_payment(tx, sub, plan), 'plan-1')
+
+    def test_signed_payment_rejects_tampering_and_reuse_on_another_checkout(self):
+        for field, value in [('amount', 1), ('checkout_request_id', 'another-checkout'),
+                ('merchant_request_id', 'another-merchant'), ('owner', 'victim')]:
+            tx, sub = self.payment()
+            setattr(tx, field, value)
+            with self.subTest(field=field), self.assertRaises(Denied):
+                self.security.validate_subscription_payment(tx, sub, 'plan-1')
+
+    def test_unsigned_legacy_payment_requires_manual_review(self):
+        tx, sub = self.payment()
+        tx.account_reference = 'sub-1|plan-1'
+        with self.assertRaises(Denied):
+            self.security.validate_subscription_payment(tx, sub, 'plan-1')
+
+    def test_signed_payment_cannot_be_retargeted(self):
+        tx, sub = self.payment()
+        for target in [types.SimpleNamespace(name='sub-2', user='seller'),
+                types.SimpleNamespace(name='sub-1', user='victim')]:
+            with self.assertRaises(Denied):
+                self.security.validate_subscription_payment(tx, target, 'plan-1')
+        with self.assertRaises(Denied):
+            self.security.validate_subscription_payment(tx, sub, 'more-expensive-plan')
+
+    def provider_mock(self, result):
+        network = types.ModuleType('requests')
+        network.RequestException = ConnectionError
+        network.get = Mock()
+        network.get.return_value.json.return_value = {'access_token': 'offline-token'}
+        network.post = Mock()
+        network.post.return_value.json.return_value = result
+        settings = types.SimpleNamespace(environment='Production', consumer_key='offline-consumer',
+            store_number='12345', get_password=Mock(return_value='offline-secret'))
+        self.frappe.get_single = Mock(return_value=settings)
+        return network
+
+    def test_settlement_requires_fresh_provider_confirmation(self):
+        tx, _ = self.payment()
+        result = dict(ResultCode='0', CheckoutRequestID='checkout-1', MerchantRequestID='merchant-1')
+        network = self.provider_mock(result)
+        with patch.dict(sys.modules, {'requests': network}):
+            self.security.verify_mpesa_settlement(tx)
+        network.get.assert_called_once()
+        network.post.assert_called_once()
+        self.assertEqual(network.post.call_args.kwargs['timeout'], 15)
+
+    def test_settlement_rejects_failure_and_mismatched_provider_ids(self):
+        tx, _ = self.payment()
+        for change in [dict(ResultCode='1032'), dict(CheckoutRequestID='other'),
+                dict(MerchantRequestID='other')]:
+            result = dict(ResultCode='0', CheckoutRequestID='checkout-1', MerchantRequestID='merchant-1')
+            result.update(change)
+            network = self.provider_mock(result)
+            with patch.dict(sys.modules, {'requests': network}), self.assertRaises(Denied):
+                self.security.verify_mpesa_settlement(tx)
+
+    def test_network_failure_cannot_confirm_payment(self):
+        tx, _ = self.payment()
+        network = self.provider_mock({})
+        network.post.side_effect = ConnectionError('offline')
+        with patch.dict(sys.modules, {'requests': network}), self.assertRaises(Denied):
+            self.security.verify_mpesa_settlement(tx)
+
+    def test_settled_payment_is_not_applied_twice(self):
+        fn, _ = self.api_function('process_subscription_upgrade')
+        self.frappe.get_doc.return_value = types.SimpleNamespace(account_reference='SETTLED:tx-1')
+        self.assertTrue(fn('sub-1', 'plan-1', 'tx-1'))
+        self.frappe.get_doc.assert_called_once_with('Mpesa Transaction', 'tx-1')
+        self.frappe.db.commit.assert_not_called()
+
+    def test_polling_another_customers_payment_is_denied_before_processing(self):
+        fn, ns = self.api_function('check_subscription_payment_status')
+        self.frappe.get_doc.return_value = types.SimpleNamespace(owner='victim')
+        ns['process_subscription_upgrade'] = Mock()
+        self.assertEqual(fn('victim-payment')['status'], 'Error')
+        ns['process_subscription_upgrade'].assert_not_called()
 
     def test_guest_user_creation_permission_removed(self):
         import json

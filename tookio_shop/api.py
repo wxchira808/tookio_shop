@@ -10,7 +10,10 @@ from urllib.parse import quote
 import json
 
 from tookio_shop.utils import create_free_subscription_for_user, get_free_plan_name, get_plan_limits, get_user_plan_limits
-from tookio_shop.security import ensure_signup_enabled, require_subscription_owner
+from tookio_shop.security import (
+    ensure_signup_enabled, require_subscription_owner, require_transaction_owner,
+    authorize_subscription_payment, validate_subscription_payment, verify_mpesa_settlement,
+)
 
 # Pesapal API endpoints
 PESAPAL_SANDBOX_URL = "https://cybqa.pesapal.com/pesapalv3"
@@ -752,11 +755,13 @@ def calculate_subscription_upgrade_cost(user_subscription=None, new_subscription
 		current_plan = frappe.get_doc("Tookio Subscription", user_sub.current_subscription)
 		is_upgrade = new_plan.price > current_plan.price
 	
+	# Daraja STK amounts are whole shillings. Quote the same amount we submit.
+	from math import ceil
 	return {
 		"new_plan_price": new_plan.price,
 		"credit_from_old_plan": credit_from_old_plan,
 		"days_remaining": days_remaining,
-		"amount_to_pay": round(amount_to_pay, 2),
+		"amount_to_pay": ceil(amount_to_pay),
 		"is_upgrade": is_upgrade,
 		"currency": new_plan.currency
 	}
@@ -778,6 +783,11 @@ def initiate_subscription_payment(user_subscription=None, new_subscription=None,
 		
 		# Get new subscription plan
 		new_plan = frappe.get_doc("Tookio Subscription", new_subscription)
+		if not new_plan.enabled or new_plan.currency != "KES":
+			frappe.throw("Select an enabled KES subscription plan.")
+		amount = calculate_subscription_upgrade_cost(user_sub.name, new_subscription)["amount_to_pay"]
+		if amount <= 0:
+			frappe.throw("This upgrade requires administrator review; no payment was initiated.")
 		
 		# Prepare transaction description
 		account_reference = f"SUB-{user_sub.name}"
@@ -801,7 +811,8 @@ def initiate_subscription_payment(user_subscription=None, new_subscription=None,
 			
 			# Link the subscription upgrade details to the transaction
 			# We'll store this in a custom field or use account_reference to track
-			transaction.db_set("account_reference", f"{user_sub.name}|{new_subscription}", update_modified=False)
+			reference = authorize_subscription_payment(transaction, user_sub, new_subscription, amount)
+			transaction.db_set("account_reference", reference, update_modified=False)
 			frappe.db.commit()
 			
 			return {
@@ -829,6 +840,7 @@ def check_subscription_payment_status(transaction_id):
 	"""Check the status of a subscription payment transaction"""
 	try:
 		transaction = frappe.get_doc("Mpesa Transaction", transaction_id)
+		require_transaction_owner(transaction)
 		
 		# If payment is successful and not yet processed
 		if transaction.status == "Success" and transaction.account_reference:
@@ -871,8 +883,24 @@ def process_subscription_upgrade(user_subscription, new_subscription, transactio
 	
 	try:
 		# Get documents
-		user_sub = resolve_current_user_subscription(user_subscription)
-		new_plan = frappe.get_doc("Tookio Subscription", new_subscription)
+		if transaction_id == "Free-Plan-Switch":
+			user_sub = resolve_current_user_subscription(user_subscription)
+			new_plan = frappe.get_doc("Tookio Subscription", new_subscription)
+			if not new_plan.enabled or new_plan.price != 0:
+				frappe.throw("This plan requires a verified payment.", frappe.PermissionError)
+		else:
+			# Serialize callback retries and polling against the same payment.
+			frappe.db.sql("SELECT name FROM `tabMpesa Transaction` WHERE name=%s FOR UPDATE", (transaction_id,))
+			transaction = frappe.get_doc("Mpesa Transaction", transaction_id)
+			if (transaction.account_reference or "").startswith("SETTLED:"):
+				return True
+			user_sub = frappe.get_doc("Tookio User Subscription", user_subscription)
+			new_subscription = validate_subscription_payment(transaction, user_sub, new_subscription)
+			new_plan = frappe.get_doc("Tookio Subscription", new_subscription)
+			if not new_plan.enabled or new_plan.currency != "KES":
+				frappe.throw("This plan is unavailable.")
+			verify_mpesa_settlement(transaction)
+			transaction.db_set("account_reference", f"SETTLED:{transaction.name}", update_modified=False)
 		
 		# Store old subscription details for history
 		old_subscription = user_sub.current_subscription
