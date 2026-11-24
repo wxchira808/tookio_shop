@@ -3,6 +3,13 @@
 import frappe
 
 
+def ensure_signup_enabled():
+    from frappe.core.doctype.user.user import is_signup_disabled
+
+    if is_signup_disabled():
+        frappe.throw("New account registration is temporarily disabled.", frappe.PermissionError)
+
+
 def is_security_admin(user=None):
     user = user or frappe.session.user
     return user != "Guest" and (

@@ -10,7 +10,7 @@ from urllib.parse import quote
 import json
 
 from tookio_shop.utils import create_free_subscription_for_user, get_free_plan_name, get_plan_limits, get_user_plan_limits
-from tookio_shop.security import require_subscription_owner
+from tookio_shop.security import ensure_signup_enabled, require_subscription_owner
 
 # Pesapal API endpoints
 PESAPAL_SANDBOX_URL = "https://cybqa.pesapal.com/pesapalv3"
@@ -563,6 +563,7 @@ def _send_mobile_signup_email(email, full_name, key):
 @frappe.whitelist(allow_guest=True)
 def request_mobile_signup(email, full_name):
     """Start mobile signup by creating a disabled Website User and emailing a password link."""
+    ensure_signup_enabled()
     email = (email or "").strip().lower()
     full_name = (full_name or "").strip()
 
@@ -616,6 +617,7 @@ def request_mobile_signup(email, full_name):
 @frappe.whitelist(allow_guest=True)
 def complete_mobile_signup(key, password):
     """Complete mobile signup from the emailed link by setting the user's password."""
+    ensure_signup_enabled()
     key = (key or "").strip()
 
     if not key:

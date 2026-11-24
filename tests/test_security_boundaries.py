@@ -76,7 +76,8 @@ class SecurityTests(unittest.TestCase):
         tree = ast.parse((ROOT / 'tookio_shop/api.py').read_text())
         node = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == name)
         node.decorator_list = []
-        ns = dict(frappe=self.frappe, require_subscription_owner=self.security.require_subscription_owner)
+        ns = dict(frappe=self.frappe, require_subscription_owner=self.security.require_subscription_owner,
+            ensure_signup_enabled=self.security.ensure_signup_enabled)
         exec(compile(ast.Module(body=[node], type_ignores=[]), str(ROOT / 'tookio_shop/api.py'), 'exec'), ns)
         return ns[name], ns
 
@@ -201,6 +202,25 @@ class SecurityTests(unittest.TestCase):
         rows = [r for r in fixtures if r.get('parent') == 'User' and r.get('role') == 'Guest']
         self.assertTrue(rows)
         self.assertTrue(all(not r.get('create') and not r.get('read') for r in rows))
+
+    def test_mobile_signup_and_completion_honor_signup_shutdown(self):
+        core_user = types.ModuleType('frappe.core.doctype.user.user')
+        core_user.is_signup_disabled = Mock(return_value=True)
+        with patch.dict(sys.modules, {'frappe.core.doctype.user.user': core_user}):
+            for name, args in [('request_mobile_signup', ('test@example.invalid', 'Test')),
+                    ('complete_mobile_signup', ('old-key', 'new-password'))]:
+                fn, _ = self.api_function(name)
+                with self.subTest(endpoint=name), self.assertRaises(Denied):
+                    fn(*args)
+        self.frappe.new_doc.assert_not_called()
+        self.frappe.get_doc.assert_not_called()
+        self.frappe.db.commit.assert_not_called()
+
+    def test_enabled_signup_is_allowed_by_guard(self):
+        core_user = types.ModuleType('frappe.core.doctype.user.user')
+        core_user.is_signup_disabled = Mock(return_value=False)
+        with patch.dict(sys.modules, {'frappe.core.doctype.user.user': core_user}):
+            self.security.ensure_signup_enabled()
 
 
 if __name__ == '__main__':
