@@ -24,6 +24,16 @@ override_doctype_class = {
 	"User": "tookio_shop.overrides.user.CustomUser"
 }
 
+has_permission = {
+    "Mpesa Transaction": "tookio_shop.security.payment_record_permission",
+    "Tookio Payment Confirmation": "tookio_shop.tookio_shop.doctype.tookio_payment_confirmation.tookio_payment_confirmation.has_permission",
+}
+
+permission_query_conditions = {
+    "Mpesa Transaction": "tookio_shop.security.payment_record_query",
+    "Tookio Payment Confirmation": "tookio_shop.tookio_shop.doctype.tookio_payment_confirmation.tookio_payment_confirmation.get_permission_query_conditions",
+}
+
 doc_events = {
       "User": {
         "after_insert": "tookio_shop.utils.setup_new_user"

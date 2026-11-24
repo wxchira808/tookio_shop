@@ -10,6 +10,7 @@ from urllib.parse import quote
 import json
 
 from tookio_shop.utils import create_free_subscription_for_user, get_free_plan_name, get_plan_limits, get_user_plan_limits
+from tookio_shop.security import require_subscription_owner
 
 # Pesapal API endpoints
 PESAPAL_SANDBOX_URL = "https://cybqa.pesapal.com/pesapalv3"
@@ -362,41 +363,31 @@ def get_user_subscription():
         "current_websites": frappe.db.count("Tookio Website", {"owner": resolved_user}),
     }
 
-@frappe.whitelist(allow_guest=False)
+@frappe.whitelist(allow_guest=False, methods=["POST"])
 def submit_payment_confirmation(subscription_plan, user_name):
-    """User submits that they've made payment - immediately upgrade them"""
+    """Record a customer payment claim for independent administrator review."""
     user = frappe.session.user
-    
-    # Debug logging
-    frappe.logger().info(f"🔔 submit_payment_confirmation called for user: {user}, plan: {subscription_plan}")
-
-    # Get the subscription plan details
+    if user == "Guest":
+        frappe.throw("Sign in to submit a payment claim.", frappe.PermissionError)
     plan = frappe.get_doc("Tookio Subscription", subscription_plan)
-    if not plan:
+    if not plan.enabled:
         frappe.throw("Invalid subscription plan")
-
-    # Immediately upgrade the user (bypass manual verification)
-    frappe.logger().info(f"🚀 Upgrading user {user} to {subscription_plan}")
-    upgrade_user_subscription(user, subscription_plan)
-    frappe.logger().info(f"✅ User {user} upgraded successfully")
-
-    # Create payment confirmation record for admin records (marked as auto-verified)
     doc = frappe.new_doc("Tookio Payment Confirmation")
     doc.user = user
     doc.user_name = user_name or ""
     doc.subscription_plan = subscription_plan
     doc.till_number = "6547212"
-    doc.status = "Verified"  # Auto-verified since we upgraded immediately
-    doc.verified_by = "Administrator"  # Mark as auto-verified
-    doc.verified_date = frappe.utils.now()
-    doc.notes = "Auto-verified upgrade from mobile app"
+    doc.status = "Pending Verification"
+    doc.verified_by = None
+    doc.verified_date = None
+    doc.notes = "Customer payment claim; payment has not been verified."
     doc.insert(ignore_permissions=True)
 
     frappe.db.commit()
 
     return {
         "success": True,
-        "message": "Your account has been upgraded successfully! You now have access to premium features.",
+        "message": "Your payment claim is pending verification. Your plan has not changed.",
         "confirmation_id": doc.name
     }
 
@@ -697,20 +688,19 @@ def resolve_current_user_subscription(subscription_name=None):
         return str(value).strip().lower() in {"", "none", "null", "undefined"}
 
     if not is_missing(subscription_name):
-        try:
-            return frappe.get_doc("Tookio User Subscription", subscription_name)
-        except Exception:
-            pass
+        return require_subscription_owner(
+            frappe.get_doc("Tookio User Subscription", subscription_name)
+        )
 
     subscription_data = get_user_subscription()
     record_name = subscription_data.get("name") or subscription_data.get("subscription_record_name")
     if not is_missing(record_name):
-        return frappe.get_doc("Tookio User Subscription", record_name)
+        return require_subscription_owner(frappe.get_doc("Tookio User Subscription", record_name))
 
     resolved_user = subscription_data.get("resolved_user") or subscription_data.get("user") or frappe.session.user
     created_record = ensure_user_subscription_record(resolved_user)
     if created_record:
-        return frappe.get_doc("Tookio User Subscription", created_record)
+        return require_subscription_owner(frappe.get_doc("Tookio User Subscription", created_record))
 
     frappe.throw("No subscription record found for the current user")
 

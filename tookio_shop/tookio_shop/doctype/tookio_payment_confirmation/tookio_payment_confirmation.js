@@ -3,7 +3,7 @@
 
 frappe.ui.form.on("Tookio Payment Confirmation", {
 	refresh(frm) {
-		if (frm.doc.status === "Pending Verification") {
+		if (frappe.user.has_role("System Manager") && frm.doc.status === "Pending Verification") {
 			frm.add_custom_button(__("Verify Payment"), function() {
 				frm.set_value("status", "Verified");
 				frm.set_value("verified_by", frappe.session.user);
