@@ -24,6 +24,11 @@ override_doctype_class = {
 	"User": "tookio_shop.overrides.user.CustomUser"
 }
 
+# This hook applies only where tookio_shop is installed (the Shop site).
+override_whitelisted_methods = {
+    "tookio_mpesa.utils.stk_callback": "tookio_shop.payments.stk_callback",
+}
+
 has_permission = {
     "Mpesa Transaction": "tookio_shop.security.payment_record_permission",
     "Tookio Payment Confirmation": "tookio_shop.tookio_shop.doctype.tookio_payment_confirmation.tookio_payment_confirmation.has_permission",

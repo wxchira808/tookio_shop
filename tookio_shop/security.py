@@ -96,7 +96,7 @@ def validate_subscription_payment(transaction, subscription, requested_plan):
     return plan
 
 
-def verify_mpesa_settlement(transaction):
+def query_mpesa_settlement(transaction):
     """Independently query Daraja; callback JSON and local status are not proof."""
     import requests
     from frappe.utils import now_datetime
@@ -128,8 +128,15 @@ def verify_mpesa_settlement(transaction):
     except (requests.RequestException, KeyError, TypeError, ValueError, AttributeError):
         frappe.throw("Payment verification is unavailable; no upgrade was applied.")
     if (
-        str(result.get("ResultCode")) != "0"
+        result.get("ResultCode") is None
         or result.get("CheckoutRequestID") != transaction.checkout_request_id
         or result.get("MerchantRequestID") != transaction.merchant_request_id
     ):
+        frappe.throw("The payment provider has not confirmed this payment.", frappe.PermissionError)
+    return result
+
+
+def verify_mpesa_settlement(transaction):
+    result = query_mpesa_settlement(transaction)
+    if str(result.get("ResultCode")) != "0":
         frappe.throw("The payment provider has not confirmed this payment.", frappe.PermissionError)

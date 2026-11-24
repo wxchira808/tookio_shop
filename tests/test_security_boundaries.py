@@ -338,6 +338,72 @@ class SecurityTests(unittest.TestCase):
         signed_reference = tx.db_set.call_args.args[1]
         self.assertIn('plan-1~10000~', signed_reference)
 
+    def callback_setup(self, provider_result=None):
+        module = load_file('payments_under_test', 'tookio_shop/payments.py')
+        tx, _ = self.payment()
+        tx.account_reference = ''
+        tx.save = Mock()
+        tx.mpesa_receipt_number = ''
+        self.frappe.session.user = 'Guest'
+        self.frappe.db.get_value.return_value = tx.name
+        self.frappe.get_doc.return_value = tx
+        import json
+        self.frappe.request = types.SimpleNamespace(data=json.dumps({'Body': {'stkCallback': {
+            'CheckoutRequestID': 'checkout-1', 'ResultCode': 0,
+            'CallbackMetadata': {'Item': [{'Name': 'MpesaReceiptNumber', 'Value': 'FORGED'}]}}}}))
+        module.query_mpesa_settlement = Mock(return_value=provider_result or {
+            'ResultCode': '0', 'ResultDesc': 'Confirmed by provider'})
+        return module, tx
+
+    def test_callback_ignores_forged_success_and_receipt(self):
+        module, tx = self.callback_setup({'ResultCode': '1032', 'ResultDesc': 'Cancelled'})
+        result = module.stk_callback()
+        self.assertEqual(result['ResultCode'], 0)
+        self.assertEqual(tx.status, 'Failed')
+        self.assertEqual(tx.mpesa_receipt_number, '')
+        tx.save.assert_called_once_with(ignore_permissions=True)
+        self.frappe.set_user.assert_not_called()
+
+    def test_unverified_callback_cannot_write_transaction(self):
+        module, tx = self.callback_setup()
+        module.query_mpesa_settlement.side_effect = Denied('not confirmed')
+        self.assertEqual(module.stk_callback()['ResultCode'], 1)
+        tx.save.assert_not_called()
+        self.frappe.set_user.assert_not_called()
+
+    def test_callback_does_not_query_provider_for_unknown_transaction(self):
+        module, tx = self.callback_setup()
+        self.frappe.db.get_value.return_value = None
+        self.assertEqual(module.stk_callback()['ResultCode'], 1)
+        module.query_mpesa_settlement.assert_not_called()
+        tx.save.assert_not_called()
+
+    def test_signed_callback_routes_to_verified_subscription_handler(self):
+        module, tx = self.callback_setup()
+        tx.account_reference = 'sub-1|plan-1~10000~signature'
+        api = types.ModuleType('tookio_shop.api')
+        api.process_subscription_upgrade = Mock()
+        with patch.dict(sys.modules, {'tookio_shop.api': api}):
+            self.assertEqual(module.stk_callback()['ResultCode'], 0)
+        api.process_subscription_upgrade.assert_called_once_with('sub-1', 'plan-1~10000~signature', 'tx-1')
+        self.assertEqual(self.frappe.session.user, 'Guest')
+
+    def test_unsigned_callback_cannot_grant_subscription(self):
+        module, tx = self.callback_setup()
+        tx.account_reference = 'sub-1|plan-1'
+        api = types.ModuleType('tookio_shop.api')
+        api.process_subscription_upgrade = Mock()
+        with patch.dict(sys.modules, {'tookio_shop.api': api}):
+            self.assertEqual(module.stk_callback()['ResultCode'], 0)
+        api.process_subscription_upgrade.assert_not_called()
+
+    def test_shop_only_callback_override_is_registered(self):
+        import ast
+        tree = ast.parse((ROOT / 'tookio_shop/hooks.py').read_text())
+        overrides = next(ast.literal_eval(n.value) for n in tree.body if isinstance(n, ast.Assign)
+            and any(isinstance(t, ast.Name) and t.id == 'override_whitelisted_methods' for t in n.targets))
+        self.assertEqual(overrides['tookio_mpesa.utils.stk_callback'], 'tookio_shop.payments.stk_callback')
+
     def test_guest_user_creation_permission_removed(self):
         import json
         fixtures = json.loads((ROOT / 'tookio_shop/fixtures/custom_docperm.json').read_text())
